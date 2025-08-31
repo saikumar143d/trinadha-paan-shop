@@ -111,6 +111,28 @@
         .qr-button-active {
             box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4f46e5;
         }
+        
+        @keyframes pulse-glow {
+            0% {
+                transform: scale(1);
+                color: #fbbf24;
+                text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
+            }
+            50% {
+                transform: scale(1.1);
+                color: #fde68a;
+                text-shadow: 0 0 10px rgba(253, 230, 138, 0.8);
+            }
+            100% {
+                transform: scale(1);
+                color: #fbbf24;
+                text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
+            }
+        }
+        
+        .animated-icon {
+            animation: pulse-glow 2s infinite;
+        }
 
         @keyframes fadeIn {
             from {
@@ -146,7 +168,7 @@
             <span class="material-symbols-outlined">arrow_back</span>
         </button>
         <div class="flex items-center space-x-2">
-            <span class="material-symbols-outlined text-yellow-500">payments</span>
+            <span class="material-symbols-outlined text-yellow-500">qr_code_2</span>
             <h1 id="header-title" class="text-xl font-bold text-gray-200">Trinadha Paan Shop</h1>
         </div>
         <div class="w-6 h-6"></div>
