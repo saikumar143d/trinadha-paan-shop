@@ -167,7 +167,7 @@
         <div class="card flex flex-col items-center">
             <div id="input-container" class="input-group w-full flex items-center py-3 px-4">
                 <span class="material-symbols-outlined text-gray-400">currency_rupee</span>
-                <input id="amountInput" type="text" class="flex-1 bg-transparent text-gray-200 text-lg font-bold focus:outline-none placeholder-gray-500 ml-2" placeholder="0.00">
+                <input id="amountInput" type="tel" class="flex-1 bg-transparent text-gray-200 text-lg font-bold focus:outline-none placeholder-gray-500 ml-2" placeholder="0.00">
             </div>
         </div>
 
@@ -450,16 +450,6 @@
                 if (e.target.id === 'qr-modal-overlay') {
                     qrModalOverlay.classList.add('hidden');
                 }
-            });
-
-            amountInput.addEventListener('input', (e) => {
-                let value = e.target.value;
-                value = value.replace(/[^0-9.]/g, '');
-                const parts = value.split('.');
-                if (parts.length > 2) {
-                    value = parts[0] + '.' + parts.slice(1).join('');
-                }
-                e.target.value = value;
             });
 
             // Input focus styling
