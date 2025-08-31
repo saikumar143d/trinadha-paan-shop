@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trinadha Paan Shop</title>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%23fbbf24'><path fill-rule='evenodd' d='M10 18a8 8 0 100-16 8 8 0 000 16zM5.4 9.6a.75.75 0 011.06 0L10 13.14l3.54-3.54a.75.75 0 111.06 1.06l-4.07 4.07a.75.75 0 01-1.06 0L5.4 10.66a.75.75 0 010-1.06z' clip-rule='evenodd' /></svg>" type="image/svg+xml">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #121212;
+            background-image: radial-gradient(circle at center, #242424, #121212);
+        }
+
+        .header-content {
+            background-color: rgba(28, 28, 28, 0.8);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .card {
+            background-color: #1c1c1c;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 320px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: fadeIn 0.8s ease-in-out;
+            margin-top: 2rem;
+        }
+
+        .upi-btn-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .upi-btn {
+            background-color: #2c2c2c;
+            border-radius: 0.75rem;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .upi-btn:hover {
+            transform: scale(1.05);
+            background-color: #383838;
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .upi-btn-icon {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .upi-btn:hover .upi-btn-icon {
+            transform: scale(1.2);
+        }
+
+        .modal {
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            background-color: #1c1c1c;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            animation: modalPopIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .qr-button-active {
+            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4f46e5;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes modalPopIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="flex flex-col items-center min-h-screen p-4 pt-24">
+
+    <!-- Fixed Floating Header -->
+    <header id="main-header" class="fixed top-0 left-0 w-full z-50 py-4 px-6 header-content flex items-center justify-center space-x-2">
+        <button id="back-btn" class="absolute left-6 text-gray-400 hover:text-white transition-colors duration-300 hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM5.4 9.6a.75.75 0 011.06 0L10 13.14l3.54-3.54a.75.75 0 111.06 1.06l-4.07 4.07a.75.75 0 01-1.06 0L5.4 10.66a.75.75 0 010-1.06z" clip-rule="evenodd" />
+        </svg>
+        <h1 id="header-title" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">
+            Trinadha Paan Shop
+        </h1>
+    </header>
+
+    <!-- Main QR Generator View -->
+    <div id="main-view" class="card flex flex-col items-center mx-auto sm:max-w-md md:max-w-lg lg:max-w-xl">
+        <h2 class="text-xl font-bold text-gray-100 mb-6">Enter Amount</h2>
+
+        <!-- Amount Input -->
+        <div class="w-full flex items-center bg-gray-900 rounded-xl p-3 mb-6 transition duration-300 border border-transparent focus-within:border-indigo-500">
+            <span class="text-gray-400 mr-2 text-xl font-bold">₹</span>
+            <input id="amountInput" type="text" class="flex-1 bg-transparent text-white text-xl font-bold focus:outline-none placeholder-gray-500" placeholder="0.00">
+        </div>
+
+        <!-- UPI ID Buttons -->
+        <div id="upi-button-container" class="upi-btn-container w-full sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-4 md:gap-6">
+            <!-- Buttons will be dynamically added here -->
+        </div>
+
+        <!-- History button -->
+        <button id="history-btn" class="mt-6 text-gray-400 hover:text-white transition-colors duration-300 font-semibold">
+            View Payment History
+        </button>
+    </div>
+
+    <!-- Payment History View -->
+    <div id="history-view" class="hidden w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto py-8">
+        <h2 class="text-2xl font-bold text-gray-100 mb-6 text-center">Payment History</h2>
+        <div id="history-list" class="space-y-4">
+            <!-- History items will be dynamically added here -->
+        </div>
+        <button id="clear-history-btn" class="mt-6 w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors duration-300">
+            Clear History
+        </button>
+    </div>
+
+    <!-- Modal for QR Code Display -->
+    <div id="qr-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-50">
+        <div id="qr-modal" class="rounded-lg p-4 shadow-2xl relative w-11/12 max-w-xs modal-content">
+            <button id="close-modal-btn" class="absolute top-3 right-4 text-gray-500 hover:text-gray-100 text-2xl font-bold transition-transform transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-900">&times;</button>
+            <h2 class="text-lg font-bold text-gray-100 text-center mb-4">Payment QR Code</h2>
+            <div class="flex flex-col items-center space-y-4">
+                <div id="qr-code-container" class="relative p-4 bg-gray-900 rounded-lg">
+                    <!-- QR code will be generated here -->
+                </div>
+                <div id="popup-upi-buttons" class="flex flex-wrap justify-center gap-2 mt-4">
+                    <!-- UPI buttons will be dynamically added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR code styling library from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js"></script>
+
+    <script>
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('Service Worker registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const upiData = [
+                { "id": "9492416477@upi", "label": "TVR BHIM", "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/" },
+                { "id": "9885848524@upi", "label": "TSK BHIM", "icon": "https://img.icons8.com/color/512/bhim.png" },
+                { "id": "9398096059@superyes", "label": "BGV", "icon": "https://ucarecdn.com/caa1a595-b532-46b1-b4d4-1c5e21486b85/-/format/webp/-/quality/smart/" },
+                { "id": "Q639488204@ybl", "label": "PhonePe", "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200" }
+            ];
+            
+            // View Management
+            const mainView = document.getElementById('main-view');
+            const historyView = document.getElementById('history-view');
+            const historyBtn = document.getElementById('history-btn');
+            const backBtn = document.getElementById('back-btn');
+            const headerTitle = document.getElementById('header-title');
+
+            const showMainView = () => {
+                mainView.classList.remove('hidden');
+                historyView.classList.add('hidden');
+                backBtn.classList.add('hidden');
+                headerTitle.innerText = "Trinadha Paan Shop";
+            };
+
+            const showHistoryView = () => {
+                mainView.classList.add('hidden');
+                historyView.classList.remove('hidden');
+                backBtn.classList.remove('hidden');
+                headerTitle.innerText = "Payment History";
+                renderHistory();
+            };
+
+            historyBtn.addEventListener('click', showHistoryView);
+            backBtn.addEventListener('click', showMainView);
+
+            // Existing Logic
+            const upiButtonContainer = document.getElementById('upi-button-container');
+            const amountInput = document.getElementById('amountInput');
+            const qrModalOverlay = document.getElementById('qr-modal-overlay');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const qrCodeContainer = document.getElementById('qr-code-container');
+            const popupUpiButtons = document.getElementById('popup-upi-buttons');
+            const clearHistoryBtn = document.getElementById('clear-history-btn');
+            const historyList = document.getElementById('history-list');
+            const historyKey = 'upiHistory';
+            let currentQR = null;
+
+            const getUpiLabel = (id) => {
+                const upi = upiData.find(u => u.id === id);
+                return upi ? upi.label : id;
+            };
+
+            const getUpiIcon = (id) => {
+                const upi = upiData.find(u => u.id === id);
+                return upi ? upi.icon : 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon';
+            };
+
+            const generateQrCode = (upiId, amount) => {
+                const payeeName = getUpiLabel(upiId);
+                const upiIcon = getUpiIcon(upiId);
+
+                let upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}`;
+                if (payeeName) {
+                    upiUri += `&pn=${encodeURIComponent(payeeName)}`;
+                }
+                if (amount && parseFloat(amount) > 0) {
+                    upiUri += `&am=${encodeURIComponent(amount)}`;
+                    upiUri += `&cu=INR`;
+                }
+
+                // Clear previous QR code
+                qrCodeContainer.innerHTML = '';
+
+                // Generate new QR code
+                currentQR = new QRCodeStyling({
+                    width: 250,
+                    height: 250,
+                    type: "svg",
+                    data: upiUri,
+                    image: upiIcon,
+                    dotsOptions: {
+                        color: "#ffffff",
+                        type: "rounded"
+                    },
+                    cornersSquareOptions: {
+                        color: "#ffffff",
+                        type: "extra-rounded"
+                    },
+                    cornersDotOptions: {
+                        color: "#ffffff",
+                        type: "dot"
+                    },
+                    backgroundOptions: {
+                        color: "#1c1c1c",
+                    },
+                    imageOptions: {
+                        crossOrigin: "anonymous",
+                        margin: 2
+                    }
+                });
+
+                currentQR.append(qrCodeContainer);
+            };
+
+            const saveHistory = (id, amount) => {
+                const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                const timestamp = new Date().toLocaleString('en-IN', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true
+                });
+                history.unshift({
+                    id,
+                    amount: parseFloat(amount || 0).toFixed(2),
+                    timestamp
+                });
+                localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+            };
+
+            const createUpiButton = (upi) => {
+                const button = document.createElement('button');
+                button.className = 'upi-btn py-3 px-4 flex flex-col items-center justify-center space-y-1 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900';
+                button.innerHTML = `
+                    <img src="${upi.icon}" alt="${upi.label} Icon" class="h-10 w-10 rounded-full upi-btn-icon" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                    <span class="text-white text-sm font-semibold">${upi.label}</span>
+                `;
+                button.addEventListener('click', () => {
+                    const amount = amountInput.value.trim();
+                    generateQrCode(upi.id, amount);
+                    saveHistory(upi.id, amount);
+                    qrModalOverlay.classList.remove('hidden');
+
+                    document.querySelectorAll('#popup-upi-buttons button').forEach(btn => btn.classList.remove('qr-button-active'));
+                    const popupBtn = popupUpiButtons.querySelector(`[data-upi-id="${upi.id}"]`);
+                    if (popupBtn) popupBtn.classList.add('qr-button-active');
+                });
+                return button;
+            };
+
+            const createPopupUpiButton = (upi) => {
+                const button = document.createElement('button');
+                button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 hover:border-indigo-500 border-2 border-transparent relative';
+                button.setAttribute('data-upi-id', upi.id);
+                button.innerHTML = `
+                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                `;
+                button.addEventListener('click', () => {
+                    const amount = amountInput.value.trim();
+                    generateQrCode(upi.id, amount);
+
+                    document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
+                        btn.classList.remove('qr-button-active');
+                    });
+
+                    button.classList.add('qr-button-active');
+                });
+                return button;
+            };
+
+            const renderHistory = () => {
+                const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                historyList.innerHTML = '';
+                if (history.length === 0) {
+                    historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
+                } else {
+                    history.forEach(item => {
+                        const historyItem = document.createElement('div');
+                        const upiLabel = getUpiLabel(item.id);
+                        const upiIcon = getUpiIcon(item.id);
+                        historyItem.className = 'p-4 bg-gray-800 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-700 transition-colors duration-200';
+                        historyItem.innerHTML = `
+                            <img src="${upiIcon}" alt="${upiLabel} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                            <div class="flex-1">
+                                <p class="text-white font-semibold">${upiLabel}</p>
+                                <p class="text-gray-400 text-sm">₹${item.amount} - ${item.timestamp}</p>
+                            </div>
+                        `;
+                        historyItem.addEventListener('click', () => {
+                            generateQrCode(item.id, item.amount);
+                            qrModalOverlay.classList.remove('hidden');
+                        });
+                        historyList.appendChild(historyItem);
+                    });
+                }
+            };
+
+            clearHistoryBtn.addEventListener('click', () => {
+                localStorage.removeItem(historyKey);
+                renderHistory();
+            });
+
+            upiData.forEach(upi => {
+                upiButtonContainer.appendChild(createUpiButton(upi));
+                popupUpiButtons.appendChild(createPopupUpiButton(upi));
+            });
+
+            closeModalBtn.addEventListener('click', () => {
+                qrModalOverlay.classList.add('hidden');
+            });
+
+            qrModalOverlay.addEventListener('click', (e) => {
+                if (e.target.id === 'qr-modal-overlay') {
+                    qrModalOverlay.classList.add('hidden');
+                }
+            });
+
+            amountInput.addEventListener('input', (e) => {
+                let value = e.target.value;
+                value = value.replace(/[^0-9.]/g, '');
+                const parts = value.split('.');
+                if (parts.length > 2) {
+                    value = parts[0] + '.' + parts.slice(1).join('');
+                }
+                e.target.value = value;
+            });
+        });
+    </script>
+</body>
+
+</html>
