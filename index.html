@@ -12,7 +12,7 @@
     <!-- Material Symbols Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 0 24 24' width='24px' fill='%23fbbf24'><path d='M3 11h2v2H3zm2-6h2v2H5zM3 3h2v2H3zm8 0h2v2h-2zm-2 2h2v2H9zm6-2h2v2h-2zm-2 2h2v2h-2zm-4 8h2v2h-2zm8-6h2v2h-2zm-2-2h2v2h-2zm-4 4h2v2h-2zM3 7h2v2H3zm2 6h2v2H5zm0 4h2v2H5zM3 15h2v2H3zm8 6h2v2h-2zm-2 0h2v2H9zm-4-4h2v2H5zm-2 2h2v2H3zm12-8h2v2h-2zm2 0h2v2h-2zm-4 4h2v2h-2zm4 0h2v2h-2zm2-2h2v2h-2zm0-4h2v2h-2zm-4-6h2v2h-2zm0-2h2v2h-2zm-4 6h2v2h-2zM9 17h2v2H9zm-2-2h2v2H7zm0-4h2v2H7zm4 0h2v2h-2zm2 2h2v2h-2z'/></svg>" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' width='24' height='24'%3E%3Cpath d='M3 3h7v7H3V3zm2 2h3v3H5V5zm9 0h-2v2h2V5zm0 4h-2v2h2V9zm0 4h-2v2h2v-2zm-4 0h-2v2h2v-2zm-4 0h-2v2h2v-2zm-2 2h-2v2h2v-2zm0 4h-2v2h2v-2zm4 0h-2v2h2v-2zm0 4h-2v2h2v-2zm4-4h-2v2h2v-2zm0 4h-2v2h2v-2zm4-4h-2v2h2v-2zm0 4h-2v2h2v-2zM9 11h-2v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z' fill='black'/%3E%3C/svg%3E" type="image/svg+xml">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Lottie Player -->
@@ -59,10 +59,16 @@
         }
 
         .upi-btn-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            width: 100%;
+        }
+        
+        @media (min-width: 640px) {
+            .upi-btn-container {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         .upi-btn {
@@ -72,8 +78,8 @@
             border: 1px solid #333333;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
             padding: 0.5rem;
-            width: 80px;
-            height: 80px;
+            width: 100%;
+            height: 100%;
         }
 
         .upi-btn:hover {
@@ -113,6 +119,15 @@
             box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4f46e5;
         }
         
+        .amount-pill {
+            display: inline-flex;
+            align-items: center;
+            background-color: #282828;
+            border-radius: 9999px; /* full rounded */
+            padding: 0.25rem 0.75rem;
+            border: 1px solid #4B5563;
+        }
+        
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -147,7 +162,9 @@
             <span class="material-symbols-outlined">arrow_back</span>
         </button>
         <div class="flex items-center space-x-2">
-            <span class="material-symbols-outlined text-yellow-400 text-3xl">qr_code_2</span>
+            <video class="h-10 w-10" autoplay loop muted>
+                <source src="x053dp3I7K6Pn5nCmO.mp4" type="video/mp4">
+            </video>
             <h1 id="header-title" class="text-xl font-bold text-gray-200">Trinadha Paan Shop</h1>
         </div>
         <div class="w-6 h-6"></div>
@@ -171,11 +188,9 @@
             </div>
         </div>
 
-        <!-- UPI Button Card -->
-        <div class="card flex flex-col items-center">
-            <div id="upi-button-container" class="upi-btn-container w-full">
-                <!-- Buttons will be dynamically added here -->
-            </div>
+        <!-- UPI Button Container -->
+        <div id="upi-button-container" class="upi-btn-container">
+            <!-- Buttons will be dynamically added here -->
         </div>
     </div>
     
@@ -193,9 +208,9 @@
     <div id="qr-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-50">
         <div id="qr-modal" class="modal-content rounded-lg p-6 relative w-11/12 max-w-sm flex flex-col items-center">
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-200 text-2xl font-bold transition-transform transform hover:scale-110">&times;</button>
-            <div class="flex items-center space-x-2">
+            <div class="flex flex-col items-center space-y-2">
                 <h2 class="text-lg font-bold text-gray-200 text-center">Payment QR Code</h2>
-                <span id="amount-display" class="text-gray-400 font-semibold text-sm"></span>
+                <span id="amount-display" class="hidden text-gray-400 font-semibold text-sm amount-pill"></span>
             </div>
             <div id="qr-code-container" class="relative p-2 bg-gray-900 rounded-lg border border-gray-700 mt-4">
                 <!-- QR code will be generated here -->
@@ -334,7 +349,7 @@
                 currentQR.append(qrCodeContainer);
 
                 if (amount && parseFloat(amount) > 0) {
-                    amountDisplay.textContent = `(₹${parseFloat(amount).toFixed(2)})`;
+                    amountDisplay.textContent = `₹${parseFloat(amount).toFixed(2)}`;
                     amountDisplay.classList.remove('hidden');
                 } else {
                     amountDisplay.classList.add('hidden');
@@ -470,6 +485,22 @@
             });
             amountInput.addEventListener('blur', () => {
                 inputContainer.classList.remove('focused');
+            });
+            
+            // Fix input to take only numbers
+            amountInput.addEventListener('input', (e) => {
+                let value = e.target.value;
+                value = value.replace(/[^0-9.]/g, '');
+                const parts = value.split('.');
+                if (parts.length > 2) {
+                    value = parts[0] + '.' + parts.slice(1).join('');
+                }
+                e.target.value = value;
+            });
+
+            // Prevent pasting into the amount input
+            amountInput.addEventListener('paste', (e) => {
+                e.preventDefault();
             });
         });
     </script>
