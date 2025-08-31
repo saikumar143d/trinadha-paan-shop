@@ -216,7 +216,7 @@
     <header id="main-header" class="fixed top-0 left-0 w-full z-40 py-2 px-6 header-content flex items-center justify-between space-x-2">
         <div class="flex items-center space-x-2">
             <div class="logo-container h-12 w-12 rounded-full">
-                <img src="https://od.lk/s/NDJfNDk0NjAxNTNf/ChatGPT%20Image%20Aug%2031%2C%202025%2C%2008_00_50%20PM.png" alt="PaanQR Logo" class="h-full w-full rounded-full">
+                <img src="https://od.lk/s/NDJfNDk0NjAxNTNf/ChatGPT%20Image%20Aug%2031%2C%202025%2C%2008_00_50%20PM.png" alt="PaanQR Logo" class="h-full w-full rounded-full" />
             </div>
             <h1 id="header-title" class="text-xl font-bold text-gray-200">Trinadha Paan Shop</h1>
         </div>
@@ -255,9 +255,6 @@
         <button id="clear-history-btn" class="mt-6 w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors duration-300 hidden">
             Clear History
         </button>
-        <button id="back-btn" class="absolute bottom-4 right-4 z-50 py-3 px-6 bg-white text-gray-900 rounded-full font-semibold hover:bg-gray-100 transition-colors duration-300 shadow-lg">
-            <span class="material-symbols-outlined">arrow_back</span>
-        </button>
     </div>
 
     <!-- Modal for QR Code Display -->
@@ -281,6 +278,13 @@
     <footer id="main-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content flex items-center justify-between space-x-2">
         <button id="history-btn" class="flex-1 text-blue-400 hover:text-blue-300 transition-colors duration-300 font-semibold w-full">
             View Payment History
+        </button>
+    </footer>
+
+    <footer id="history-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content hidden justify-center items-center">
+        <p class="text-white text-sm font-semibold">Made by Saikumar</p>
+        <button id="back-btn" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors duration-300">
+            <span class="material-symbols-outlined text-gray-900">arrow_back</span>
         </button>
     </footer>
 
@@ -327,21 +331,22 @@
             const historyBtn = document.getElementById('history-btn');
             const backBtn = document.getElementById('back-btn');
             const mainFooter = document.getElementById('main-footer');
+            const historyFooter = document.getElementById('history-footer');
             const headerTitle = document.getElementById('header-title');
 
             const showMainView = () => {
                 mainView.classList.remove('hidden');
                 historyView.classList.add('hidden');
-                backBtn.classList.add('hidden');
                 mainFooter.classList.remove('hidden');
+                historyFooter.classList.add('hidden');
                 headerTitle.innerText = "Trinadha Paan Shop";
             };
 
             const showHistoryView = () => {
                 mainView.classList.add('hidden');
                 historyView.classList.remove('hidden');
-                backBtn.classList.remove('hidden');
                 mainFooter.classList.add('hidden');
+                historyFooter.classList.remove('hidden');
                 headerTitle.innerText = "Payment History";
                 renderHistory();
             };
