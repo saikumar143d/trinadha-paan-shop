@@ -193,8 +193,11 @@
     <div id="qr-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-50">
         <div id="qr-modal" class="modal-content rounded-lg p-6 relative w-11/12 max-w-sm flex flex-col items-center">
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-200 text-2xl font-bold transition-transform transform hover:scale-110">&times;</button>
-            <h2 class="text-lg font-bold text-gray-200 text-center mb-4">Payment QR Code</h2>
-            <div id="qr-code-container" class="relative p-2 bg-gray-900 rounded-lg border border-gray-700">
+            <div class="flex items-center space-x-2">
+                <h2 class="text-lg font-bold text-gray-200 text-center">Payment QR Code</h2>
+                <span id="amount-display" class="text-gray-400 font-semibold text-sm"></span>
+            </div>
+            <div id="qr-code-container" class="relative p-2 bg-gray-900 rounded-lg border border-gray-700 mt-4">
                 <!-- QR code will be generated here -->
             </div>
             <div id="popup-upi-buttons" class="flex flex-wrap justify-center gap-2 mt-4">
@@ -274,6 +277,7 @@
             const historyList = document.getElementById('history-list');
             const historyKey = 'upiHistory';
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
+            const amountDisplay = document.getElementById('amount-display');
             let currentQR = null;
 
             const getUpiLabel = (id) => {
@@ -328,6 +332,13 @@
                 });
 
                 currentQR.append(qrCodeContainer);
+
+                if (amount && parseFloat(amount) > 0) {
+                    amountDisplay.textContent = `(₹${parseFloat(amount).toFixed(2)})`;
+                    amountDisplay.classList.remove('hidden');
+                } else {
+                    amountDisplay.classList.add('hidden');
+                }
             };
 
             const saveHistory = (id, amount) => {
