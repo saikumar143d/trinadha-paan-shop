@@ -12,9 +12,11 @@
     <!-- Material Symbols Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- Favicon -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 0 24 24' width='24px' fill='%23fbbf24'><path d='M0 0h24v24H0V0z' fill='none'/><path d='M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-6-3h2c.55 0 1-.45 1-1v-2c0-.55-.45-1-1-1h-2c-.55 0-1 .45-1 1v2c0 .55.45 1 1 1zm-4-1h2c.55 0 1-.45 1-1v-2c0-.55-.45-1-1-1H9c-.55 0-1 .45-1 1v2c0 .55.45 1 1 1z'/></svg>" type="image/svg+xml">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' height='24px' viewBox='0 0 24 24' width='24px' fill='%23fbbf24'><path d='M3 11h2v2H3zm2-6h2v2H5zM3 3h2v2H3zm8 0h2v2h-2zm-2 2h2v2H9zm6-2h2v2h-2zm-2 2h2v2h-2zm-4 8h2v2h-2zm8-6h2v2h-2zm-2-2h2v2h-2zm-4 4h2v2h-2zM3 7h2v2H3zm2 6h2v2H5zm0 4h2v2H5zM3 15h2v2H3zm8 6h2v2h-2zm-2 0h2v2H9zm-4-4h2v2H5zm-2 2h2v2H3zm12-8h2v2h-2zm2 0h2v2h-2zm-4 4h2v2h-2zm4 0h2v2h-2zm2-2h2v2h-2zm0-4h2v2h-2zm-4-6h2v2h-2zm0-2h2v2h-2zm-4 6h2v2h-2zM9 17h2v2H9zm-2-2h2v2H7zm0-4h2v2H7zm4 0h2v2h-2zm2 2h2v2h-2z'/></svg>" type="image/svg+xml">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lottie Player -->
+    <script src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.js"></script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
@@ -41,7 +43,6 @@
             width: 100%;
             max-width: 400px;
             animation: fadeIn 0.8s ease-in-out;
-            margin-top: 2rem;
         }
 
         .input-group {
@@ -112,28 +113,6 @@
             box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4f46e5;
         }
         
-        @keyframes pulse-glow {
-            0% {
-                transform: scale(1);
-                color: #fbbf24;
-                text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
-            }
-            50% {
-                transform: scale(1.1);
-                color: #fde68a;
-                text-shadow: 0 0 10px rgba(253, 230, 138, 0.8);
-            }
-            100% {
-                transform: scale(1);
-                color: #fbbf24;
-                text-shadow: 0 0 5px rgba(251, 191, 36, 0.5);
-            }
-        }
-        
-        .animated-icon {
-            animation: pulse-glow 2s infinite;
-        }
-
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -168,7 +147,7 @@
             <span class="material-symbols-outlined">arrow_back</span>
         </button>
         <div class="flex items-center space-x-2">
-            <span class="material-symbols-outlined text-yellow-500">qr_code_2</span>
+            <span class="material-symbols-outlined text-yellow-400 text-3xl">qr_code_2</span>
             <h1 id="header-title" class="text-xl font-bold text-gray-200">Trinadha Paan Shop</h1>
         </div>
         <div class="w-6 h-6"></div>
@@ -193,14 +172,13 @@
             <!-- Buttons will be dynamically added here -->
         </div>
     </div>
-
+    
     <!-- Payment History View -->
-    <div id="history-view" class="hidden w-full max-w-sm mx-auto py-8">
-        <h2 class="text-2xl font-bold text-gray-200 mb-6 text-center">Payment History</h2>
+    <div id="history-view" class="hidden card mt-20">
         <div id="history-list" class="space-y-4">
             <!-- History items will be dynamically added here -->
         </div>
-        <button id="clear-history-btn" class="mt-6 w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors duration-300">
+        <button id="clear-history-btn" class="mt-6 w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors duration-300 hidden">
             Clear History
         </button>
     </div>
@@ -256,12 +234,14 @@
             const historyView = document.getElementById('history-view');
             const historyBtn = document.getElementById('history-btn');
             const backBtn = document.getElementById('back-btn');
+            const mainFooter = document.getElementById('main-footer');
             const headerTitle = document.getElementById('header-title');
 
             const showMainView = () => {
                 mainView.classList.remove('hidden');
                 historyView.classList.add('hidden');
                 backBtn.classList.add('hidden');
+                mainFooter.classList.remove('hidden');
                 headerTitle.innerText = "Trinadha Paan Shop";
             };
 
@@ -269,6 +249,7 @@
                 mainView.classList.add('hidden');
                 historyView.classList.remove('hidden');
                 backBtn.classList.remove('hidden');
+                mainFooter.classList.add('hidden');
                 headerTitle.innerText = "Payment History";
                 renderHistory();
             };
@@ -409,6 +390,7 @@
                 historyList.innerHTML = '';
                 if (history.length === 0) {
                     historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
+                    clearHistoryBtn.classList.add('hidden');
                 } else {
                     history.forEach(item => {
                         const historyItem = document.createElement('div');
@@ -428,6 +410,7 @@
                         });
                         historyList.appendChild(historyItem);
                     });
+                    clearHistoryBtn.classList.remove('hidden');
                 }
             };
 
