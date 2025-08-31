@@ -18,25 +18,89 @@
             font-family: 'Inter', sans-serif;
             background-color: #121212;
             background-image: radial-gradient(circle at center, #242424, #121212);
+            transition: background-color 0.5s, background-image 0.5s;
         }
 
-        .header-content {
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .animated-bg {
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite;
+        }
+
+        .header-content,
+        .footer-content {
             background-color: rgba(28, 28, 28, 0.8);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
+        .footer-content {
+            border-bottom: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+        }
+
         .card {
             background-color: #1c1c1c;
             border-radius: 1.5rem;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            padding: 2.5rem;
+            padding: 2rem;
             width: 100%;
             max-width: 320px;
             border: 1px solid rgba(255, 255, 255, 0.08);
             animation: fadeIn 0.8s ease-in-out;
             margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            background: linear-gradient(45deg, #fbbf24, #f97316, #4f46e5, #0ea5e9);
+            background-size: 400%;
+            border-radius: 1.75rem;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card.focused::before,
+        .card:hover::before {
+            animation: gradientBorder 8s ease infinite;
+            opacity: 1;
+        }
+
+        @keyframes gradientBorder {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .upi-btn-container {
@@ -108,7 +172,7 @@
     </style>
 </head>
 
-<body class="flex flex-col items-center min-h-screen p-4 pt-24">
+<body class="flex flex-col items-center min-h-screen p-4 pt-24 animated-bg">
 
     <!-- Fixed Floating Header -->
     <header id="main-header" class="fixed top-0 left-0 w-full z-50 py-4 px-6 header-content flex items-center justify-center space-x-2">
@@ -117,7 +181,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
         </button>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+        <svg id="header-logo" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM5.4 9.6a.75.75 0 011.06 0L10 13.14l3.54-3.54a.75.75 0 111.06 1.06l-4.07 4.07a.75.75 0 01-1.06 0L5.4 10.66a.75.75 0 010-1.06z" clip-rule="evenodd" />
         </svg>
         <h1 id="header-title" class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-400">
@@ -126,28 +190,23 @@
     </header>
 
     <!-- Main QR Generator View -->
-    <div id="main-view" class="card flex flex-col items-center mx-auto sm:max-w-md md:max-w-lg lg:max-w-xl">
+    <div id="main-view" class="card flex flex-col items-center mx-auto">
         <h2 class="text-xl font-bold text-gray-100 mb-6">Enter Amount</h2>
 
         <!-- Amount Input -->
-        <div class="w-full flex items-center bg-gray-900 rounded-xl p-3 mb-6 transition duration-300 border border-transparent focus-within:border-indigo-500">
+        <div id="input-container" class="w-full flex items-center bg-gray-900 rounded-xl p-3 mb-6 transition duration-300 border border-transparent focus-within:border-indigo-500">
             <span class="text-gray-400 mr-2 text-xl font-bold">₹</span>
             <input id="amountInput" type="text" class="flex-1 bg-transparent text-white text-xl font-bold focus:outline-none placeholder-gray-500" placeholder="0.00">
         </div>
 
         <!-- UPI ID Buttons -->
-        <div id="upi-button-container" class="upi-btn-container w-full sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-4 md:gap-6">
+        <div id="upi-button-container" class="upi-btn-container w-full">
             <!-- Buttons will be dynamically added here -->
         </div>
-
-        <!-- History button -->
-        <button id="history-btn" class="mt-6 text-gray-400 hover:text-white transition-colors duration-300 font-semibold">
-            View Payment History
-        </button>
     </div>
 
     <!-- Payment History View -->
-    <div id="history-view" class="hidden w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl mx-auto py-8">
+    <div id="history-view" class="hidden w-full max-w-sm mx-auto py-8">
         <h2 class="text-2xl font-bold text-gray-100 mb-6 text-center">Payment History</h2>
         <div id="history-list" class="space-y-4">
             <!-- History items will be dynamically added here -->
@@ -172,6 +231,13 @@
             </div>
         </div>
     </div>
+
+    <!-- Fixed Floating Footer -->
+    <footer id="main-footer" class="fixed bottom-0 left-0 w-full z-50 py-4 px-6 footer-content flex items-center justify-center">
+        <button id="history-btn" class="text-gray-400 hover:text-white transition-colors duration-300 font-semibold w-full">
+            View Payment History
+        </button>
+    </footer>
 
     <!-- QR code styling library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js"></script>
