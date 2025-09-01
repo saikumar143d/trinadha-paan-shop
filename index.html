@@ -12,7 +12,7 @@
     <!-- Material Symbols Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <!-- Favicon -->
-    <link rel="icon" href="https://od.lk/s/NDJfNDk0NjAxNTNf/ChatGPT%20Image%20Aug%2031%2C%202025%2C%2008_00_50%20PM.png">
+    <link rel="icon" href="https://od.lk/s/NDJfNDk0NjI2NDlf/qr-code%20%281%29.gif">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -293,7 +293,7 @@
     <header id="main-header" class="fixed top-0 left-0 w-full z-40 py-2 px-6 header-content flex items-center justify-between space-x-2">
         <div class="flex items-center space-x-2">
             <div class="logo-container h-12 w-12 rounded-full">
-                <img src="https://od.lk/s/NDJfNDk0NjAxNTNf/ChatGPT%20Image%20Aug%2031%2C%202025%2C%2008_00_50%20PM.png" alt="PaanQR Logo" class="h-full w-full rounded-full" />
+                <img src="https://od.lk/s/NDJfNDk0NjI2NDlf/qr-code%20%281%29.gif" alt="Animated PaanQR Logo" class="h-full w-full rounded-full" />
             </div>
             <h1 id="header-title" class="text-xl font-bold text-gray-200">Trinadha Paan Shop</h1>
         </div>
@@ -326,14 +326,17 @@
 
     <!-- Payment History View -->
     <div id="history-view" class="hidden card mt-20 relative flex flex-col">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-gray-200">Recent Payments</h3>
+            <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-full font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-300 hidden">
+                <span class="material-symbols-outlined text-white mr-1 text-base">delete_forever</span> Clear
+            </button>
+        </div>
         <div class="flex-grow overflow-y-auto pr-2">
             <div id="history-list" class="space-y-4">
                 <!-- History items will be dynamically added here -->
             </div>
         </div>
-        <button id="clear-history-btn" class="mt-6 w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors duration-300 hidden">
-            Clear History
-        </button>
     </div>
 
     <!-- Modal for QR Code Display -->
@@ -365,7 +368,7 @@
         </button>
     </footer>
 
-    <footer id="history-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content hidden justify-between items-center">
+    <footer id="history-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content hidden justify-center items-center">
         <button id="back-btn" class="w-12 h-12 flex items-center justify-center bg-gray-900 rounded-full border border-gray-700 shadow-lg hover:bg-gray-700 transition-colors duration-300">
             <span class="material-symbols-outlined text-gray-200">arrow_back</span>
         </button>
@@ -449,7 +452,7 @@
                 historyView.classList.remove('hidden');
                 mainFooter.classList.add('hidden');
                 historyFooter.classList.remove('hidden');
-                headerTitle.innerText = "Payment History";
+                headerTitle.innerText = "History";
                 renderHistory();
             };
 
