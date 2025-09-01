@@ -103,7 +103,7 @@
 
         .upi-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 12px var(--color-hover)80, 0 4px 8px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 12px var(--color-hover)80, 0 4p x 8px rgba(0, 0, 0, 0.5);
             border-color: var(--color-hover);
             background-color: var(--color-hover)20;
         }
@@ -473,7 +473,7 @@
                     if (upi) {
                         defaultUpiButton.style.boxShadow = `0 0 12px ${upi.oppositeColor}80, 0 0 0 3px ${upi.oppositeColor}30, 0 0 8px rgba(0, 0, 0, 0.4)`;
                         defaultUpiButton.style.borderColor = upi.oppositeColor;
-                        defaultUpiButton.style.backgroundColor = `${upi.color}20`;
+                        defaultUpiButton.style.backgroundColor = `${upi.oppositeColor}20`;
                     }
                 }
             };
@@ -501,26 +501,34 @@
                 qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
 
-                // Comprehensive arrays for dynamic styling based on user's provided source code
-                const dotsOptionsTypes = ["dots", "doted-light"];
-                const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot", "frame0", "frame1", "frame2", "frame3", "frame5", "frame6", "frame8", "frame12", "frame13", "frame14"];
-                const cornersDotOptionsTypes = ["square", "dot", "ball0", "ball2", "ball3", "ball5", "ball7", "ball10", "ball11", "ball12", "ball13", "ball14", "ball15", "ball16", "ball17", "ball18", "ball19"];
+                const dotsOptionsTypes = ["dots", "rounded", "extra-rounded", "square", "circular", "edge-cut-smooth", "leaf", "pointed-edge-cut", "pointed-in-smooth", "pointed-smooth", "round", "rounded-in-smooth", "rounded-pointed", "star", "diamond", "doted-light", "classy", "classy-rounded"];
+                const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot", "round", "bevel", "bubble"];
+                const cornersDotOptionsTypes = ["square", "dot", "round", "bevel", "bubble"];
 
-                // Rainbow colors
-                const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8A2BE2"];
+                const colorPalettes = [
+                    ["F79256", "FBD1A2", "7DCFB6"],
+                    ["BCD8C1", "D6DBB2", "E3D985"],
+                    ["FBC2B5", "FFA8A9", "F786AA"],
+                    ["23C9FF", "7CC6FE", "CCD5FF"],
+                    ["FAE8EB", "F6CACA", "E4C2C6"],
+                    ["FFC09F", "FFEE93", "FCF5C7"]
+                ];
 
-                // Randomly select a style for each part
-                const randomDotsType = dotsOptionsTypes[Math.floor(Math.random() * dotsOptionsTypes.length)];
-                const randomCornersSquareType = cornersSquareOptionsTypes[Math.floor(Math.random() * cornersSquareOptionsTypes.length)];
-                const randomCornersDotType = cornersDotOptionsTypes[Math.floor(Math.random() * cornersDotOptionsTypes.length)];
+                const selectedPalette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
 
-                // Get three random, distinct colors
                 const getRandomColors = (arr, num) => {
                     const shuffled = [...arr].sort(() => 0.5 - Math.random());
                     return shuffled.slice(0, num);
                 };
 
-                const [dotsColor, cornersSquareColor, cornersDotColor] = getRandomColors(rainbowColors, 3);
+                const colorsToApply = getRandomColors(selectedPalette, 3);
+                const dotsColor = `#${colorsToApply[0]}`;
+                const cornersSquareColor = `#${colorsToApply[1]}`;
+                const cornersDotColor = `#${colorsToApply[2]}`;
+
+                const randomDotsType = dotsOptionsTypes[Math.floor(Math.random() * dotsOptionsTypes.length)];
+                const randomCornersSquareType = cornersSquareOptionsTypes[Math.floor(Math.random() * cornersSquareOptionsTypes.length)];
+                const randomCornersDotType = cornersDotOptionsTypes[Math.floor(Math.random() * cornersDotOptionsTypes.length)];
 
                 const payeeName = getUpiLabel(upiId);
                 const upiIcon = getUpiIcon(upiId);
