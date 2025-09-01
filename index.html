@@ -325,9 +325,11 @@
     </div>
 
     <!-- Payment History View -->
-    <div id="history-view" class="hidden card mt-20 relative">
-        <div id="history-list" class="space-y-4">
-            <!-- History items will be dynamically added here -->
+    <div id="history-view" class="hidden card mt-20 relative flex flex-col">
+        <div class="flex-grow overflow-y-auto pr-2">
+            <div id="history-list" class="space-y-4">
+                <!-- History items will be dynamically added here -->
+            </div>
         </div>
         <button id="clear-history-btn" class="mt-6 w-full py-3 bg-red-600 text-white rounded-lg font-semibold hover:bg-red-700 transition-colors duration-300 hidden">
             Clear History
@@ -367,13 +369,6 @@
         <button id="back-btn" class="w-12 h-12 flex items-center justify-center bg-gray-900 rounded-full border border-gray-700 shadow-lg hover:bg-gray-700 transition-colors duration-300">
             <span class="material-symbols-outlined text-gray-200">arrow_back</span>
         </button>
-        <div class="flex items-center space-x-2 md:hidden">
-            <span class="text-gray-400 text-sm">Haptics</span>
-            <label class="switch">
-                <input type="checkbox" id="haptics-toggle">
-                <span class="slider"></span>
-            </label>
-        </div>
     </footer>
 
     <!-- QR code styling library from CDN -->
@@ -412,20 +407,9 @@
                 "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200"
             }];
             
-            // Haptics State Management
-            let hapticsEnabled = localStorage.getItem('hapticsEnabled') === 'true';
-            const hapticsToggle = document.getElementById('haptics-toggle');
-            if (hapticsToggle) {
-                hapticsToggle.checked = hapticsEnabled;
-                hapticsToggle.addEventListener('change', (e) => {
-                    hapticsEnabled = e.target.checked;
-                    localStorage.setItem('hapticsEnabled', hapticsEnabled);
-                });
-            }
-
             // Function to trigger haptic feedback
             const triggerHapticFeedback = () => {
-                if (hapticsEnabled && 'vibrate' in navigator) {
+                if ('vibrate' in navigator) {
                     navigator.vibrate(50); // Vibrate for 50ms
                 }
             };
