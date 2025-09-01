@@ -490,19 +490,6 @@
                     upiButtonContainer.appendChild(mainBtn);
                     popupUpiButtons.appendChild(popupBtn);
                 });
-                // Set default selection
-                const defaultUpiId = "Q639488204@ybl";
-                const defaultUpiButton = document.querySelector(`[data-upi-id="${defaultUpiId}"]`);
-                if (defaultUpiButton) {
-                    defaultUpiButton.classList.add('upi-btn-active');
-                    selectedUpiIdDisplay.textContent = defaultUpiId;
-                    const upi = upiData.find(u => u.id === defaultUpiId);
-                    if (upi) {
-                        defaultUpiButton.style.boxShadow = `0 0 12px ${upi.oppositeColor}80, 0 0 0 3px ${upi.oppositeColor}30, 0 0 8px rgba(0, 0, 0, 0.4)`;
-                        defaultUpiButton.style.borderColor = upi.oppositeColor;
-                        defaultUpiButton.style.backgroundColor = `${upi.oppositeColor}20`;
-                    }
-                }
             };
 
             const getUpiLabel = (id) => {
