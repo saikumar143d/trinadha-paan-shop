@@ -302,7 +302,7 @@
         </div>
 
         <!-- Live it up! Section -->
-        <div class="flex flex-col items-center text-center mt-8 space-y-2">
+        <div class="flex flex-col items-center text-center mt-12 space-y-2">
             <h3 class="text-4xl font-extrabold text-gray-400">Live it up!</h3>
             <p class="text-base font-light text-gray-500">Crafted with ❤️ in AI , 📌 india</p>
         </div>
@@ -398,13 +398,6 @@
                 "oppositeColor": "#a4ce72"
             }];
 
-            // Function to trigger haptic feedback
-            const triggerHapticFeedback = () => {
-                if ('vibrate' in navigator) {
-                    navigator.vibrate(50); // Vibrate for 50ms
-                }
-            };
-
             // View Management
             const mainView = document.getElementById('main-view');
             const historyView = document.getElementById('history-view');
@@ -432,12 +425,10 @@
             };
 
             historyBtn.addEventListener('click', () => {
-                triggerHapticFeedback();
                 showHistoryView();
             });
             if (backBtn) {
                 backBtn.addEventListener('click', () => {
-                    triggerHapticFeedback();
                     showMainView();
                 });
             }
@@ -510,10 +501,10 @@
                 qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
 
-                // Arrays for dynamic styling
-                const dotsOptionsTypes = ["dots", "squares", "rounded", "extra-rounded", "classy", "classy-rounded"];
-                const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot"];
-                const cornersDotOptionsTypes = ["square", "dot"];
+                // Comprehensive arrays for dynamic styling based on user's provided source code
+                const dotsOptionsTypes = ["dots", "doted-light"];
+                const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot", "frame0", "frame1", "frame2", "frame3", "frame5", "frame6", "frame8", "frame12", "frame13", "frame14"];
+                const cornersDotOptionsTypes = ["square", "dot", "ball0", "ball2", "ball3", "ball5", "ball7", "ball10", "ball11", "ball12", "ball13", "ball14", "ball15", "ball16", "ball17", "ball18", "ball19"];
 
                 // Rainbow colors
                 const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8A2BE2"];
@@ -613,7 +604,6 @@
                     <span class="text-sm font-semibold gradient-text">${upi.label}</span>
                 `;
                 button.addEventListener('click', () => {
-                    triggerHapticFeedback();
                     selectedUpiIdDisplay.textContent = upi.id;
                     const amount = amountInput.value.trim();
                     generateQrCode(upi.id, amount);
@@ -657,7 +647,6 @@
                 `;
                 button.style.borderColor = upi.color;
                 button.addEventListener('click', () => {
-                    triggerHapticFeedback();
                     const amount = amountInput.value.trim();
                     generateQrCode(upi.id, amount);
 
@@ -692,7 +681,6 @@
                             </div>
                         `;
                         historyItem.addEventListener('click', () => {
-                            triggerHapticFeedback();
                             generateQrCode(item.id, item.amount);
                             qrModalOverlay.classList.remove('hidden');
                         });
@@ -704,7 +692,6 @@
 
             if (clearHistoryBtn) {
                 clearHistoryBtn.addEventListener('click', () => {
-                    triggerHapticFeedback();
                     localStorage.removeItem(historyKey);
                     renderHistory();
                 });
@@ -716,7 +703,6 @@
             // The following code block caused the popup on page load. It has been removed.
 
             closeModalBtn.addEventListener('click', () => {
-                triggerHapticFeedback();
                 qrModalOverlay.classList.add('hidden');
             });
 
@@ -739,7 +725,6 @@
                 amountInput.value = '';
                 clearInputBtn.classList.add('hidden');
                 amountInput.focus();
-                triggerHapticFeedback();
             });
 
             // Calculator functionality on blur
