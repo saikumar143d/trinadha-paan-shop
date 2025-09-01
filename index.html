@@ -252,7 +252,40 @@
             z-index: -1;
             animation: none;
         }
-
+        /* Dial Pad Styles */
+        .dial-pad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.75rem;
+            width: 100%;
+            margin-top: 1rem;
+        }
+        .dial-btn {
+            background-color: #1a1c20;
+            color: #d1d5db;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dial-btn:hover {
+            background-color: #2b2e35;
+        }
+        .dial-btn.operator {
+            background-color: #2b2e35;
+            color: #ea580c;
+            font-size: 2rem;
+        }
+        .dial-btn.enter {
+            background-color: #ea580c;
+            color: #fff;
+            grid-column: span 2;
+        }
     </style>
 </head>
 
@@ -294,6 +327,8 @@
         <div id="upi-button-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full px-4">
             <!-- Buttons will be dynamically added here -->
         </div>
+
+        
     </div>
 
     <!-- Payment History View -->
@@ -654,11 +689,6 @@
                 }
             });
 
-            // Prevent pasting into the amount input
-            amountInput.addEventListener('paste', (e) => {
-                e.preventDefault();
-            });
-
             // Handle the clear button functionality
             amountInput.addEventListener('input', () => {
                 if (amountInput.value.length > 0) {
@@ -675,13 +705,12 @@
                 triggerHapticFeedback();
             });
 
-            // Calculate the amount on blur
+            // Calculator functionality on blur
             amountInput.addEventListener('blur', (e) => {
                 const value = e.target.value;
                 try {
-                    // This is a simple and common way to evaluate math expressions.
-                    // For a production app, a more robust and secure parser would be recommended.
-                    const result = eval(value); 
+                    // Evaluate the mathematical expression
+                    const result = eval(value);
                     if (!isNaN(result) && isFinite(result)) {
                         e.target.value = parseFloat(result).toFixed(2);
                     } else {
@@ -697,7 +726,7 @@
             // Allow numbers, decimals, and operators for calculation
             amountInput.addEventListener('input', (e) => {
                 let value = e.target.value;
-                value = value.replace(/[^-+*/0-9.]/g, '');
+                value = value.replace(/[^-+*/()0-9.]/g, '');
                 e.target.value = value;
             });
         });
