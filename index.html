@@ -18,27 +18,38 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #000000;
+            background: linear-gradient(-45deg, #0c0d10, #1a1c20, #0c0d10, #1a1c20);
+            background-size: 400% 400%;
+            animation: animateGradient 15s ease infinite;
             transition: background-color 0.5s;
+        }
+        
+        @keyframes animateGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
         .header-content,
         .footer-content {
-            background-color: #000000;
+            background-color: #0c0d10;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .header-content {
-            border-bottom: 2px solid #FFA500;
+            border-bottom: 2px solid #333;
         }
 
         .footer-content {
-            border-top: 2px solid #FFA500;
+            border-top: 2px solid #333;
             box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.4);
         }
 
         .card {
-            background-color: #121212;
+            background-color: #1a1c20;
             border-radius: 1.5rem;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
             padding: 2rem;
@@ -48,16 +59,16 @@
         }
 
         .input-group {
-            background-color: #1a1a1a;
+            background-color: #2b2e35;
             border-radius: 0.75rem;
-            border: 1px solid #333333;
+            border: 1px solid #444;
             transition: all 0.2s ease-in-out;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
         }
 
         .input-group:focus-within {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+            border-color: #00bcd4;
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.3);
         }
 
         .upi-btn-container {
@@ -90,8 +101,8 @@
         }
 
         .upi-btn-active {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+            border-color: #00bcd4;
+            box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.3);
             background-color: #f0f2f5;
         }
 
@@ -123,12 +134,48 @@
         .amount-pill {
             display: inline-flex;
             align-items: center;
-            background-color: #282828;
+            background-color: #2b2e35;
             border-radius: 9999px;
-            /* full rounded */
             padding: 0.25rem 0.75rem;
-            border: 1px solid #4B5563;
+            border: 1px solid #444;
+            color: #ccc;
         }
+        
+        /* QR Builder Animation Styles */
+        .qr-builder {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            grid-template-rows: repeat(15, 1fr);
+            gap: 2px;
+            width: 300px;
+            height: 300px;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 12px;
+        }
+
+        .qr-cell {
+            background-color: #2b2e35;
+            animation: cell-build 1.5s ease-out forwards;
+            animation-delay: var(--delay);
+            transform: scale(0);
+            border-radius: 2px;
+        }
+
+        @keyframes cell-build {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        /* End of QR Builder Animation Styles */
 
         @keyframes fadeIn {
             from {
@@ -168,15 +215,15 @@
         }
 
         .popup-upi-btn {
-            background-color: #000000;
-            border: 2px solid #FFA500;
+            background-color: #0c0d10;
+            border: 2px solid #00bcd4;
             border-radius: 9999px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             transition: all 0.2s ease-in-out;
         }
 
         .popup-upi-btn-active {
-            box-shadow: 0 0 0 2px #000, 0 0 0 4px #FFA500;
+            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px #00bcd4;
         }
         
         .qr-code-container {
@@ -194,18 +241,7 @@
             border-radius: 0.75rem;
             background: linear-gradient(45deg, #00ffff, #0073e6, #00ffff);
             z-index: -1;
-            animation: neonGlow 1.5s ease-in-out infinite alternate;
-        }
-
-        @keyframes neonGlow {
-            from {
-                filter: blur(0);
-                opacity: 0.7;
-            }
-            to {
-                filter: blur(2px);
-                opacity: 1;
-            }
+            animation: none;
         }
     </style>
 </head>
@@ -226,7 +262,7 @@
     <!-- Main QR Generator View -->
     <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full">
         <!-- UPI ID Display Card -->
-        <div class="card flex flex-col items-center border-2 border-green-500">
+        <div class="card flex flex-col items-center border-2 border-gray-700">
             <div class="w-full py-3 px-4 rounded-xl text-center bg-gray-900 border border-gray-700 flex items-center justify-center space-x-2">
                 <span class="material-symbols-outlined text-gray-400">person</span>
                 <p id="selected-upi-id" class="text-base font-semibold text-gray-200">Select a UPI ID</p>
@@ -234,7 +270,7 @@
         </div>
 
         <!-- Amount Input Card -->
-        <div class="card flex flex-col items-center border-2 border-green-500">
+        <div class="card flex flex-col items-center border-2 border-gray-700">
             <div id="input-container" class="input-group w-full flex items-center py-3 px-4">
                 <span class="material-symbols-outlined text-gray-400">currency_rupee</span>
                 <input id="amountInput" type="tel" class="flex-1 bg-transparent text-gray-200 text-lg font-bold focus:outline-none placeholder-gray-500 ml-2" placeholder="0.00">
@@ -265,7 +301,12 @@
                 <h2 class="text-lg font-bold text-gray-200 text-center">Payment QR Code</h2>
                 <span id="amount-display" class="hidden text-gray-400 font-semibold text-sm amount-pill"></span>
             </div>
-            <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4">
+            <!-- Loading spinner (now a QR builder) -->
+            <div id="loading-spinner" class="mt-4 hidden flex items-center justify-center" style="width: 300px; height: 300px;">
+                <div id="qr-builder-container" class="qr-builder"></div>
+            </div>
+            <!-- QR code container -->
+            <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden">
                 <!-- QR code will be generated here -->
             </div>
             <div id="popup-upi-buttons" class="flex flex-wrap justify-center gap-2 mt-4">
@@ -290,7 +331,6 @@
 
     <!-- QR code styling library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js"></script>
-
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
@@ -325,6 +365,26 @@
                 "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200"
             }];
 
+            // Function to trigger haptic feedback
+            const triggerHapticFeedback = () => {
+                if ('vibrate' in navigator) {
+                    navigator.vibrate(50); // Vibrate for 50ms
+                }
+            };
+            
+            // Function to create and render the QR builder animation
+            const renderQrBuilder = () => {
+                const qrBuilderContainer = document.getElementById('qr-builder-container');
+                qrBuilderContainer.innerHTML = ''; // Clear previous cells
+                const numCells = 15 * 15; // 15x15 grid
+                for (let i = 0; i < numCells; i++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'qr-cell';
+                    cell.style.setProperty('--delay', `${Math.random() * 0.5}s`);
+                    qrBuilderContainer.appendChild(cell);
+                }
+            };
+
             // View Management
             const mainView = document.getElementById('main-view');
             const historyView = document.getElementById('history-view');
@@ -351,8 +411,16 @@
                 renderHistory();
             };
 
-            historyBtn.addEventListener('click', showHistoryView);
-            backBtn.addEventListener('click', showMainView);
+            historyBtn.addEventListener('click', () => {
+                triggerHapticFeedback();
+                showHistoryView();
+            });
+            if (backBtn) {
+                backBtn.addEventListener('click', () => {
+                    triggerHapticFeedback();
+                    showMainView();
+                });
+            }
 
             // Existing Logic
             const upiButtonContainer = document.getElementById('upi-button-container');
@@ -366,6 +434,7 @@
             const historyKey = 'upiHistory';
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
             const amountDisplay = document.getElementById('amount-display');
+            const loadingSpinner = document.getElementById('loading-spinner');
             let currentQR = null;
 
             const saveUpiData = () => {
@@ -402,6 +471,10 @@
             };
 
             const generateQrCode = (upiId, amount) => {
+                qrCodeContainer.classList.add('hidden');
+                loadingSpinner.classList.remove('hidden');
+                renderQrBuilder(); // Start the QR builder animation
+
                 const payeeName = getUpiLabel(upiId);
                 const upiIcon = getUpiIcon(upiId);
 
@@ -414,42 +487,47 @@
                     upiUri += `&cu=INR`;
                 }
 
-                qrCodeContainer.innerHTML = '';
-                currentQR = new QRCodeStyling({
-                    width: 300,
-                    height: 300,
-                    type: "svg",
-                    data: upiUri,
-                    image: upiIcon,
-                    dotsOptions: {
-                        color: "#ffffff",
-                        type: "dots"
-                    },
-                    cornersSquareOptions: {
-                        color: "#ffffff",
-                        type: "extra-rounded"
-                    },
-                    cornersDotOptions: {
-                        color: "#ffffff",
-                        type: "dot"
-                    },
-                    backgroundOptions: {
-                        color: "#000000",
-                    },
-                    imageOptions: {
-                        crossOrigin: "anonymous",
-                        margin: 5
+                // Delay to allow the animation to play
+                setTimeout(() => {
+                    qrCodeContainer.innerHTML = '';
+                    currentQR = new QRCodeStyling({
+                        width: 300,
+                        height: 300,
+                        type: "svg",
+                        data: upiUri,
+                        image: upiIcon,
+                        dotsOptions: {
+                            color: "#ffffff",
+                            type: "dots"
+                        },
+                        cornersSquareOptions: {
+                            color: "#ffffff",
+                            type: "extra-rounded"
+                        },
+                        cornersDotOptions: {
+                            color: "#ffffff",
+                            type: "dot"
+                        },
+                        backgroundOptions: {
+                            color: "#000000",
+                        },
+                        imageOptions: {
+                            crossOrigin: "anonymous",
+                            margin: 5
+                        }
+                    });
+
+                    currentQR.append(qrCodeContainer);
+                    qrCodeContainer.classList.remove('hidden');
+                    loadingSpinner.classList.add('hidden');
+                    
+                    if (amount && parseFloat(amount) > 0) {
+                        amountDisplay.textContent = `₹${parseFloat(amount).toFixed(2)}`;
+                        amountDisplay.classList.remove('hidden');
+                    } else {
+                        amountDisplay.classList.add('hidden');
                     }
-                });
-
-                currentQR.append(qrCodeContainer);
-
-                if (amount && parseFloat(amount) > 0) {
-                    amountDisplay.textContent = `₹${parseFloat(amount).toFixed(2)}`;
-                    amountDisplay.classList.remove('hidden');
-                } else {
-                    amountDisplay.classList.add('hidden');
-                }
+                }, 1500); // Wait for the animation to finish (1.5s)
             };
 
             const saveHistory = (id, amount) => {
@@ -476,6 +554,7 @@
                     <span class="text-gray-800 text-xs font-semibold">${upi.label}</span>
                 `;
                 button.addEventListener('click', () => {
+                    triggerHapticFeedback();
                     selectedUpiIdDisplay.textContent = upi.id;
                     const amount = amountInput.value.trim();
                     generateQrCode(upi.id, amount);
@@ -502,6 +581,7 @@
                     <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
                 `;
                 button.addEventListener('click', () => {
+                    triggerHapticFeedback();
                     const amount = amountInput.value.trim();
                     generateQrCode(upi.id, amount);
 
@@ -534,6 +614,7 @@
                             </div>
                         `;
                         historyItem.addEventListener('click', () => {
+                            triggerHapticFeedback();
                             generateQrCode(item.id, item.amount);
                             qrModalOverlay.classList.remove('hidden');
                         });
@@ -545,6 +626,7 @@
 
             if (clearHistoryBtn) {
                 clearHistoryBtn.addEventListener('click', () => {
+                    triggerHapticFeedback();
                     localStorage.removeItem(historyKey);
                     renderHistory();
                 });
@@ -562,6 +644,7 @@
             }
 
             closeModalBtn.addEventListener('click', () => {
+                triggerHapticFeedback();
                 qrModalOverlay.classList.add('hidden');
             });
 
