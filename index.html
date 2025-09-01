@@ -33,6 +33,11 @@
             -webkit-text-fill-color: transparent;
         }
 
+        /* Enhanced Text effect for header */
+        .text-premium-effect {
+            -webkit-text-stroke: 1px #000000;
+        }
+
         /* Reverted Header and Footer Theme to Milk White */
         .header-content,
         .footer-content {
@@ -261,14 +266,13 @@
 <body class="flex flex-col items-center min-h-screen p-4">
 
     <!-- Fixed Floating Header -->
-    <header id="main-header" class="fixed top-0 left-0 w-full z-40 py-2 px-6 header-content flex items-center justify-between space-x-2">
+    <header id="main-header" class="fixed top-0 left-0 w-full z-40 py-2 px-6 header-content flex items-center justify-center">
         <div class="flex items-center space-x-2">
             <div class="logo-container h-12 w-12 rounded-full">
                 <img src="https://od.lk/s/NDJfNDk0NjI2NDlf/qr-code%20%281%29.gif" alt="Animated PaanQR Logo" class="h-full w-full rounded-full" />
             </div>
-            <h1 id="header-title" class="text-xl font-bold text-gray-800">Trinadha Paan Shop</h1>
+            <h1 id="header-title" class="text-2xl font-extrabold gradient-text text-premium-effect">Trinadha Paan Shop</h1>
         </div>
-        <div class="w-6 h-6"></div>
     </header>
 
     <!-- Main QR Generator View -->
@@ -334,13 +338,13 @@
     </div>
 
     <!-- Fixed Floating Footer -->
-    <footer id="main-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content flex items-center justify-center space-x-2">
-        <button id="history-btn" class="bg-transparent py-2 px-4 rounded-full font-semibold w-full transition-colors duration-300 hover:bg-gray-200">
-            <span class="text-gray-800" style="text-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #fff, 0 0 4px #fff, 0 0 5px #fff, 0 0 6px #fff;">View Payment History</span>
+    <footer id="main-footer" class="fixed bottom-0 left-0 w-full z-40 py-2 px-6 footer-content flex items-center justify-center space-x-2">
+        <button id="history-btn" class="bg-transparent py-1 px-4 rounded-full font-semibold w-full transition-colors duration-300 hover:bg-gray-200">
+            <span class="text-gray-800">View Payment History</span>
         </button>
     </footer>
 
-    <footer id="history-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content hidden flex items-center justify-between">
+    <footer id="history-footer" class="fixed bottom-0 left-0 w-full z-40 py-2 px-6 footer-content hidden flex items-center justify-between">
         <button id="back-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300">
             <span class="material-symbols-outlined text-gray-800">arrow_back</span>
         </button>
@@ -594,10 +598,16 @@
                     // Remove active state from all buttons and add to the clicked one
                     document.querySelectorAll('#upi-button-container .upi-btn').forEach(btn => {
                         btn.classList.remove('upi-btn-active');
+                        const upi = upiData.find(u => u.id === btn.getAttribute('data-upi-id'));
+                        btn.style.boxShadow = `0 0 8px ${upi.color}40`;
+                        btn.style.borderColor = upi.color;
+                        btn.style.backgroundColor = `${upi.color}20`;
                     });
 
                     button.classList.add('upi-btn-active');
-
+                    button.style.boxShadow = `0 0 12px ${upi.oppositeColor}80, 0 0 0 3px ${upi.oppositeColor}30, 0 0 8px rgba(0, 0, 0, 0.4)`;
+                    button.style.borderColor = upi.oppositeColor;
+                    button.style.backgroundColor = `${upi.oppositeColor}20`;
 
                     // Highlight the clicked button in the popup
                     document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
@@ -618,7 +628,7 @@
                 button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 relative popup-upi-btn';
                 button.setAttribute('data-upi-id', upi.id);
                 button.innerHTML = `
-                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full border-2" style="border-color:${upi.color};" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
                 `;
                 button.style.borderColor = upi.color;
                 button.addEventListener('click', () => {
