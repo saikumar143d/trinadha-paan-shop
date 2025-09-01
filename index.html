@@ -364,7 +364,7 @@
             let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || [{
                 "id": "9492416477@upi",
                 "label": "TVR BHIM",
-                "icon": "https://od.lk/s/NDJfNDk0NjI3MzVf/ChatGPT%20Image%20Sep%201%2C%202025%2C%2001_36_30%20PM.png"
+                "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/"
             }, {
                 "id": "9885848524@upi",
                 "label": "TSK BHIM",
@@ -473,7 +473,6 @@
             };
 
             const generateQrCode = (upiId, amount) => {
-                // Add loading class to start the animation
                 qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
 
@@ -519,7 +518,6 @@
 
                 currentQR.append(qrCodeContainer);
                 
-                // After the animation, show the final QR code
                 qrCodeContainer.classList.remove('loading');
                 qrCodeContainer.style.opacity = '1';
                 
