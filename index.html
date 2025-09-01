@@ -243,6 +243,47 @@
             z-index: -1;
             animation: none;
         }
+
+        /* Haptic feedback switch styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .4s;
+            border-radius: 28px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #00bcd4;
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
     </style>
 </head>
 
@@ -322,11 +363,17 @@
         </button>
     </footer>
 
-    <footer id="history-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content hidden justify-center items-center">
-        <p class="text-white text-sm font-semibold">Made by Saikumar</p>
-        <button id="back-btn" class="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center bg-white rounded-full shadow-lg hover:bg-gray-100 transition-colors duration-300">
-            <span class="material-symbols-outlined text-gray-900">arrow_back</span>
+    <footer id="history-footer" class="fixed bottom-0 left-0 w-full z-40 py-4 px-6 footer-content hidden justify-between items-center">
+        <button id="back-btn" class="w-12 h-12 flex items-center justify-center bg-gray-900 rounded-full border border-gray-700 shadow-lg hover:bg-gray-700 transition-colors duration-300">
+            <span class="material-symbols-outlined text-gray-200">arrow_back</span>
         </button>
+        <div class="flex items-center space-x-2 md:hidden">
+            <span class="text-gray-400 text-sm">Haptics</span>
+            <label class="switch">
+                <input type="checkbox" id="haptics-toggle">
+                <span class="slider"></span>
+            </label>
+        </div>
     </footer>
 
     <!-- QR code styling library from CDN -->
@@ -364,10 +411,21 @@
                 "label": "PhonePe",
                 "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200"
             }];
+            
+            // Haptics State Management
+            let hapticsEnabled = localStorage.getItem('hapticsEnabled') === 'true';
+            const hapticsToggle = document.getElementById('haptics-toggle');
+            if (hapticsToggle) {
+                hapticsToggle.checked = hapticsEnabled;
+                hapticsToggle.addEventListener('change', (e) => {
+                    hapticsEnabled = e.target.checked;
+                    localStorage.setItem('hapticsEnabled', hapticsEnabled);
+                });
+            }
 
             // Function to trigger haptic feedback
             const triggerHapticFeedback = () => {
-                if ('vibrate' in navigator) {
+                if (hapticsEnabled && 'vibrate' in navigator) {
                     navigator.vibrate(50); // Vibrate for 50ms
                 }
             };
