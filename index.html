@@ -506,6 +506,27 @@
                 qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
 
+                // Arrays for dynamic styling
+                const dotsOptionsTypes = ["dots", "squares", "rounded", "extra-rounded", "classy", "classy-rounded"];
+                const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot"];
+                const cornersDotOptionsTypes = ["square", "dot"];
+
+                // Rainbow colors
+                const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#8A2BE2"];
+
+                // Randomly select a style for each part
+                const randomDotsType = dotsOptionsTypes[Math.floor(Math.random() * dotsOptionsTypes.length)];
+                const randomCornersSquareType = cornersSquareOptionsTypes[Math.floor(Math.random() * cornersSquareOptionsTypes.length)];
+                const randomCornersDotType = cornersDotOptionsTypes[Math.floor(Math.random() * cornersDotOptionsTypes.length)];
+
+                // Get three random, distinct colors
+                const getRandomColors = (arr, num) => {
+                    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+                    return shuffled.slice(0, num);
+                };
+
+                const [dotsColor, cornersSquareColor, cornersDotColor] = getRandomColors(rainbowColors, 3);
+
                 const payeeName = getUpiLabel(upiId);
                 const upiIcon = getUpiIcon(upiId);
 
@@ -526,16 +547,16 @@
                     data: upiUri,
                     image: upiIcon,
                     dotsOptions: {
-                        color: "#ffffff",
-                        type: "dots"
+                        color: dotsColor,
+                        type: randomDotsType
                     },
                     cornersSquareOptions: {
-                        color: "#ffffff",
-                        type: "extra-rounded"
+                        color: cornersSquareColor,
+                        type: randomCornersSquareType
                     },
                     cornersDotOptions: {
-                        color: "#ffffff",
-                        type: "dot"
+                        color: cornersDotColor,
+                        type: randomCornersDotType
                     },
                     backgroundOptions: {
                         color: "#000000",
