@@ -85,28 +85,28 @@
 
         /* New UPI Button Styles with new color theme */
         .upi-btn {
-            background-color: #282828;
             border-radius: 9999px;
             transition: all 0.2s ease-in-out;
-            border: 1px solid #444;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.4), 0 4px 8px rgba(0, 0, 0, 0.4);
             padding: 0.5rem 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
+            cursor: pointer;
+            border: 2px solid;
         }
 
         .upi-btn:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0 12px rgba(253, 186, 116, 0.8), 0 8px 16px rgba(0, 0, 0, 0.5);
-            border-color: #ea580c;
+            transform: translateY(-2px);
+            box-shadow: 0 0 12px var(--color-hover)80, 0 4px 8px rgba(0, 0, 0, 0.5);
+            border-color: var(--color-hover);
+            background-color: var(--color-hover)20;
         }
 
         .upi-btn-active {
-            border: 2px solid #ea580c;
-            box-shadow: 0 0 12px rgba(253, 186, 116, 0.8), 0 0 0 3px rgba(234, 88, 12, 0.3), 0 4px 8px rgba(0, 0, 0, 0.4);
-            background-color: #2b2e35;
+            box-shadow: 0 0 12px var(--color-active)80, 0 0 0 3px var(--color-active)30, 0 0 8px rgba(0, 0, 0, 0.4);
+            border-color: var(--color-active);
+            background-color: var(--color-active)20;
         }
 
         .upi-btn-icon {
@@ -116,7 +116,7 @@
         .upi-btn:hover .upi-btn-icon {
             transform: scale(1.1);
         }
-        
+
         .upi-btn span {
             color: #d1d5db;
             white-space: nowrap;
@@ -150,7 +150,7 @@
             border: 1px solid #444;
             color: #ccc;
         }
-        
+
         /* New Advanced Loading State Styles */
         .qr-code-container {
             border-radius: 0.5rem;
@@ -158,7 +158,7 @@
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
-        
+
         .qr-code-container.loading::before {
             content: '';
             position: absolute;
@@ -173,23 +173,26 @@
             animation: qr-loading 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
             z-index: 10;
         }
-        
+
         @keyframes qr-loading {
             0% {
                 transform: translate(-50%, -50%) scale(0);
                 opacity: 1;
             }
+
             50% {
                 transform: translate(-50%, -50%) scale(1.2);
                 opacity: 1;
             }
+
             100% {
                 transform: translate(-50%, -50%) scale(0);
                 opacity: 0;
             }
         }
+
         /* End of New Advanced Loading State Styles */
-        
+
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -229,16 +232,16 @@
 
         .popup-upi-btn {
             background-color: #0c0d10;
-            border: 2px solid #ea580c;
+            border: 2px solid;
             border-radius: 9999px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
             transition: all 0.2s ease-in-out;
         }
 
         .popup-upi-btn-active {
-            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px #ea580c;
+            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px;
         }
-        
+
         /* Updated QR Code Container Gradient */
         .qr-code-container::before {
             content: '';
@@ -294,7 +297,7 @@
             <!-- Buttons will be dynamically added here -->
         </div>
 
-        
+
     </div>
 
     <!-- Payment History View -->
@@ -364,28 +367,36 @@
             let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || [{
                 "id": "9492416477@upi",
                 "label": "TVR BHIM",
-                "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/"
+                "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/",
+                "color": "#00a6ff", // BHIM is Blue
+                "oppositeColor": "#ff5900"
             }, {
                 "id": "9885848524@upi",
                 "label": "TSK BHIM",
-                "icon": "https://img.icons8.com/color/512/bhim.png"
+                "icon": "https://img.icons8.com/color/512/bhim.png",
+                "color": "#00a6ff", // BHIM is Blue
+                "oppositeColor": "#ff5900"
             }, {
                 "id": "9398096059@superyes",
                 "label": "BGV",
-                "icon": "https://ucarecdn.com/caa1a595-b532-46b1-b4d4-1c5e21486b85/-/format/webp/-/quality/smart/"
+                "icon": "https://ucarecdn.com/caa1a595-b532-46b1-b4d4-1c5e21486b85/-/format/webp/-/quality/smart/",
+                "color": "#ff7c43", // BGV is an Orange-Red
+                "oppositeColor": "#4388ff"
             }, {
                 "id": "Q639488204@ybl",
                 "label": "PhonePe",
-                "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200"
+                "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200",
+                "color": "#5b318d", // PhonePe is Purple
+                "oppositeColor": "#a4ce72"
             }];
-            
+
             // Function to trigger haptic feedback
             const triggerHapticFeedback = () => {
                 if ('vibrate' in navigator) {
                     navigator.vibrate(50); // Vibrate for 50ms
                 }
             };
-            
+
             // View Management
             const mainView = document.getElementById('main-view');
             const historyView = document.getElementById('history-view');
@@ -394,7 +405,7 @@
             const mainFooter = document.getElementById('main-footer');
             const historyFooter = document.getElementById('history-footer');
             const headerTitle = document.getElementById('header-title');
-            
+
             const showMainView = () => {
                 mainView.classList.remove('hidden');
                 historyView.classList.add('hidden');
@@ -402,7 +413,7 @@
                 historyFooter.classList.add('hidden');
                 headerTitle.innerText = "Trinadha Paan Shop";
             };
-            
+
             const showHistoryView = () => {
                 mainView.classList.add('hidden');
                 historyView.classList.remove('hidden');
@@ -436,7 +447,7 @@
             const historyKey = 'upiHistory';
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
             const amountDisplay = document.getElementById('amount-display');
-            
+
             let currentQR = null;
 
             const saveUpiData = () => {
@@ -459,6 +470,12 @@
                 if (defaultUpiButton) {
                     defaultUpiButton.classList.add('upi-btn-active');
                     selectedUpiIdDisplay.textContent = defaultUpiId;
+                    const upi = upiData.find(u => u.id === defaultUpiId);
+                    if (upi) {
+                        defaultUpiButton.style.boxShadow = `0 0 12px ${upi.oppositeColor}80, 0 0 0 3px ${upi.oppositeColor}30, 0 0 8px rgba(0, 0, 0, 0.4)`;
+                        defaultUpiButton.style.borderColor = upi.oppositeColor;
+                        defaultUpiButton.style.backgroundColor = `${upi.color}20`;
+                    }
                 }
             };
 
@@ -471,6 +488,15 @@
                 const upi = upiData.find(u => u.id === id);
                 return upi ? upi.icon : 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon';
             };
+            const getUpiColor = (id) => {
+                const upi = upiData.find(u => u.id === id);
+                return upi ? upi.color : '#ccc';
+            };
+            const getUpiOppositeColor = (id) => {
+                const upi = upiData.find(u => u.id === id);
+                return upi ? upi.oppositeColor : '#ccc';
+            };
+
 
             const generateQrCode = (upiId, amount) => {
                 qrCodeContainer.classList.add('loading');
@@ -487,7 +513,7 @@
                     upiUri += `&am=${encodeURIComponent(amount)}`;
                     upiUri += `&cu=INR`;
                 }
-                
+
                 qrCodeContainer.innerHTML = '';
                 currentQR = new QRCodeStyling({
                     width: 300,
@@ -517,10 +543,10 @@
                 });
 
                 currentQR.append(qrCodeContainer);
-                
+
                 qrCodeContainer.classList.remove('loading');
                 qrCodeContainer.style.opacity = '1';
-                
+
                 if (amount && parseFloat(amount) > 0) {
                     amountDisplay.textContent = `₹${parseFloat(amount).toFixed(2)}`;
                     amountDisplay.classList.remove('hidden');
@@ -548,8 +574,13 @@
                 const button = document.createElement('button');
                 button.className = 'upi-btn flex items-center justify-center space-x-2 focus:outline-none';
                 button.setAttribute('data-upi-id', upi.id);
+                button.style.setProperty('--color-active', upi.oppositeColor);
+                button.style.setProperty('--color-hover', upi.color);
+                button.style.borderColor = upi.color;
+                button.style.boxShadow = `0 0 8px ${upi.color}40`;
+                button.style.backgroundColor = `${upi.color}20`;
                 button.innerHTML = `
-                    <img src="${upi.icon}" alt="${upi.label} Icon" class="h-6 w-6 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/24x24/2b2e35/D1D5DB?text=Icon'">
+                    <img src="${upi.icon}" alt="${upi.label} Icon" class="h-6 w-6 rounded-full border-2" style="border-color:${upi.color};" onerror="this.onerror=null;this.src='https://placehold.co/24x24/2b2e35/D1D5DB?text=Icon'">
                     <span class="text-sm font-semibold gradient-text">${upi.label}</span>
                 `;
                 button.addEventListener('click', () => {
@@ -561,13 +592,23 @@
                     qrModalOverlay.classList.remove('hidden');
 
                     // Remove active state from all buttons and add to the clicked one
-                    document.querySelectorAll('#upi-button-container .upi-btn').forEach(btn => btn.classList.remove('upi-btn-active'));
+                    document.querySelectorAll('#upi-button-container .upi-btn').forEach(btn => {
+                        btn.classList.remove('upi-btn-active');
+                    });
+
                     button.classList.add('upi-btn-active');
 
+
                     // Highlight the clicked button in the popup
-                    document.querySelectorAll('#popup-upi-buttons button').forEach(btn => btn.classList.remove('popup-upi-btn-active'));
+                    document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
+                        btn.classList.remove('popup-upi-btn-active');
+                        btn.style.boxShadow = '';
+                    });
                     const popupBtn = popupUpiButtons.querySelector(`[data-upi-id="${upi.id}"]`);
-                    if (popupBtn) popupBtn.classList.add('popup-upi-btn-active');
+                    if (popupBtn) {
+                        popupBtn.classList.add('popup-upi-btn-active');
+                        popupBtn.style.boxShadow = `0 0 0 2px #0c0d10, 0 0 0 4px ${upi.oppositeColor}`;
+                    }
                 });
                 return button;
             };
@@ -577,8 +618,9 @@
                 button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 relative popup-upi-btn';
                 button.setAttribute('data-upi-id', upi.id);
                 button.innerHTML = `
-                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full border-2" style="border-color:${upi.color};" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
                 `;
+                button.style.borderColor = upi.color;
                 button.addEventListener('click', () => {
                     triggerHapticFeedback();
                     const amount = amountInput.value.trim();
@@ -586,9 +628,11 @@
 
                     document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
                         btn.classList.remove('popup-upi-btn-active');
+                        btn.style.boxShadow = '';
                     });
 
                     button.classList.add('popup-upi-btn-active');
+                    button.style.boxShadow = `0 0 0 2px #0c0d10, 0 0 0 4px ${upi.oppositeColor}`;
                 });
                 return button;
             };
@@ -634,13 +678,7 @@
 
             renderUpiButtons();
 
-            // Set PhonePe as the default selected UPI ID on page load
-            const defaultUpiId = "Q639488204@ybl";
-            const defaultUpiButton = document.querySelector(`[data-upi-id="${defaultUpiId}"]`);
-            if (defaultUpiButton) {
-                defaultUpiButton.classList.add('upi-btn-active');
-                selectedUpiIdDisplay.textContent = defaultUpiId;
-            }
+            // The following code block caused the popup on page load. It has been removed.
 
             closeModalBtn.addEventListener('click', () => {
                 triggerHapticFeedback();
@@ -686,7 +724,7 @@
                     e.target.value = '0.00';
                 }
             });
-            
+
             // Allow numbers, decimals, and operators for calculation
             amountInput.addEventListener('input', (e) => {
                 let value = e.target.value;
