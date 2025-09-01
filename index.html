@@ -233,6 +233,7 @@
 
         .logo-container {
             position: relative;
+            border-radius: 0.75rem;
         }
 
         .popup-upi-btn {
@@ -265,10 +266,10 @@
 
 <body class="flex flex-col items-center min-h-screen p-4">
 
-    <!-- Fixed Floating Header -->
-    <header id="main-header" class="fixed top-0 left-0 w-full z-40 py-2 px-6 header-content flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-            <div class="logo-container h-12 w-12 rounded-full">
+    <!-- Floating Header Elements -->
+    <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between">
+        <div id="header-left" class="flex items-center space-x-2">
+            <div class="logo-container h-12 w-12 rounded-lg bg-gray-100 border border-gray-300 p-1">
                 <img src="https://od.lk/s/NDJfNDk0NjI2NDlf/qr-code%20%281%29.gif" alt="Animated PaanQR Logo" class="h-full w-full rounded-full" />
             </div>
             <h1 id="header-title" class="text-2xl font-extrabold gradient-text text-premium-effect">Trinadha Paan Shop</h1>
@@ -276,7 +277,7 @@
         <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-full border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300">
             <span id="history-icon" class="material-symbols-outlined text-gray-800">receipt_long</span>
         </button>
-    </header>
+    </div>
 
     <!-- Main QR Generator View -->
     <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full">
@@ -423,12 +424,18 @@
             const historyBtn = document.getElementById('history-btn');
             const historyIcon = document.getElementById('history-icon');
             const headerTitle = document.getElementById('header-title');
+            const floatingHeader = document.getElementById('floating-header');
+            const headerLeft = document.getElementById('header-left');
+
 
             const showMainView = () => {
                 mainView.classList.remove('hidden');
                 historyView.classList.add('hidden');
                 headerTitle.innerText = "Trinadha Paan Shop";
                 historyIcon.innerText = 'receipt_long';
+                headerLeft.classList.remove('hidden');
+                floatingHeader.classList.remove('justify-end');
+                floatingHeader.classList.add('justify-between');
             };
 
             const showHistoryView = () => {
@@ -437,6 +444,9 @@
                 headerTitle.innerText = "History";
                 historyIcon.innerText = 'arrow_back';
                 renderHistory();
+                headerLeft.classList.add('hidden');
+                floatingHeader.classList.remove('justify-between');
+                floatingHeader.classList.add('justify-end');
             };
 
             historyBtn.addEventListener('click', () => {
