@@ -445,6 +445,7 @@
                 headerLeft.classList.add('hidden');
                 floatingHeader.classList.remove('justify-between');
                 floatingHeader.classList.add('justify-end');
+                renderHistory();
             };
 
             historyBtn.addEventListener('click', () => {
@@ -695,6 +696,7 @@
                 button.addEventListener('click', () => {
                     const amount = calculateAmount(amountInput.value.trim());
                     generateQrCode(upi.id, amount);
+                    saveHistory(upi.id, amount);
 
                     document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
                         btn.classList.remove('popup-upi-btn-active');
@@ -727,8 +729,9 @@
                             </div>
                         `;
                         historyItem.addEventListener('click', () => {
-                            const amount = calculateAmount(amountInput.value.trim());
+                            const amount = item.amount;
                             generateQrCode(item.id, amount);
+                            saveHistory(item.id, amount);
                             qrModalOverlay.classList.remove('hidden');
                         });
                         historyList.appendChild(historyItem);
