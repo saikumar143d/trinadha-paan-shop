@@ -90,30 +90,55 @@
             }
         }
 
-        /* New UPI Button Styles with new color theme */
+        /* Revamped UPI Button Styles */
         .upi-btn {
             border-radius: 9999px;
             transition: all 0.2s ease-in-out;
-            padding: 0.75rem 1rem;
+            padding: 0.25rem 1.5rem 0.25rem 0.5rem;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 0.5rem;
             cursor: pointer;
             border: 2px solid;
+            overflow: hidden;
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+
+        .upi-btn .upi-icon-container {
+            height: 40px;
+            width: 40px;
+            border-radius: 9999px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--color-icon-bg);
+            border: 2px solid var(--color-icon-border);
+            margin: -2px;
+            margin-right: 0.5rem;
+        }
+        
+        .upi-btn .upi-icon-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 9999px;
         }
 
         .upi-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 0 12px var(--color-hover)80, 0 4px 8px rgba(0, 0, 0, 0.5);
             border-color: var(--color-hover);
-            background-color: var(--color-hover)20;
+            color: var(--color-hover);
         }
 
         .upi-btn-active {
             box-shadow: 0 0 12px var(--color-active)80, 0 0 0 3px var(--color-active)30, 0 0 8px rgba(0, 0, 0, 0.4);
             border-color: var(--color-active);
-            background-color: var(--color-active)20;
+            color: var(--color-active);
+            background-color: rgba(255,255,255,0.2); /* Semi-transparent white background */
         }
 
         .upi-btn-icon {
@@ -125,10 +150,10 @@
         }
 
         .upi-btn span {
-            color: #d1d5db;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-size: 1rem; /* Adjusting font size to be slightly larger */
         }
 
         .modal {
@@ -398,26 +423,34 @@
                 "id": "9492416477@upi",
                 "label": "TVR",
                 "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/",
-                "color": "#00a6ff", // BHIM is Blue
-                "oppositeColor": "#ff5900"
+                "color": "#e05244", // TVR Red
+                "oppositeColor": "#46b6e0",
+                "iconBg": "#ffffff",
+                "iconBorder": "#e05244"
             }, {
                 "id": "9885848524@upi",
                 "label": "TSK",
                 "icon": "https://img.icons8.com/color/512/bhim.png",
-                "color": "#00a6ff", // BHIM is Blue
-                "oppositeColor": "#ff5900"
+                "color": "#018b3d", // TSK Green
+                "oppositeColor": "#ff7909",
+                "iconBg": "#ffffff",
+                "iconBorder": "#018b3d"
             }, {
                 "id": "9398096059@superyes",
                 "label": "BGV",
                 "icon": "https://ucarecdn.com/caa1a595-b532-46b1-b4d4-1c5e21486b85/-/format/webp/-/quality/smart/",
-                "color": "#ff7c43", // BGV is an Orange-Red
-                "oppositeColor": "#4388ff"
+                "color": "#4d43fe", // BGV is Blue
+                "oppositeColor": "#ffffff",
+                "iconBg": "#ffffff",
+                "iconBorder": "#4d43fe"
             }, {
                 "id": "Q639488204@ybl",
                 "label": "PhonePe",
                 "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200",
-                "color": "#5b318d", // PhonePe is Purple
-                "oppositeColor": "#a4ce72"
+                "color": "#017c07", // PhonePe is Green
+                "oppositeColor": "#ffffff",
+                "iconBg": "#ffffff",
+                "iconBorder": "#017c07"
             }];
 
             // View Management
@@ -503,6 +536,15 @@
                 const upi = upiData.find(u => u.id === id);
                 return upi ? upi.oppositeColor : '#ccc';
             };
+            const getUpiIconBg = (id) => {
+                const upi = upiData.find(u => u.id === id);
+                return upi ? upi.iconBg : '#fff';
+            };
+            const getUpiIconBorder = (id) => {
+                const upi = upiData.find(u => u.id === id);
+                return upi ? upi.iconBorder : '#ccc';
+            };
+
 
             const calculateAmount = (value) => {
                 if (!value) return '';
@@ -568,6 +610,7 @@
                 }
 
                 qrCodeContainer.innerHTML = '';
+
                 currentQR = new QRCodeStyling({
                     width: 300,
                     height: 300,
@@ -591,7 +634,9 @@
                     },
                     imageOptions: {
                         crossOrigin: "anonymous",
-                        margin: 5
+                        margin: 5,
+                        imageSize: 0.3, // Slightly increased image size
+                        hideBackgroundDots: true // This is the key line to hide the dots under the image
                     }
                 });
 
@@ -625,16 +670,16 @@
 
             const createUpiButton = (upi) => {
                 const button = document.createElement('button');
-                button.className = 'upi-btn flex items-center justify-center space-x-2 focus:outline-none';
+                button.className = 'upi-btn focus:outline-none';
                 button.setAttribute('data-upi-id', upi.id);
-                button.style.setProperty('--color-active', upi.oppositeColor);
-                button.style.setProperty('--color-hover', upi.color);
+                button.style.backgroundColor = '#ffffff';
+                button.style.color = upi.color;
                 button.style.borderColor = upi.color;
-                button.style.boxShadow = `0 0 8px ${upi.color}40`;
-                button.style.backgroundColor = `${upi.color}20`;
                 button.innerHTML = `
-                    <img src="${upi.icon}" alt="${upi.label} Icon" class="h-6 w-6 rounded-full border-2" style="border-color:${upi.color};" onerror="this.onerror=null;this.src='https://placehold.co/24x24/2b2e35/D1D5DB?text=Icon'">
-                    <span class="text-sm font-semibold gradient-text" style="font-family: 'Ubuntu', sans-serif;">${upi.label}</span>
+                    <div class="upi-icon-container" style="--color-icon-bg: ${upi.iconBg}; --color-icon-border: ${upi.iconBorder};">
+                        <img src="${upi.icon}" alt="${upi.label} Icon" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                    </div>
+                    <span class="text-base font-semibold" style="font-family: 'Karla', sans-serif;">${upi.label}</span>
                 `;
                 button.addEventListener('click', () => {
                     const amount = calculateAmount(amountInput.value.trim());
@@ -650,13 +695,15 @@
                         const upi = upiData.find(u => u.id === btn.getAttribute('data-upi-id'));
                         btn.style.boxShadow = `0 0 8px ${upi.color}40`;
                         btn.style.borderColor = upi.color;
-                        btn.style.backgroundColor = `${upi.color}20`;
+                        btn.style.color = upi.color;
+                        btn.style.backgroundColor = '#ffffff';
                     });
 
                     button.classList.add('upi-btn-active');
                     button.style.boxShadow = `0 0 12px ${upi.oppositeColor}80, 0 0 0 3px ${upi.oppositeColor}30, 0 0 8px rgba(0, 0, 0, 0.4)`;
                     button.style.borderColor = upi.oppositeColor;
-                    button.style.backgroundColor = `${upi.oppositeColor}20`;
+                    button.style.color = upi.oppositeColor;
+                    button.style.backgroundColor = `rgba(255, 255, 255, 0.2)`;
 
                     // Highlight the clicked button in the popup
                     document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
@@ -709,7 +756,7 @@
                         const upiIcon = getUpiIcon(item.id);
                         historyItem.className = 'p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200';
                         historyItem.innerHTML = `
-                            <img src="${upiIcon}" alt="${upiLabel} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                            <img src="${upiIcon}" alt="${upiLabel} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
                             <div class="flex-1">
                                 <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiLabel}</p>
                                 <p class="text-gray-400 text-sm" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${item.timestamp}</p>
@@ -763,7 +810,7 @@
                 clearInputBtn.classList.add('hidden');
                 amountInput.focus();
             });
-            
+
             // Calculator functionality on blur
             amountInput.addEventListener('blur', (e) => {
                 e.target.value = calculateAmount(e.target.value.trim());
