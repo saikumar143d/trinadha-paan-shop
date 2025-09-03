@@ -672,14 +672,16 @@
                 const button = document.createElement('button');
                 button.className = 'upi-btn focus:outline-none';
                 button.setAttribute('data-upi-id', upi.id);
-                button.style.backgroundColor = '#ffffff';
+                button.style.setProperty('--color-active', upi.oppositeColor);
+                button.style.setProperty('--color-hover', upi.color);
+                button.style.setProperty('--color-icon-bg', upi.iconBg);
+                button.style.setProperty('--color-icon-border', upi.iconBorder);
                 button.style.color = upi.color;
-                button.style.borderColor = upi.color;
                 button.innerHTML = `
-                    <div class="upi-icon-container" style="--color-icon-bg: ${upi.iconBg}; --color-icon-border: ${upi.iconBorder};">
+                    <div class="upi-icon-container">
                         <img src="${upi.icon}" alt="${upi.label} Icon" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
                     </div>
-                    <span class="text-base font-semibold" style="font-family: 'Karla', sans-serif;">${upi.label}</span>
+                    <span class="text-lg font-bold" style="font-family: 'Karla', sans-serif;">${upi.label}</span>
                 `;
                 button.addEventListener('click', () => {
                     const amount = calculateAmount(amountInput.value.trim());
@@ -692,18 +694,14 @@
                     // Remove active state from all buttons and add to the clicked one
                     document.querySelectorAll('#upi-button-container .upi-btn').forEach(btn => {
                         btn.classList.remove('upi-btn-active');
-                        const upi = upiData.find(u => u.id === btn.getAttribute('data-upi-id'));
-                        btn.style.boxShadow = `0 0 8px ${upi.color}40`;
                         btn.style.borderColor = upi.color;
                         btn.style.color = upi.color;
-                        btn.style.backgroundColor = '#ffffff';
                     });
 
                     button.classList.add('upi-btn-active');
-                    button.style.boxShadow = `0 0 12px ${upi.oppositeColor}80, 0 0 0 3px ${upi.oppositeColor}30, 0 0 8px rgba(0, 0, 0, 0.4)`;
                     button.style.borderColor = upi.oppositeColor;
                     button.style.color = upi.oppositeColor;
-                    button.style.backgroundColor = `rgba(255, 255, 255, 0.2)`;
+
 
                     // Highlight the clicked button in the popup
                     document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
