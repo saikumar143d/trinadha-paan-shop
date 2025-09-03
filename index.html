@@ -13,8 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet">
     <!-- Material Symbols Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-    <!-- Favicon - Updated to use SVG data URI for a white QR icon on a black background -->
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 width=%2224%22 height=%2224%22 style=%22background-color:%23f9fafb;%22><style>path {fill:black;}</style><path d=%22M5 11h2v2H5v-2zm-2 2h2v2H3v-2zm4 0h2v2H7v-2zM5 3h2v2H5V3zm2 4H5v2h2V7zM3 3h2v2H3V3zm4-2h2v2H7V1zm4 2h2v2h-2V3zM3 7h2v2H3V7zm10-4h-2v2h2V3zm-2 4h-2v2h2V7zm2 0h-2v2h2V7zm0 6h-2v2h2v-2zm0-2h-2v2h2v-2zm-2 4h2v2h-2v-2zm2-2h-2v2h2v-2zm2 2h-2v2h2v-2zm4 0h-2v2h2v-2zm-2-2h2v2h-2v-2zm0-2h2v2h-2V9zm0-2h2v2h-2V7zm2-2h2v2h-2V5zm-2 0h2v2h-2V5zm0-2h2v2h-2V3zm0 4h2v2h-2V7zM1 17h2v2H1v-2zm2 2h2v2H3v-2zm2 0h2v2H5v-2zm0-2h2v2H5v-2zm-2 0h2v2H3v-2zM1 21h2v2H1v-2zm4 0h2v2H5v-2zm-4-4h2v2H1v-2zm4 0h2v2H5v-2zm2 0h2v2H7v-2zM7 3H5v2h2V3zM1 3h2v2H1V3zm2 2h2v2H3V5zm2 0h2v2H5V5zm0 4h2v2H5V9z%22></path></svg>" />
+    <!-- Favicon - Updated to use the new image URL -->
+    <link rel="icon" href="https://od.lk/s/NDJfNDk0NzI1Mjhf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2005_11_20%20PM.png" />
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -271,14 +271,14 @@
     <!-- Floating Header Elements -->
     <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between">
         <div id="header-left" class="flex items-center space-x-2">
-            <!-- Updated logo to use the Material Symbols icon -->
-            <div class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-1 flex items-center justify-center">
-                <span class="material-symbols-outlined text-black text-4xl">qr_code_2_add</span>
+            <!-- Updated logo to use the provided image -->
+            <div class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-1 flex items-center justify-center flex-none">
+                <img src="https://od.lk/s/NDJfNDk0NzI1Mjdf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2011_46_02%20AM.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-full object-cover" />
             </div>
             <h1 id="header-title" class="text-2xl font-extrabold gradient-text text-premium-effect hidden" style="font-family: 'Asimovian', sans-serif;">Trinadha Paan Shop</h1>
         </div>
         <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
-            <span id="history-icon" class="material-symbols-outlined text-gray-800">receipt_long</span>
+            <span id="history-icon" class="material-symbols-outlined text-gray-800">history</span>
         </button>
     </div>
 
@@ -312,8 +312,8 @@
         <div id="dial-pad" class="w-full max-w-sm mt-8">
             <div class="grid grid-cols-4 gap-2 w-full">
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-orange-400 hover:bg-orange-500 transition-colors duration-200" data-value="clear">AC</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="("><span class="material-symbols-outlined">chevron_left</span></button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value=")"><span class="material-symbols-outlined">chevron_right</span></button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="(">(</button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value=")">)</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="/">/</button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="7">7</button>
@@ -434,7 +434,7 @@
             const showMainView = () => {
                 mainView.classList.remove('hidden');
                 historyView.classList.add('hidden');
-                historyIcon.innerText = 'receipt_long';
+                historyIcon.innerText = 'history';
             };
 
             const showHistoryView = () => {
