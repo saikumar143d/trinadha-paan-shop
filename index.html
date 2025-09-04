@@ -572,9 +572,27 @@
                 qrCodeContainer.classList.remove('hidden');
 
                 const upi = getUpiData(upiId);
-                const dotsColor = upi.color;
-                const cornersSquareColor = upi.oppositeColor;
-                const cornersDotColor = upi.oppositeColor;
+                
+                // NEW: Use a list of predefined vibrant color palettes for QR codes
+                const colorPalettes = [
+                    ["#1BE7FF", "#6EEB83", "#E4FF1A"],
+                    ["#F2F3AE", "#EDD382", "#FC9E4F"],
+                    ["#C5F9D7", "#F7D486", "#F27A7D"],
+                    ["#DEEFB7", "#98DFAF", "#5FB49C"],
+                    ["#F08700", "#F49F0A", "#EFCA08"],
+                    ["#FFFD82", "#FF9B71", "#E84855"],
+                    ["#FF5C4D", "#FF9636", "#FFCD58"],
+                    ["#FF8370", "#00B1B0", "#FEC84D"],
+                    ["#FEDE00", "#B4F8C8", "#6AB8EE"]
+                ];
+
+                // Randomly select a palette
+                const selectedPalette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+                
+                // Map the palette colors to QR code components
+                const dotsColor = selectedPalette[0];
+                const cornersSquareColor = selectedPalette[1];
+                const cornersDotColor = selectedPalette[2];
 
                 const dotsOptionsTypes = ["dots", "rounded", "extra-rounded", "square", "circular", "edge-cut-smooth", "leaf", "pointed-edge-cut", "pointed-in-smooth", "pointed-smooth", "round", "rounded-in-smooth", "rounded-pointed", "star", "diamond", "doted-light", "classy", "classy-rounded"];
                 const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot", "round", "bevel", "bubble"];
