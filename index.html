@@ -288,6 +288,15 @@
             z-index: -1;
             animation: none;
         }
+
+        .history-item-actions {
+            display: none;
+            gap: 0.5rem;
+        }
+
+        .history-item:hover .history-item-actions {
+            display: flex;
+        }
     </style>
 </head>
 
@@ -419,6 +428,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const upiDataKey = 'upiData';
+            // Reverted to the previous UPI data without the new color schemes
             let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || [{
                 "id": "9492416477@upi",
                 "label": "TVR",
@@ -519,41 +529,38 @@
                 });
             };
 
-            const getUpiLabel = (id) => {
-                const upi = upiData.find(u => u.id === id);
-                return upi ? upi.label : id;
+            const getUpiData = (id) => {
+                return upiData.find(u => u.id === id) || {
+                    id,
+                    label: id,
+                    icon: 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon',
+                    color: '#ccc',
+                    oppositeColor: '#ccc',
+                    iconBg: '#fff',
+                    iconBorder: '#ccc'
+                };
             };
-
-            const getUpiIcon = (id) => {
-                const upi = upiData.find(u => u.id === id);
-                return upi ? upi.icon : 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon';
-            };
-            const getUpiColor = (id) => {
-                const upi = upiData.find(u => u.id === id);
-                return upi ? upi.color : '#ccc';
-            };
-            const getUpiOppositeColor = (id) => {
-                const upi = upiData.find(u => u.id === id);
-                return upi ? upi.oppositeColor : '#ccc';
-            };
-            const getUpiIconBg = (id) => {
-                const upi = upiData.find(u => u.id === id);
-                return upi ? upi.iconBg : '#fff';
-            };
-            const getUpiIconBorder = (id) => {
-                const upi = upiData.find(u => u.id === id);
-                return upi ? upi.iconBorder : '#ccc';
-            };
-
-
+            
             const calculateAmount = (value) => {
                 if (!value) return '';
                 try {
-                    const result = eval(value);
+                    // Sanitizes the input to ensure it only contains valid characters for a mathematical expression.
+                    const sanitizedValue = value.replace(/[^-+*/().0-9]/g, '');
+                    // Fixes the "not a function" error by adding a multiplication operator
+                    // when a number is directly followed by an opening parenthesis.
+                    const fixedValue = sanitizedValue.replace(/(\d+)\s*\(/g, '$1*(');
+                    // Removes any trailing operators at the end of the expression.
+                    const finalValue = fixedValue.replace(/[-+*/.]+$/, '');
+
+                    if (!finalValue) {
+                        return '';
+                    }
+                    const result = Function(`"use strict"; return (${finalValue})`)();
                     if (!isNaN(result) && isFinite(result)) {
                         return parseFloat(result).toFixed(2);
                     }
                 } catch (error) {
+                    console.error("Calculation error:", error);
                     return '';
                 }
                 return '';
@@ -564,41 +571,21 @@
                 qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
 
+                const upi = getUpiData(upiId);
+                const dotsColor = upi.color;
+                const cornersSquareColor = upi.oppositeColor;
+                const cornersDotColor = upi.oppositeColor;
+
                 const dotsOptionsTypes = ["dots", "rounded", "extra-rounded", "square", "circular", "edge-cut-smooth", "leaf", "pointed-edge-cut", "pointed-in-smooth", "pointed-smooth", "round", "rounded-in-smooth", "rounded-pointed", "star", "diamond", "doted-light", "classy", "classy-rounded"];
                 const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot", "round", "bevel", "bubble"];
                 const cornersDotOptionsTypes = ["square", "dot", "round", "bevel", "bubble"];
-
-                const colorPalettes = [
-                    ["#FF6F61", "#FFD166", "#06D6A0"],
-                    ["#F79256", "#FBD1A2", "#7DCFB6"],
-                    ["#23C9FF", "#7CC6FE", "#CCD5FF"],
-                    ["#FBC2B5", "#FFA8A9", "#F786AA"],
-                    ["#FFC09F", "#FFEE93", "#FCF5C7"],
-                    ["#FF9AA2", "#FFB7B2", "#FFDAC1"],
-                    ["#B5EAD7", "#C7CEEA", "#E2F0CB"],
-                    ["#FF8C94", "#FFAAA6", "#FFD3B6"],
-                    ["#A8E6CF", "#DCEDC1", "#FFD3B6"],
-                    ["#FFABAB", "#FFC3A0", "#D5AAFF"]
-                ];
-
-                const selectedPalette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
-
-                const getRandomColors = (arr, num) => {
-                    const shuffled = [...arr].sort(() => 0.5 - Math.random());
-                    return shuffled.slice(0, num);
-                };
-
-                const colorsToApply = getRandomColors(selectedPalette, 3);
-                const dotsColor = colorsToApply[0];
-                const cornersSquareColor = colorsToApply[1];
-                const cornersDotColor = colorsToApply[2];
-
+                
                 const randomDotsType = dotsOptionsTypes[Math.floor(Math.random() * dotsOptionsTypes.length)];
                 const randomCornersSquareType = cornersSquareOptionsTypes[Math.floor(Math.random() * cornersSquareOptionsTypes.length)];
                 const randomCornersDotType = cornersDotOptionsTypes[Math.floor(Math.random() * cornersDotOptionsTypes.length)];
 
-                const payeeName = getUpiLabel(upiId);
-                const upiIcon = getUpiIcon(upiId);
+                const payeeName = upi.label;
+                const upiIcon = upi.icon;
 
                 let upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}`;
                 if (payeeName) {
@@ -608,7 +595,7 @@
                     upiUri += `&am=${encodeURIComponent(amount)}`;
                     upiUri += `&cu=INR`;
                 }
-
+                
                 qrCodeContainer.innerHTML = '';
 
                 currentQR = new QRCodeStyling({
@@ -748,24 +735,50 @@
                     historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
                     clearHistoryBtn.classList.add('hidden');
                 } else {
-                    history.forEach(item => {
+                    history.forEach((item, index) => {
                         const historyItem = document.createElement('div');
-                        const upiLabel = getUpiLabel(item.id);
-                        const upiIcon = getUpiIcon(item.id);
-                        historyItem.className = 'p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200';
+                        const upiInfo = getUpiData(item.id);
+                        historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group';
                         historyItem.innerHTML = `
-                            <img src="${upiIcon}" alt="${upiLabel} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
+                            <img src="${upiInfo.icon}" alt="${upiInfo.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
                             <div class="flex-1">
-                                <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiLabel}</p>
+                                <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
                                 <p class="text-gray-400 text-sm" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${item.timestamp}</p>
                             </div>
+                            <div class="history-item-actions flex items-center space-x-2 absolute right-4 top-1/2 transform -translate-y-1/2">
+                                <button class="regenerate-btn text-gray-400 hover:text-green-500 transition-colors">
+                                    <span class="material-symbols-outlined">sync</span>
+                                </button>
+                                <button class="delete-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
                         `;
-                        historyItem.addEventListener('click', () => {
-                            const amount = item.amount;
-                            generateQrCode(item.id, amount);
-                            saveHistory(item.id, amount);
+                        
+                        // Add event listener to the container, excluding the buttons
+                        historyItem.addEventListener('click', (e) => {
+                            if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
+                                return;
+                            }
+                            generateQrCode(item.id, item.amount);
                             qrModalOverlay.classList.remove('hidden');
                         });
+
+                        // Add event listener for the regenerate button
+                        historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
+                            generateQrCode(item.id, item.amount);
+                            saveHistory(item.id, item.amount);
+                            qrModalOverlay.classList.remove('hidden');
+                        });
+
+                        // Add event listener for the delete button
+                        historyItem.querySelector('.delete-btn').addEventListener('click', () => {
+                            let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                            currentHistory.splice(index, 1);
+                            localStorage.setItem(historyKey, JSON.stringify(currentHistory));
+                            renderHistory(); // Re-render to update the list
+                        });
+
                         historyList.appendChild(historyItem);
                     });
                     clearHistoryBtn.classList.remove('hidden');
