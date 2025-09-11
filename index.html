@@ -17,6 +17,8 @@
     <link rel="icon" href="https://od.lk/s/NDJfNDk0NzI1MzNf/stylized-qr-code-icon-with-vibrant-colors-modern-design_1299084-18665.avif" />
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- math.js CDN for secure calculation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.0/math.min.js"></script>
     <style>
         body {
             font-family: 'Karla', sans-serif;
@@ -297,6 +299,28 @@
         .history-item:hover .history-item-actions {
             display: flex;
         }
+        
+        /* New Animations for Micro-interactions */
+        .dial-pad button {
+            transition: transform 0.1s ease-out;
+        }
+
+        .dial-pad button:active {
+            transform: scale(0.95);
+        }
+
+        .history-item-animated {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: history-fade-in 0.5s ease-out forwards;
+        }
+
+        @keyframes history-fade-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
@@ -541,22 +565,13 @@
                 };
             };
             
+            // Replaced the Function constructor with a safer `math.js` library for evaluation.
+            // This prevents potential code injection attacks by not using `eval()` or similar functions.
             const calculateAmount = (value) => {
                 if (!value) return '';
                 try {
-                    // Sanitizes the input to ensure it only contains valid characters for a mathematical expression.
-                    const sanitizedValue = value.replace(/[^-+*/().0-9]/g, '');
-                    // Fixes the "not a function" error by adding a multiplication operator
-                    // when a number is directly followed by an opening parenthesis.
-                    const fixedValue = sanitizedValue.replace(/(\d+)\s*\(/g, '$1*(');
-                    // Removes any trailing operators at the end of the expression.
-                    const finalValue = fixedValue.replace(/[-+*/.]+$/, '');
-
-                    if (!finalValue) {
-                        return '';
-                    }
-                    const result = Function(`"use strict"; return (${finalValue})`)();
-                    if (!isNaN(result) && isFinite(result)) {
+                    const result = math.evaluate(value);
+                    if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
                         return parseFloat(result).toFixed(2);
                     }
                 } catch (error) {
@@ -756,7 +771,8 @@
                     history.forEach((item, index) => {
                         const historyItem = document.createElement('div');
                         const upiInfo = getUpiData(item.id);
-                        historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group';
+                        historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group history-item-animated';
+                        historyItem.style.animationDelay = `${index * 0.05}s`;
                         historyItem.innerHTML = `
                             <img src="${upiInfo.icon}" alt="${upiInfo.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
                             <div class="flex-1">
@@ -842,14 +858,12 @@
 
             // Calculator functionality on blur
             amountInput.addEventListener('blur', (e) => {
-                e.target.value = calculateAmount(e.target.value.trim());
-            });
-
-            // Allow numbers, decimals, and operators for calculation
-            amountInput.addEventListener('input', (e) => {
-                let value = e.target.value;
-                value = value.replace(/[^-+*/()0-9.]/g, '');
-                e.target.value = value;
+                const calculatedValue = calculateAmount(e.target.value.trim());
+                if (calculatedValue !== '') {
+                    e.target.value = calculatedValue;
+                } else {
+                    e.target.value = '';
+                }
             });
 
             // Dial pad functionality
@@ -865,7 +879,12 @@
                 } else if (value === 'clear') {
                     amountInput.value = '';
                 } else if (value === 'equals') {
-                    amountInput.value = calculateAmount(amountInput.value.trim());
+                    const calculatedValue = calculateAmount(amountInput.value.trim());
+                    if (calculatedValue !== '') {
+                        amountInput.value = calculatedValue;
+                    } else {
+                        amountInput.value = '';
+                    }
                 } else {
                     amountInput.value += value;
                 }
