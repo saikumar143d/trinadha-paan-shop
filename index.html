@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" rel="stylesheet">
     <!-- Material Symbols Icons -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <!-- Lucide Icons for dial pad -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Favicon - Updated to use the new image URL -->
     <link rel="icon" href="https://od.lk/s/NDJfNDk0NzI1MzNf/stylized-qr-code-icon-with-vibrant-colors-modern-design_1299084-18665.avif" />
     <!-- Tailwind CSS CDN -->
@@ -129,13 +131,6 @@
             border-radius: 9999px;
         }
 
-        .upi-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 12px var(--color-hover)80, 0 4px 8px rgba(0, 0, 0, 0.5);
-            border-color: var(--color-hover);
-            color: var(--color-hover);
-        }
-
         .upi-btn-active {
             box-shadow: 0 0 12px var(--color-active)80, 0 0 0 3px var(--color-active)30, 0 0 8px rgba(0, 0, 0, 0.4);
             border-color: var(--color-active);
@@ -146,10 +141,7 @@
         .upi-btn-icon {
             transition: transform 0.2s ease-in-out;
         }
-
-        .upi-btn:hover .upi-btn-icon {
-            transform: scale(1.1);
-        }
+        
 
         .upi-btn span {
             white-space: nowrap;
@@ -370,29 +362,50 @@
         <div id="dial-pad" class="w-full max-w-sm mt-8">
             <div class="grid grid-cols-4 gap-2 w-full">
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-orange-400 hover:bg-orange-500 transition-colors duration-200" data-value="clear">AC</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="(">(</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value=")">)</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="/">/</button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="(">
+                    <span class="font-extrabold text-3xl">(</span>
+                </button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value=")">
+                    <span class="font-extrabold text-3xl">)</span>
+                </button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="/">
+                    <!-- SVG for division sign from Lucide -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><line x1="5" x2="19" y1="12" y2="12"/><path d="M12 5v0"/><path d="M12 19v0"/></svg>
+                </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="7">7</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="8">8</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="9">9</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="*"><span class="material-symbols-outlined">close</span></button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="*">
+                    <!-- SVG for multiplication sign from Lucide -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+                </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="4">4</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="5">5</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="6">6</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="-"><span class="material-symbols-outlined">remove</span></button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="-">
+                    <!-- SVG for minus sign from Lucide -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 12h8"/></svg>
+                </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="1">1</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="2">2</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="3">3</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="+"><span class="material-symbols-outlined">add</span></button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="+">
+                    <!-- SVG for plus sign from Lucide -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value="0">0</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-indigo-800 bg-white hover:bg-gray-200 transition-colors duration-200" data-value=".">.</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-orange-400 hover:bg-orange-500 transition-colors duration-200" data-value="backspace"><span class="material-symbols-outlined">backspace</span></button>
-                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="equals"><span class="material-symbols-outlined">equal</span></button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-2xl font-bold text-white bg-orange-400 hover:bg-orange-500 transition-colors duration-200" data-value="backspace">
+                    <!-- SVG for backspace icon from Lucide -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="m18 9-6 6"/><path d="m12 9 6 6"/></svg>
+                </button>
+                <button class="flex items-center justify-center w-full h-16 rounded-lg text-3xl font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors duration-200" data-value="equals">
+                    <span class="material-symbols-outlined text-3xl">equal</span>
+                </button>
             </div>
         </div>
     </div>
@@ -739,7 +752,7 @@
 
             const createPopupUpiButton = (upi) => {
                 const button = document.createElement('button');
-                button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 hover:scale-110 relative popup-upi-btn';
+                button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 relative popup-upi-btn';
                 button.setAttribute('data-upi-id', upi.id);
                 button.innerHTML = `
                     <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
