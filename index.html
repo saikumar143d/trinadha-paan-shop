@@ -23,6 +23,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- math.js CDN for secure calculation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.0/math.min.js"></script>
+    
     <style>
         body {
             font-family: 'Karla', sans-serif;
@@ -380,7 +381,7 @@
             }
         }
 
-        .upi-btn-active-glow {
+        .upi-btn-base.upi-btn-active-glow {
             box-shadow: 0 0 12px var(--upi-color), 0 0 0 3px rgba(var(--upi-rgb), 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
             border-color: var(--upi-color);
         }
@@ -517,6 +518,7 @@
             </div>
         </div>
     </div>
+    
 
     <!-- QR code styling library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js"></script>
@@ -662,7 +664,7 @@
             const historyView = document.getElementById('history-view');
             const historyBtn = document.getElementById('history-btn');
             const historyIcon = document.getElementById('history-icon');
-
+            
             const showMainView = () => {
                 mainView.classList.remove('hidden');
                 historyView.classList.add('hidden');
@@ -995,7 +997,6 @@
                     clearInputBtn.classList.add('hidden');
                 }
             });
-
         });
     </script>
 </body>
