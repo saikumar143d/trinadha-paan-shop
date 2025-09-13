@@ -407,7 +407,7 @@
     <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full">
         <!-- UPI ID Display Card -->
         <div class="card flex flex-col items-center border-2 border-gray-700 p-2">
-            <div class="w-full py-2 px-4 rounded-lg text-center bg-gray-900 border border-gray-700 flex items-center justify-center space-x-2">
+            <div id="upi-display-container" class="w-full py-2 px-4 rounded-lg text-center bg-gray-900 border border-gray-700 flex items-center justify-center space-x-2">
                 <span class="material-symbols-outlined text-gray-400">person</span>
                 <p id="selected-upi-id" class="text-base font-semibold text-gray-200 gradient-text" style="font-family: 'Ubuntu', sans-serif;">Select a UPI ID</p>
             </div>
@@ -840,10 +840,8 @@
                 button.className = 'w-[70px] h-[70px] p-0 rounded-2xl bg-gray-100 transition-all duration-300 relative upi-btn-base';
                 button.setAttribute('data-upi-id', upi.id);
                 button.style.setProperty('--upi-color', upi.color);
+                button.style.setProperty('--upi-rgb', hexToRgb(upi.color));
 
-                // Check for light or dark icon to apply correct text color on highlight
-                const upiRgb = hexToRgb(upi.color);
-                
                 button.innerHTML = `
                     <div class="w-full h-full p-2 flex items-center justify-center rounded-2xl upi-btn-inner-shadow">
                         <img src="${upi.icon}" alt="${upi.label} Icon" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4B5563/D1D5DB?text=Icon'">
@@ -864,8 +862,8 @@
                     });
 
                     button.classList.add('upi-btn-active-glow');
-                    button.style.setProperty('--upi-rgb', hexToRgb(upi.color));
                     button.style.boxShadow = `0 0 12px ${upi.color}, 0 0 0 3px rgba(${hexToRgb(upi.color)}, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2)`;
+
 
                     const amount = calculateAmount(amountInput.value.trim());
                     selectedUpiIdDisplay.textContent = upi.id;
@@ -997,6 +995,17 @@
                     clearInputBtn.classList.add('hidden');
                 }
             });
+
+            const upiDisplayContainer = document.getElementById('upi-display-container');
+            const mainContent = document.getElementById('main-view');
+
+            const setContainerHeight = () => {
+                const contentHeight = mainContent.offsetHeight;
+                upiDisplayContainer.style.height = `${contentHeight * 0.08}px`; // Adjusting this factor for desired height
+            };
+
+            window.addEventListener('resize', setContainerHeight);
+            setContainerHeight();
 
         });
     </script>
