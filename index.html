@@ -996,17 +996,6 @@
                 }
             });
 
-            const upiDisplayContainer = document.getElementById('upi-display-container');
-            const mainContent = document.getElementById('main-view');
-
-            const setContainerHeight = () => {
-                const contentHeight = mainContent.offsetHeight;
-                upiDisplayContainer.style.height = `${contentHeight * 0.08}px`; // Adjusting this factor for desired height
-            };
-
-            window.addEventListener('resize', setContainerHeight);
-            setContainerHeight();
-
         });
     </script>
 </body>
