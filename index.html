@@ -76,9 +76,10 @@
         }
 
         .upi-btn-container {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
             width: 100%;
         }
 
@@ -103,6 +104,69 @@
             background-color: #ffffff;
             color: #1f2937;
         }
+        
+        /* New Stylish UPI Button Styles */
+        .new-upi-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 1rem;
+            border-radius: 1rem;
+            background-color: #1a1c20;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.3);
+            border: 2px solid transparent;
+        }
+
+        .new-upi-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .new-upi-btn.active {
+            border-color: var(--upi-color);
+            box-shadow: 0 0 15px rgba(var(--upi-rgb), 0.7), inset 0 2px 4px rgba(0, 0, 0, 0.6);
+            transform: translateY(0);
+        }
+
+        .new-upi-btn-icon-container {
+            width: 80px;
+            height: 80px;
+            background-color: #333;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid #555;
+        }
+
+        .new-upi-btn-icon-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* Minimized Button Styles */
+        .minimized-upi-btn {
+            width: 70px;
+            height: 70px;
+            padding: 0;
+            flex-direction: row;
+        }
+
+        .minimized-upi-btn .new-upi-btn-icon-container {
+            width: 100%;
+            height: 100%;
+            margin-bottom: 0;
+            border-radius: 1rem;
+        }
+
 
         .upi-btn .upi-icon-container {
             height: 40px;
@@ -112,10 +176,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: var(--color-icon-bg);
-            border: 2px solid var(--color-icon-border);
+            background-color: #ffffff;
+            border: 2px solid #e5e7eb;
             margin: -2px;
             margin-right: 0.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         
         .upi-btn .upi-icon-container img {
@@ -164,148 +229,17 @@
         .amount-pill {
             display: inline-flex;
             align-items: center;
-            background-color: #2b2e35;
+            background-color: #f9fafb;
             border-radius: 9999px;
-            padding: 0.25rem 0.75rem;
-            border: 1px solid #444;
-            color: #ccc;
-        }
-
-        /* New Advanced Loading State Styles */
-        .qr-code-container {
-            border-radius: 0.5rem;
-            position: relative;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        .qr-code-container.loading::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 80px;
-            height: 80px;
-            background: #ea580c;
-            border-radius: 12px;
-            transform: translate(-50%, -50%) scale(0);
-            box-shadow: 0 0 10px #ea580c, 0 0 20px #ea580c, 0 0 40px #ea580c;
-            animation: qr-loading 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-            z-index: 10;
-        }
-
-        @keyframes qr-loading {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 1;
-            }
-
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-            }
-        }
-
-        /* End of New Advanced Loading State Styles */
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes modalPopIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .edit-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #282828;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-        }
-
-        .logo-container {
-            position: relative;
-            border-radius: 0.75rem;
-        }
-
-        .popup-upi-btn {
-            background-color: #0c0d10;
-            border: 2px solid;
-            border-radius: 9999px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease-in-out;
-        }
-
-        .popup-upi-btn-active {
-            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px;
-        }
-
-        /* Updated QR Code Container Gradient */
-        .qr-code-container::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 0.75rem;
-            background: linear-gradient(45deg, #FFD700, #FFAC33, #FFD700);
-            z-index: -1;
-            animation: none;
-        }
-
-        .history-item-actions {
-            display: none;
-            gap: 0.5rem;
-        }
-
-        .history-item:hover .history-item-actions {
-            display: flex;
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            color: #1f2937;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
-        /* New Animations for Micro-interactions */
-        .dial-pad button {
-            transition: transform 0.1s ease-out;
-        }
-
-        .dial-pad button:active {
-            transform: scale(0.95);
-        }
-
-        .history-item-animated {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: history-fade-in 0.5s ease-out forwards;
-        }
-
-        @keyframes history-fade-in {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .amount-pill .text-sm {
+            font-size: 1rem;
+            font-weight: 700;
         }
     </style>
 </head>
@@ -319,6 +253,7 @@
             <div class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
                 <img src="https://od.lk/s/NDJfNDk0NzI1Mjdf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2011_46_02%20AM.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-full object-cover object-center" />
             </div>
+            <h1 id="header-title" class="text-2xl font-extrabold gradient-text hidden" style="font-family: 'Asimovian', sans-serif;">Trinadha Paan Shop</h1>
         </div>
         <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
             <span id="history-icon" class="material-symbols-outlined text-gray-800">history</span>
@@ -347,7 +282,7 @@
         </div>
 
         <!-- UPI Button Container -->
-        <div id="upi-button-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full px-4">
+        <div id="upi-button-container" class="flex justify-between flex-wrap mx-auto max-w-sm gap-4">
             <!-- Buttons will be dynamically added here -->
         </div>
 
@@ -428,7 +363,7 @@
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-200 text-2xl font-bold transition-transform transform hover:scale-110">&times;</button>
             <div class="flex flex-col items-center space-y-2">
                 <h2 class="text-lg font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Payment QR Code</h2>
-                <span id="amount-display" class="hidden text-gray-400 font-semibold text-sm amount-pill" style="font-family: 'Karla', sans-serif;"></span>
+                <span id="amount-display" class="hidden font-semibold text-sm amount-pill" style="font-family: 'Karla', sans-serif;"></span>
             </div>
             <!-- QR code container -->
             <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden">
@@ -455,51 +390,135 @@
                     });
             });
         }
-        document.addEventListener('DOMContentLoaded', () => {
-            const upiDataKey = 'upiData';
-            // Reverted to the previous UPI data without the new color schemes
-            let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || [{
-                "id": "9492416477@upi",
-                "label": "TVR",
-                "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/",
-                "color": "#e05244", // TVR Red
-                "oppositeColor": "#46b6e0",
-                "iconBg": "#ffffff",
-                "iconBorder": "#e05244"
-            }, {
-                "id": "9885848524@upi",
-                "label": "TSK",
-                "icon": "https://img.icons8.com/color/512/bhim.png",
-                "color": "#018b3d", // TSK Green
-                "oppositeColor": "#ff7909",
-                "iconBg": "#ffffff",
-                "iconBorder": "#018b3d"
-            }, {
-                "id": "9398096059@superyes",
-                "label": "BGV",
-                "icon": "https://ucarecdn.com/caa1a595-b532-46b1-b4d4-1c5e21486b85/-/format/webp/-/quality/smart/",
-                "color": "#4d43fe", // BGV is Blue
-                "oppositeColor": "#ffffff",
-                "iconBg": "#ffffff",
-                "iconBorder": "#4d43fe"
-            }, {
-                "id": "Q639488204@ybl",
-                "label": "PhonePe",
-                "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200",
-                "color": "#017c07", // PhonePe is Green
-                "oppositeColor": "#ffffff",
-                "iconBg": "#ffffff",
-                "iconBorder": "#017c07"
-            }];
 
+        const upiDataKey = 'upiData';
+        const historyKey = 'upiHistory';
+
+        let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || [{
+            "id": "9492416477@upi",
+            "label": "TVR",
+            "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/",
+            "color": "#e05244", // TVR Red
+            "oppositeColor": "#46b6e0",
+            "iconBg": "#ffffff",
+            "iconBorder": "#e05244"
+        }, {
+            "id": "9885848524@upi",
+            "label": "TSK",
+            "icon": "https://img.icons8.com/color/512/bhim.png",
+            "color": "#018b3d", // TSK Green
+            "oppositeColor": "#ff7909",
+            "iconBg": "#ffffff",
+            "iconBorder": "#018b3d"
+        }, {
+            "id": "9398096059@superyes",
+            "label": "BGV",
+            "icon": "https://ucarecdn.com/caa1a595-b532-46b1-b4d4-1c5e21486b85/-/format/webp/-/quality/smart/",
+            "color": "#4d43fe", // BGV is Blue
+            "oppositeColor": "#ffffff",
+            "iconBg": "#ffffff",
+            "iconBorder": "#4d43fe"
+        }, {
+            "id": "Q639488204@ybl",
+            "label": "PhonePe",
+            "icon": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200",
+            "color": "#017c07", // PhonePe is Green
+            "oppositeColor": "#ffffff",
+            "iconBg": "#ffffff",
+            "iconBorder": "#017c07"
+        }];
+
+        const getUpiData = (id) => {
+            return upiData.find(u => u.id === id) || {
+                id,
+                label: id,
+                icon: 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon',
+                color: '#ccc',
+                oppositeColor: '#ccc',
+                iconBg: '#fff',
+                iconBorder: '#ccc'
+            };
+        };
+
+        const renderHistory = () => {
+            const historyList = document.getElementById('history-list');
+            const clearHistoryBtn = document.getElementById('clear-history-btn');
+            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            historyList.innerHTML = '';
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                history.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    const upiInfo = getUpiData(item.id);
+                    historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group history-item-animated';
+                    historyItem.style.animationDelay = `${index * 0.05}s`;
+                    historyItem.innerHTML = `
+                        <img src="${upiInfo.icon}" alt="${upiInfo.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
+                        <div class="flex-1">
+                            <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
+                            <p class="text-gray-400 text-sm" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${item.timestamp}</p>
+                        </div>
+                        <div class="history-item-actions flex items-center space-x-2 absolute right-4 top-1/2 transform -translate-y-1/2">
+                            <button class="regenerate-btn text-gray-400 hover:text-green-500 transition-colors">
+                                <span class="material-symbols-outlined">sync</span>
+                            </button>
+                            <button class="delete-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    historyItem.addEventListener('click', (e) => {
+                        if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
+                            return;
+                        }
+                        generateQrCode(item.id, item.amount);
+                        qrModalOverlay.classList.remove('hidden');
+                    });
+
+                    historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
+                        generateQrCode(item.id, item.amount);
+                        saveHistory(item.id, item.amount);
+                        qrModalOverlay.classList.remove('hidden');
+                    });
+
+                    historyItem.querySelector('.delete-btn').addEventListener('click', () => {
+                        let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                        const indexToDelete = parseInt(historyItem.querySelector('.delete-btn').dataset.index, 10);
+                        currentHistory.splice(indexToDelete, 1);
+                        localStorage.setItem(historyKey, JSON.stringify(currentHistory));
+                        renderHistory();
+                    });
+
+                    historyList.appendChild(historyItem);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        };
+
+        const saveHistory = (id, amount) => {
+            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            const timestamp = new Date().toLocaleString('en-IN', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            });
+            history.unshift({
+                id,
+                amount: parseFloat(amount || 0).toFixed(2),
+                timestamp
+            });
+            localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
             // View Management
             const mainView = document.getElementById('main-view');
             const historyView = document.getElementById('history-view');
             const historyBtn = document.getElementById('history-btn');
             const historyIcon = document.getElementById('history-icon');
-            const floatingHeader = document.getElementById('floating-header');
-            const headerLeft = document.getElementById('header-left');
-
 
             const showMainView = () => {
                 mainView.classList.remove('hidden');
@@ -531,8 +550,6 @@
             const qrCodeContainer = document.getElementById('qr-code-container');
             const popupUpiButtons = document.getElementById('popup-upi-buttons');
             const clearHistoryBtn = document.getElementById('clear-history-btn');
-            const historyList = document.getElementById('history-list');
-            const historyKey = 'upiHistory';
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
             const amountDisplay = document.getElementById('amount-display');
             const dialPad = document.getElementById('dial-pad');
@@ -545,6 +562,14 @@
                 renderUpiButtons();
             };
 
+            const hexToRgb = (hex) => {
+                const bigint = parseInt(hex.slice(1), 16);
+                const r = (bigint >> 16) & 255;
+                const g = (bigint >> 8) & 255;
+                const b = bigint & 255;
+                return `${r}, ${g}, ${b}`;
+            };
+
             const renderUpiButtons = () => {
                 upiButtonContainer.innerHTML = '';
                 popupUpiButtons.innerHTML = '';
@@ -554,18 +579,6 @@
                     upiButtonContainer.appendChild(mainBtn);
                     popupUpiButtons.appendChild(popupBtn);
                 });
-            };
-
-            const getUpiData = (id) => {
-                return upiData.find(u => u.id === id) || {
-                    id,
-                    label: id,
-                    icon: 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon',
-                    color: '#ccc',
-                    oppositeColor: '#ccc',
-                    iconBg: '#fff',
-                    iconBorder: '#ccc'
-                };
             };
             
             // Replaced the Function constructor with a safer `math.js` library for evaluation.
@@ -676,55 +689,38 @@
                 }
             };
 
-            const saveHistory = (id, amount) => {
-                const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                const timestamp = new Date().toLocaleString('en-IN', {
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    hour12: true
-                });
-                history.unshift({
-                    id,
-                    amount: parseFloat(amount || 0).toFixed(2),
-                    timestamp
-                });
-                localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
-            };
-
             const createUpiButton = (upi) => {
                 const button = document.createElement('button');
-                button.className = 'upi-btn focus:outline-none';
+                // The new classes for the improved look
+                button.className = 'w-[70px] h-[70px] p-0 rounded-2xl bg-gray-100 transition-all duration-300 relative shadow-md upi-btn-base';
                 button.setAttribute('data-upi-id', upi.id);
-                button.style.setProperty('--color-active', upi.oppositeColor);
-                button.style.setProperty('--color-hover', upi.color);
-                button.style.setProperty('--color-icon-bg', upi.iconBg);
-                button.style.setProperty('--color-icon-border', upi.iconBorder);
-                button.style.color = upi.color;
-                button.innerHTML = `
-                    <div class="upi-icon-container">
-                        <img src="${upi.icon}" alt="${upi.label} Icon" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
-                    </div>
-                    <span class="text-lg font-bold" style="font-family: 'Karla', sans-serif;">${upi.label}</span>
-                `;
-                button.addEventListener('click', () => {
-                    const amount = calculateAmount(amountInput.value.trim());
+                button.style.setProperty('--upi-color', upi.color);
+                button.style.setProperty('--upi-rgb', hexToRgb(upi.color));
 
+                // Add the new inset and outer shadow for depth
+                button.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2)';
+                
+                button.innerHTML = `
+                    <div class="w-full h-full p-2 flex items-center justify-center rounded-2xl">
+                        <img src="${upi.icon}" alt="${upi.label} Icon" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4B5563/D1D5DB?text=Icon'">
+                    </div>
+                `;
+
+                // Add event listener for the button
+                button.addEventListener('click', () => {
+                    // Remove the glow from all other buttons
+                    document.querySelectorAll('#upi-button-container button').forEach(btn => {
+                        btn.classList.remove('upi-btn-active-glow');
+                    });
+                    
+                    // Add the glow class to the clicked button
+                    button.classList.add('upi-btn-active-glow');
+
+                    const amount = calculateAmount(amountInput.value.trim());
                     selectedUpiIdDisplay.textContent = upi.id;
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
                     qrModalOverlay.classList.remove('hidden');
-
-                    // Remove active state from all buttons and add to the clicked one
-                    document.querySelectorAll('#upi-button-container .upi-btn').forEach(btn => {
-                        btn.classList.remove('upi-btn-active');
-                        btn.style.borderColor = upi.color;
-                        btn.style.color = upi.color;
-                    });
-
-                    button.classList.add('upi-btn-active');
-                    button.style.borderColor = upi.oppositeColor;
-                    button.style.color = upi.oppositeColor;
-
 
                     // Highlight the clicked button in the popup
                     document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
@@ -764,64 +760,6 @@
                 return button;
             };
 
-            const renderHistory = () => {
-                const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                historyList.innerHTML = '';
-                if (history.length === 0) {
-                    historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
-                    clearHistoryBtn.classList.add('hidden');
-                } else {
-                    history.forEach((item, index) => {
-                        const historyItem = document.createElement('div');
-                        const upiInfo = getUpiData(item.id);
-                        historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group history-item-animated';
-                        historyItem.style.animationDelay = `${index * 0.05}s`;
-                        historyItem.innerHTML = `
-                            <img src="${upiInfo.icon}" alt="${upiInfo.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
-                            <div class="flex-1">
-                                <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
-                                <p class="text-gray-400 text-sm" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${item.timestamp}</p>
-                            </div>
-                            <div class="history-item-actions flex items-center space-x-2 absolute right-4 top-1/2 transform -translate-y-1/2">
-                                <button class="regenerate-btn text-gray-400 hover:text-green-500 transition-colors">
-                                    <span class="material-symbols-outlined">sync</span>
-                                </button>
-                                <button class="delete-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
-                                    <span class="material-symbols-outlined">delete</span>
-                                </button>
-                            </div>
-                        `;
-                        
-                        // Add event listener to the container, excluding the buttons
-                        historyItem.addEventListener('click', (e) => {
-                            if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
-                                return;
-                            }
-                            generateQrCode(item.id, item.amount);
-                            qrModalOverlay.classList.remove('hidden');
-                        });
-
-                        // Add event listener for the regenerate button
-                        historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
-                            generateQrCode(item.id, item.amount);
-                            saveHistory(item.id, item.amount);
-                            qrModalOverlay.classList.remove('hidden');
-                        });
-
-                        // Add event listener for the delete button
-                        historyItem.querySelector('.delete-btn').addEventListener('click', () => {
-                            let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                            currentHistory.splice(index, 1);
-                            localStorage.setItem(historyKey, JSON.stringify(currentHistory));
-                            renderHistory(); // Re-render to update the list
-                        });
-
-                        historyList.appendChild(historyItem);
-                    });
-                    clearHistoryBtn.classList.remove('hidden');
-                }
-            };
-
             if (clearHistoryBtn) {
                 clearHistoryBtn.addEventListener('click', () => {
                     localStorage.removeItem(historyKey);
@@ -829,10 +767,7 @@
                 });
             }
 
-
             renderUpiButtons();
-
-            // The following code block caused the popup on page load. It has been removed.
 
             closeModalBtn.addEventListener('click', () => {
                 qrModalOverlay.classList.add('hidden');
@@ -898,6 +833,7 @@
                     clearInputBtn.classList.add('hidden');
                 }
             });
+
         });
     </script>
 </body>
