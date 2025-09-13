@@ -397,7 +397,7 @@
             <div class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
                 <img src="https://od.lk/s/NDJfNDk0NzI1Mjdf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2011_46_02%20AM.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-full object-cover object-center" />
             </div>
-            <h1 id="header-title" class="text-2xl font-extrabold gradient-text hidden" style="font-family: 'Asimovian', sans-serif;">Trinadha Paan Shop</h1>
+            
         </div>
         <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
             <span id="history-icon" class="material-symbols-outlined text-gray-800">history</span>
@@ -585,64 +585,14 @@
             };
         };
 
-        const renderHistory = () => {
-            const historyList = document.getElementById('history-list');
-            const clearHistoryBtn = document.getElementById('clear-history-btn');
-            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-            historyList.innerHTML = '';
-            if (history.length === 0) {
-                historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
-                clearHistoryBtn.classList.add('hidden');
-            } else {
-                history.forEach((item, index) => {
-                    const historyItem = document.createElement('div');
-                    const upiInfo = getUpiData(item.id);
-                    historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group history-item-animated';
-                    historyItem.style.animationDelay = `${index * 0.05}s`;
-                    historyItem.innerHTML = `
-                        <img src="${upiInfo.icon}" alt="${upiInfo.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
-                        <div class="flex-1">
-                            <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
-                            <p class="text-gray-400 text-sm" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${item.timestamp}</p>
-                        </div>
-                        <div class="history-item-actions flex items-center space-x-2 absolute right-4 top-1/2 transform -translate-y-1/2">
-                            <button class="regenerate-btn text-gray-400 hover:text-green-500 transition-colors">
-                                <span class="material-symbols-outlined">sync</span>
-                            </button>
-                            <button class="delete-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
-                                <span class="material-symbols-outlined">delete</span>
-                            </button>
-                        </div>
-                    `;
-                    
-                    historyItem.addEventListener('click', (e) => {
-                        if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
-                            return;
-                        }
-                        generateQrCode(item.id, item.amount);
-                        qrModalOverlay.classList.remove('hidden');
-                    });
-
-                    historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
-                        generateQrCode(item.id, item.amount);
-                        saveHistory(item.id, item.amount);
-                        qrModalOverlay.classList.remove('hidden');
-                    });
-
-                    historyItem.querySelector('.delete-btn').addEventListener('click', () => {
-                        let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                        const indexToDelete = parseInt(historyItem.querySelector('.delete-btn').dataset.index, 10);
-                        currentHistory.splice(indexToDelete, 1);
-                        localStorage.setItem(historyKey, JSON.stringify(currentHistory));
-                        renderHistory();
-                    });
-
-                    historyList.appendChild(historyItem);
-                });
-                clearHistoryBtn.classList.remove('hidden');
-            }
+        const hexToRgb = (hex) => {
+            const bigint = parseInt(hex.slice(1), 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `${r}, ${g}, ${b}`;
         };
-
+        
         const saveHistory = (id, amount) => {
             const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
             const timestamp = new Date().toLocaleString('en-IN', {
@@ -656,6 +606,20 @@
                 timestamp
             });
             localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+        };
+
+        const calculateAmount = (value) => {
+            if (!value) return '';
+            try {
+                const result = math.evaluate(value);
+                if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
+                    return parseFloat(result).toFixed(2);
+                }
+            } catch (error) {
+                console.error("Calculation error:", error);
+                return '';
+            }
+            return '';
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -706,43 +670,7 @@
                 localStorage.setItem(upiDataKey, JSON.stringify(upiData));
                 renderUpiButtons();
             };
-
-            const hexToRgb = (hex) => {
-                const bigint = parseInt(hex.slice(1), 16);
-                const r = (bigint >> 16) & 255;
-                const g = (bigint >> 8) & 255;
-                const b = bigint & 255;
-                return `${r}, ${g}, ${b}`;
-            };
-
-            const renderUpiButtons = () => {
-                upiButtonContainer.innerHTML = '';
-                popupUpiButtons.innerHTML = '';
-                upiData.forEach(upi => {
-                    const mainBtn = createUpiButton(upi);
-                    const popupBtn = createPopupUpiButton(upi);
-                    upiButtonContainer.appendChild(mainBtn);
-                    popupUpiButtons.appendChild(popupBtn);
-                });
-            };
             
-            // Replaced the Function constructor with a safer `math.js` library for evaluation.
-            // This prevents potential code injection attacks by not using `eval()` or similar functions.
-            const calculateAmount = (value) => {
-                if (!value) return '';
-                try {
-                    const result = math.evaluate(value);
-                    if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
-                        return parseFloat(result).toFixed(2);
-                    }
-                } catch (error) {
-                    console.error("Calculation error:", error);
-                    return '';
-                }
-                return '';
-            };
-
-
             const generateQrCode = (upiId, amount) => {
                 qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
@@ -833,6 +761,76 @@
                     amountDisplay.classList.add('hidden');
                 }
             };
+            
+            const renderUpiButtons = () => {
+                upiButtonContainer.innerHTML = '';
+                popupUpiButtons.innerHTML = '';
+                upiData.forEach(upi => {
+                    const mainBtn = createUpiButton(upi);
+                    const popupBtn = createPopupUpiButton(upi);
+                    upiButtonContainer.appendChild(mainBtn);
+                    popupUpiButtons.appendChild(popupBtn);
+                });
+            };
+
+            const renderHistory = () => {
+                const historyList = document.getElementById('history-list');
+                const clearHistoryBtn = document.getElementById('clear-history-btn');
+                const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                historyList.innerHTML = '';
+                if (history.length === 0) {
+                    historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
+                    clearHistoryBtn.classList.add('hidden');
+                } else {
+                    history.forEach((item, index) => {
+                        const historyItem = document.createElement('div');
+                        const upiInfo = getUpiData(item.id);
+                        historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group history-item-animated';
+                        historyItem.style.animationDelay = `${index * 0.05}s`;
+                        historyItem.innerHTML = `
+                            <img src="${upiInfo.icon}" alt="${upiInfo.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
+                            <div class="flex-1">
+                                <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
+                                <p class="text-gray-400 text-sm" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${item.timestamp}</p>
+                            </div>
+                            <div class="history-item-actions flex items-center space-x-2 absolute right-4 top-1/2 transform -translate-y-1/2">
+                                <button class="regenerate-btn text-gray-400 hover:text-green-500 transition-colors">
+                                    <span class="material-symbols-outlined">sync</span>
+                                </button>
+                                <button class="delete-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </button>
+                            </div>
+                        `;
+                        
+                        historyItem.addEventListener('click', (e) => {
+                            if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
+                                return;
+                            }
+                            generateQrCode(item.id, item.amount);
+                            qrModalOverlay.classList.remove('hidden');
+                        });
+
+                        historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
+                            generateQrCode(item.id, item.amount);
+                            saveHistory(item.id, item.amount);
+                            qrModalOverlay.classList.remove('hidden');
+                        });
+
+                        historyItem.querySelector('.delete-btn').addEventListener('click', () => {
+                            let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                            const indexToDelete = parseInt(historyItem.querySelector('.delete-btn').dataset.index, 10);
+                            currentHistory.splice(indexToDelete, 1);
+                            localStorage.setItem(historyKey, JSON.stringify(currentHistory));
+                            renderHistory();
+                        });
+
+                        historyList.appendChild(historyItem);
+                    });
+                    clearHistoryBtn.classList.remove('hidden');
+                }
+            };
+            
 
             const createUpiButton = (upi) => {
                 const container = document.createElement('div');
