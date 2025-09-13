@@ -225,21 +225,160 @@
         .qr-button-active {
             box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4f46e5;
         }
-
+        
+        /* New styling for the amount pill */
         .amount-pill {
             display: inline-flex;
             align-items: center;
             background-color: #f9fafb;
             border-radius: 9999px;
-            padding: 0.5rem 1rem;
-            border: 1px solid #d1d5db;
+            padding: 0.75rem 1.25rem;
             color: #1f2937;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .amount-pill .text-sm {
-            font-size: 1rem;
+            border: 1px solid #d1d5db;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.05);
             font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* New Advanced Loading State Styles */
+        .qr-code-container {
+            border-radius: 0.5rem;
+            position: relative;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .qr-code-container.loading::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 80px;
+            height: 80px;
+            background: #ea580c;
+            border-radius: 12px;
+            transform: translate(-50%, -50%) scale(0);
+            box-shadow: 0 0 10px #ea580c, 0 0 20px #ea580c, 0 0 40px #ea580c;
+            animation: qr-loading 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
+            z-index: 10;
+        }
+
+        @keyframes qr-loading {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* End of New Advanced Loading State Styles */
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes modalPopIn {
+            from {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .edit-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #282828;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+        }
+
+        .logo-container {
+            position: relative;
+            border-radius: 0.75rem;
+        }
+
+        .popup-upi-btn {
+            background-color: #0c0d10;
+            border: 2px solid;
+            border-radius: 9999px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .popup-upi-btn-active {
+            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px;
+        }
+
+        /* Updated QR Code Container Gradient */
+        .qr-code-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 0.75rem;
+            background: linear-gradient(45deg, #FFD700, #FFAC33, #FFD700);
+            z-index: -1;
+            animation: none;
+        }
+
+        .history-item-actions {
+            display: none;
+            gap: 0.5rem;
+        }
+
+        .history-item:hover .history-item-actions {
+            display: flex;
+        }
+
+        /* New Animations for Micro-interactions */
+        .dial-pad button {
+            transition: transform 0.1s ease-out;
+        }
+
+        .dial-pad button:active {
+            transform: scale(0.95);
+        }
+
+        .history-item-animated {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: history-fade-in 0.5s ease-out forwards;
+        }
+
+        @keyframes history-fade-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .upi-btn-active-glow {
+            box-shadow: 0 0 12px var(--upi-color), 0 0 0 3px rgba(var(--upi-rgb), 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
         }
     </style>
 </head>
