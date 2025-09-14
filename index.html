@@ -411,7 +411,7 @@
     </div>
 
     <!-- Main QR Generator View -->
-    <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm h-[80vh] overflow-y-auto">
+    <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm h-full overflow-y-auto">
         <!-- UPI ID Display Card -->
         <div class="card flex flex-col items-center border-2 border-gray-700 p-2">
             <div id="upi-display-container" class="w-full py-2 px-4 rounded-lg text-center bg-gray-900 border border-gray-700 flex items-center justify-center space-x-2 h-16">
@@ -1003,6 +1003,13 @@
                 } else {
                     clearInputBtn.classList.add('hidden');
                 }
+            });
+            
+            logoBtn.addEventListener('click', () => {
+                logoImg.style.opacity = '0';
+                setTimeout(() => {
+                    window.location.reload(true);
+                }, 500); 
             });
         });
     </script>
