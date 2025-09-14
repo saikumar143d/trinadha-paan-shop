@@ -196,7 +196,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            border-radius: 9999px;
         }
 
         .upi-btn-active {
@@ -397,7 +396,7 @@
 <body class="flex flex-col items-center min-h-screen p-4">
 
     <!-- Floating Header Elements -->
-    <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between">
+    <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2">
         <div id="header-left" class="flex items-center space-x-2">
             <!-- Updated logo to use the provided image -->
             <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
@@ -411,7 +410,7 @@
     </div>
 
     <!-- Main QR Generator View -->
-    <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm h-full max-h-[80vh] overflow-y-auto">
+    <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm h-full max-h-[85vh] overflow-y-auto">
         <!-- UPI ID Display Card -->
         <div class="card flex flex-col items-center border-2 border-gray-700 p-2">
             <div id="upi-display-container" class="w-full py-2 px-4 rounded-lg text-center bg-gray-900 border border-gray-700 flex items-center justify-center space-x-2 h-16">
@@ -501,10 +500,7 @@
                 <!-- History items will be dynamically added here -->
             </div>
         </div>
-        <div class="flex flex-col items-center text-center mt-6 space-y-2">
-            <h3 class="text-4xl font-extrabold text-gray-400" style="font-family: 'Ubuntu', sans-serif;">Live it up!</h3>
-            <p class="text-base font-light text-gray-500" style="font-family: 'Karla', sans-serif;">Crafted with ❤️ in AI , 📌 india</p>
-        </div>
+        
     </div>
 
     <!-- Modal for QR Code Display -->
