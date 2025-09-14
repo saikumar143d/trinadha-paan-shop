@@ -35,7 +35,7 @@
             user-select: none;
             overflow: hidden;
         }
-        
+
         /* Custom scrollbar styling */
         ::-webkit-scrollbar {
             width: 0px;
@@ -397,12 +397,16 @@
 
     <!-- Floating Header Elements -->
     <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2">
-        <div id="header-left" class="flex items-center space-x-2">
+        <div id="header-left" class="flex items-center space-x-4">
             <!-- Updated logo to use the provided image -->
             <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
                 <img id="logo-img" src="https://od.lk/s/NDJfNDk0NzI1Mjdf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2011_46_02%20AM.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-full object-cover object-center transition-opacity duration-500" />
             </button>
-            
+            <!-- New UPI ID Display with dynamic label in Header -->
+            <div id="upi-display-container" class="flex flex-col text-left text-white">
+                <span id="upi-label-text" class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Select a UPI ID:</span>
+                <p id="selected-upi-id" class="text-sm font-bold text-gray-200" style="font-family: 'Ubuntu', sans-serif;">---</p>
+            </div>
         </div>
         <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
             <span id="history-icon" class="material-symbols-outlined text-gray-800">history</span>
@@ -411,14 +415,6 @@
 
     <!-- Main QR Generator View -->
     <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm h-full max-h-[85vh] overflow-y-auto">
-        <!-- UPI ID Display Card -->
-        <div class="card flex flex-col items-center border-2 border-gray-700 p-2">
-            <div id="upi-display-container" class="w-full py-2 px-4 rounded-lg text-center bg-gray-900 border border-gray-700 flex items-center justify-center space-x-2 h-16">
-                <span class="material-symbols-outlined text-gray-400">person</span>
-                <p id="selected-upi-id" class="text-base font-semibold text-gray-200 gradient-text" style="font-family: 'Ubuntu', sans-serif;">Select a UPI ID</p>
-            </div>
-        </div>
-
         <!-- Amount Input Card -->
         <div class="card flex flex-col items-center border-2 border-gray-700 p-2">
             <div id="input-container" class="input-group w-full flex items-center py-2 px-4 h-16">
@@ -447,7 +443,11 @@
                 </button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="/">
                     <!-- SVG for division sign from Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><line x1="5" x2="19" y1="12" y2="12"/><path d="M12 5v0"/><path d="M12 19v0"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                        <line x1="5" x2="19" y1="12" y2="12" />
+                        <path d="M12 5v0" />
+                        <path d="M12 19v0" />
+                    </svg>
                 </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="7">7</button>
@@ -455,7 +455,11 @@
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="9">9</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="*">
                     <!-- SVG for multiplication sign from Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                        <path d="m15 9-6 6" />
+                        <path d="m9 9 6 6" />
+                    </svg>
                 </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="4">4</button>
@@ -463,7 +467,10 @@
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="6">6</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="-">
                     <!-- SVG for minus sign from Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 12h8"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                        <path d="M8 12h8" />
+                    </svg>
                 </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="1">1</button>
@@ -471,14 +478,22 @@
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="3">3</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="+">
                     <!-- SVG for plus sign from Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                        <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                        <path d="M8 12h8" />
+                        <path d="M12 8v8" />
+                    </svg>
                 </button>
 
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="0">0</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=".">.</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="backspace">
                     <!-- SVG for backspace icon from Lucide -->
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8"><path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/><path d="m18 9-6 6"/><path d="m12 9 6 6"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                        <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                        <path d="m18 9-6 6" />
+                        <path d="m12 9 6 6" />
+                    </svg>
                 </button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-white bg-orange-500 shadow-lg hover:bg-orange-600 transition-colors duration-200 border border-gray-700" data-value="equals">
                     <span class="material-symbols-outlined text-3xl">equal</span>
@@ -523,7 +538,6 @@
     </div>
     
 
-    <!-- QR code styling library from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js"></script>
     <script>
         // PWA Service Worker Registration
@@ -662,19 +676,14 @@
             const qrCodeContainer = document.getElementById('qr-code-container');
             const popupUpiButtons = document.getElementById('popup-upi-buttons');
             const clearHistoryBtn = document.getElementById('clear-history-btn');
+            const upiLabelText = document.getElementById('upi-label-text');
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
             const amountDisplay = document.getElementById('amount-display');
             const dialPad = document.getElementById('dial-pad');
             const logoBtn = document.getElementById('logo-btn');
             const logoImg = document.getElementById('logo-img');
-
-
+            
             let currentQR = null;
-
-            const saveUpiData = () => {
-                localStorage.setItem(upiDataKey, JSON.stringify(upiData));
-                renderUpiButtons();
-            };
             
             const generateQrCode = (upiId, amount) => {
                 qrCodeContainer.classList.add('loading');
@@ -689,7 +698,7 @@
                     ["#C5F9D7", "#F7D486", "#F27A7D"],
                     ["#DEEFB7", "#98DFAF", "#5FB49C"],
                     ["#F08700", "#F49F0A", "#EFCA08"],
-                    ["#FFFD82", "#FF9B71", "#E84855"],
+                    ["#FFFD82", "#FF9B71", "##E84855"],
                     ["#FF5C4D", "#FF9636", "#FFCD58"],
                     ["#FF8370", "#00B1B0", "#FEC84D"],
                     ["#FEDE00", "#B4F8C8", "#6AB8EE"]
@@ -836,7 +845,6 @@
                 }
             };
             
-
             const createUpiButton = (upi) => {
                 const container = document.createElement('div');
                 container.className = 'flex flex-col items-center gap-2';
@@ -871,6 +879,7 @@
 
 
                     const amount = calculateAmount(amountInput.value.trim());
+                    upiLabelText.textContent = upi.label;
                     selectedUpiIdDisplay.textContent = upi.id;
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
@@ -913,6 +922,8 @@
                     }
                     
                     const amount = calculateAmount(amountInput.value.trim());
+                    upiLabelText.textContent = upi.label;
+                    selectedUpiIdDisplay.textContent = upi.id;
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
 
@@ -1005,8 +1016,9 @@
                 logoImg.style.opacity = '0';
                 setTimeout(() => {
                     window.location.reload(true);
-                }, 500); 
+                }, 500);
             });
+            
         });
     </script>
 </body>
