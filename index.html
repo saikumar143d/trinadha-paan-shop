@@ -231,117 +231,19 @@
             animation: modalPopIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
-        .qr-button-active {
-            box-shadow: 0 0 0 2px #fff, 0 0 0 4px #4f46e5;
+        /* Updated popup button active style to reflect the old design */
+        .popup-upi-btn-active {
+            border: 2px solid var(--upi-color);
+            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px var(--upi-opposite-color);
+            transition: all 0.2s ease-in-out;
+            transform: scale(1.05);
         }
         
-        /* New styling for the amount pill */
-        .amount-pill {
-            display: inline-flex;
-            align-items: center;
-            /* Perplexity-like design changes */
-            background: radial-gradient(circle at center, #2a2c30 0%, #1a1c20 100%);
-            border-radius: 9999px;
-            padding: 0.75rem 1.25rem;
-            color: #e5e7eb; /* Light text color for contrast */
-            border: none;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.4);
-            font-weight: 700;
-            font-size: 1rem;
-            transition: all 0.3s ease;
+        /* New style for inactive popup buttons with a slight border */
+        .popup-upi-btn:not(.popup-upi-btn-active) {
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
         }
 
-        /* New Advanced Loading State Styles */
-        .qr-code-container {
-            border-radius: 0.5rem;
-            position: relative;
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        .qr-code-container.loading::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 80px;
-            height: 80px;
-            background: #ea580c;
-            border-radius: 12px;
-            transform: translate(-50%, -50%) scale(0);
-            box-shadow: 0 0 10px #ea580c, 0 0 20px #ea580c, 0 0 40px #ea580c;
-            animation: qr-loading 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards;
-            z-index: 10;
-        }
-
-        @keyframes qr-loading {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 1;
-            }
-
-            50% {
-                transform: translate(-50%, -50%) scale(1.2);
-                opacity: 1;
-            }
-
-            100% {
-                transform: translate(-50%, -50%) scale(0);
-                opacity: 0;
-            }
-        }
-
-        /* End of New Advanced Loading State Styles */
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.95);
-            }
-
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        @keyframes modalPopIn {
-            from {
-                transform: scale(0.8);
-                opacity: 0;
-            }
-
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .edit-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background-color: #282828;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-        }
-
-        .logo-container {
-            position: relative;
-            border-radius: 0.75rem;
-        }
-
-        .popup-upi-btn {
-            background-color: #0c0d10;
-            border: 2px solid;
-            border-radius: 9999px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease-in-out;
-        }
-
-        .popup-upi-btn-active {
-            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px;
-        }
 
         /* Updated QR Code Container Gradient */
         .qr-code-container::before {
@@ -435,7 +337,7 @@
         </div>
 
         <!-- Dial Pad -->
-        <div id="dial-pad" class="w-full max-w-sm mt-8">
+        <div id="dial-pad" class="w-full max-w-sm mt-8 mb-4">
             <div class="grid grid-cols-4 gap-2 w-full">
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-orange-500 shadow-lg hover:bg-orange-600 transition-colors duration-200 border border-gray-700" data-value="clear">AC</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="(">
@@ -506,7 +408,7 @@
     </div>
 
     <!-- Payment History View -->
-    <div id="history-view" class="hidden card mt-20 relative flex flex-col">
+    <div id="history-view" class="hidden card mt-20 relative flex flex-col h-full max-h-[85vh]">
         <div class="flex justify-between items-center mb-4">
             <h3 id="history-header" class="text-lg font-bold gradient-text" style="font-family: 'Ubuntu', sans-serif;">History</h3>
             <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-full font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-300 hidden">
@@ -592,6 +494,9 @@
             "iconBg": "#ffffff",
             "iconBorder": "#017c07"
         }];
+        
+        // A global variable to track the currently selected UPI ID
+        let selectedUpiId = null;
 
         const getUpiData = (id) => {
             return upiData.find(u => u.id === id) || {
@@ -640,6 +545,31 @@
                 return '';
             }
             return '';
+        };
+        
+        // Function to update the selected button highlighting across both views
+        const updateButtonHighlighting = (id) => {
+            selectedUpiId = id;
+            document.querySelectorAll('.upi-btn-base').forEach(btn => {
+                btn.classList.remove('upi-btn-active-glow');
+            });
+            document.querySelectorAll('.popup-upi-btn').forEach(btn => {
+                btn.classList.remove('popup-upi-btn-active');
+            });
+            
+            const upi = getUpiData(id);
+
+            const mainBtn = document.querySelector(`#upi-button-container [data-upi-id="${id}"]`);
+            if (mainBtn) {
+                mainBtn.classList.add('upi-btn-active-glow');
+            }
+            
+            const popupBtn = document.querySelector(`#popup-upi-buttons [data-upi-id="${id}"]`);
+            if (popupBtn) {
+                popupBtn.classList.add('popup-upi-btn-active');
+                popupBtn.style.setProperty('--upi-color', upi.color);
+                popupBtn.style.setProperty('--upi-opposite-color', upi.oppositeColor);
+            }
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -701,7 +631,7 @@
                     ["#C5F9D7", "#F7D486", "#F27A7D"],
                     ["#DEEFB7", "#98DFAF", "#5FB49C"],
                     ["#F08700", "#F49F0A", "#EFCA08"],
-                    ["#FFFD82", "#FF9B71", "##E84855"],
+                    ["#FFFD82", "#FF9B71", "#E84855"],
                     ["#FF5C4D", "#FF9636", "#FFCD58"],
                     ["#FF8370", "#00B1B0", "#FEC84D"],
                     ["#FEDE00", "#B4F8C8", "#6AB8EE"]
@@ -872,15 +802,7 @@
                 container.appendChild(label);
 
                 button.addEventListener('click', () => {
-                    document.querySelectorAll('#upi-button-container .upi-btn-base').forEach(btn => {
-                        btn.classList.remove('upi-btn-active-glow');
-                        btn.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2)';
-                    });
-
-                    button.classList.add('upi-btn-active-glow');
-                    button.style.boxShadow = `0 0 12px ${upi.color}, 0 0 0 3px rgba(${hexToRgb(upi.color)}, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2)`;
-
-
+                    updateButtonHighlighting(upi.id);
                     const amount = calculateAmount(amountInput.value.trim());
                     upiLabelText.textContent = upi.label;
                     selectedUpiIdDisplay.textContent = upi.id;
@@ -888,7 +810,6 @@
                     saveHistory(upi.id, amount);
                     qrModalOverlay.classList.remove('hidden');
 
-                    // New: Clear the input after QR is generated
                     amountInput.value = '';
                     clearInputBtn.classList.add('hidden');
                 });
@@ -900,22 +821,13 @@
                 const button = document.createElement('button');
                 button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 relative popup-upi-btn';
                 button.setAttribute('data-upi-id', upi.id);
+                button.style.setProperty('--upi-color', upi.color);
+                button.style.setProperty('--upi-opposite-color', upi.oppositeColor);
                 button.innerHTML = `
                     <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
                 `;
-                button.style.borderColor = upi.color;
                 button.addEventListener('click', () => {
-                    // Sync highlighting on the main screen
-                    document.querySelectorAll('#upi-button-container .upi-btn-base').forEach(btn => {
-                        btn.classList.remove('upi-btn-active-glow');
-                        btn.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2)';
-                    });
-                    const mainUpiButton = upiButtonContainer.querySelector(`[data-upi-id="${upi.id}"]`);
-                    if (mainUpiButton) {
-                        mainUpiButton.classList.add('upi-btn-active-glow');
-                        mainUpiButton.style.setProperty('--upi-rgb', hexToRgb(upi.color));
-                        mainUpiButton.style.boxShadow = `0 0 12px ${upi.color}, 0 0 0 3px rgba(${hexToRgb(upi.color)}, 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2)`;
-                    }
+                    updateButtonHighlighting(upi.id);
                     
                     const amount = calculateAmount(amountInput.value.trim());
                     upiLabelText.textContent = upi.label;
@@ -923,15 +835,6 @@
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
 
-                    document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
-                        btn.classList.remove('popup-upi-btn-active');
-                        btn.style.boxShadow = '';
-                    });
-
-                    button.classList.add('popup-upi-btn-active');
-                    button.style.boxShadow = `0 0 0 2px #0c0d10, 0 0 0 4px ${upi.oppositeColor}`;
-
-                    // New: Clear the input after QR is generated
                     amountInput.value = '';
                     clearInputBtn.classList.add('hidden');
                 });
