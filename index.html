@@ -396,9 +396,9 @@
     <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between">
         <div id="header-left" class="flex items-center space-x-2">
             <!-- Updated logo to use the provided image -->
-            <div class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
-                <img src="https://od.lk/s/NDJfNDk0NzI1Mjdf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2011_46_02%20AM.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-full object-cover object-center" />
-            </div>
+            <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
+                <img id="logo-img" src="https://od.lk/s/NDJfNDk0NzI1Mjdf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2011_46_02%20AM.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-full object-cover object-center transition-opacity duration-500" />
+            </button>
             
         </div>
         <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
@@ -407,7 +407,7 @@
     </div>
 
     <!-- Main QR Generator View -->
-    <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm h-[80vh] overflow-y-auto">
+    <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm h-full max-h-[80vh] overflow-y-auto">
         <!-- UPI ID Display Card -->
         <div class="card flex flex-col items-center border-2 border-gray-700 p-2">
             <div id="upi-display-container" class="w-full py-2 px-4 rounded-lg text-center bg-gray-900 border border-gray-700 flex items-center justify-center space-x-2 h-16">
@@ -665,6 +665,8 @@
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
             const amountDisplay = document.getElementById('amount-display');
             const dialPad = document.getElementById('dial-pad');
+            const logoBtn = document.getElementById('logo-btn');
+            const logoImg = document.getElementById('logo-img');
 
 
             let currentQR = null;
