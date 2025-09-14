@@ -239,14 +239,16 @@
         .amount-pill {
             display: inline-flex;
             align-items: center;
-            background-color: #f9fafb;
+            /* Perplexity-like design changes */
+            background: radial-gradient(circle at center, #2a2c30 0%, #1a1c20 100%);
             border-radius: 9999px;
             padding: 0.75rem 1.25rem;
-            color: #1f2937;
-            border: 1px solid #d1d5db;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.05);
+            color: #e5e7eb; /* Light text color for contrast */
+            border: none;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.1), inset 0 2px 4px rgba(0, 0, 0, 0.4);
             font-weight: 700;
             font-size: 1rem;
+            transition: all 0.3s ease;
         }
 
         /* New Advanced Loading State Styles */
@@ -885,17 +887,10 @@
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
                     qrModalOverlay.classList.remove('hidden');
-                    
-                    document.querySelectorAll('#popup-upi-buttons button').forEach(btn => {
-                        btn.classList.remove('popup-upi-btn-active');
-                        btn.style.boxShadow = '';
-                    });
 
-                    const popupBtn = popupUpiButtons.querySelector(`[data-upi-id="${upi.id}"]`);
-                    if (popupBtn) {
-                        popupBtn.classList.add('popup-upi-btn-active');
-                        popupBtn.style.boxShadow = `0 0 0 2px #0c0d10, 0 0 0 4px ${upi.oppositeColor}`;
-                    }
+                    // New: Clear the input after QR is generated
+                    amountInput.value = '';
+                    clearInputBtn.classList.add('hidden');
                 });
 
                 return container;
@@ -935,6 +930,10 @@
 
                     button.classList.add('popup-upi-btn-active');
                     button.style.boxShadow = `0 0 0 2px #0c0d10, 0 0 0 4px ${upi.oppositeColor}`;
+
+                    // New: Clear the input after QR is generated
+                    amountInput.value = '';
+                    clearInputBtn.classList.add('hidden');
                 });
                 return button;
             };
