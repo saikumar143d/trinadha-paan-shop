@@ -279,17 +279,23 @@
             display: flex;
         }
 
-        /* New Animations for Micro-interactions */
-        .dial-pad button {
-            transition: transform 0.1s ease-out;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* NEW: Soft Hover and Active animations for buttons */
+        .dial-pad button,
+        .upi-btn-base,
+        .history-item {
+            transition: transform 0.1s ease-out; /* Reduced transition time */
+        }
+
+        .dial-pad button:hover {
+            transform: scale(1.05);
         }
         
         .dial-pad button:active {
             transform: scale(0.95);
         }
 
-        /* New press-down animation for UPI buttons */
+        /* Removed hover effect from UPI buttons */
+
         .upi-btn-base:active,
         .history-item:active {
             transform: scale(0.98);
@@ -828,11 +834,8 @@
             const showMainView = () => {
                 historyView.classList.remove('history-visible');
                 historyIcon.innerText = 'history';
-
-                setTimeout(() => {
-                    historyView.classList.add('hidden');
-                    mainView.classList.remove('hidden');
-                }, 500); 
+                historyView.classList.add('hidden');
+                mainView.classList.remove('hidden');
             };
 
             const showHistoryView = () => {
