@@ -425,6 +425,18 @@
             transition: opacity 0.5s ease-in;
         }
 
+        /* NEW: Styles for error state and message */
+        .input-error {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
     </style>
 </head>
 
@@ -462,6 +474,8 @@
                     <span class="material-symbols-outlined text-lg">cancel</span>
                 </button>
             </div>
+            <!-- New error message display -->
+            <span id="errorMessage" class="error-message text-red-500 mt-2"></span>
         </div>
 
         <!-- UPI Button Container -->
@@ -680,19 +694,58 @@
             });
             localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
         };
+        
+        // NEW: Function to perform input validation
+        const validateExpression = (expression) => {
+            if (expression.trim() === '') {
+                return { isValid: true, message: '' };
+            }
+            const invalidChars = expression.match(/[^0-9\+\-\*\/\.\(\)]/g);
+            if (invalidChars) {
+                return { isValid: false, message: `Invalid character(s) found: ${[...new Set(invalidChars)].join('')}` };
+            }
+
+            // Check for consecutive operators (except for unary minus)
+            if (expression.match(/[\+\*\/\.\-]{2,}/) || expression.match(/\/\*|\*\//)) {
+                return { isValid: false, message: 'Consecutive operators are not allowed.' };
+            }
+            
+            // Check for leading operators that are not a minus sign
+            if (expression.match(/^[\+\*\/\.]{1}/)) {
+                 return { isValid: false, message: 'Expression cannot start with this operator.' };
+            }
+
+            // Check for unmatched parentheses
+            let parenthesisCount = 0;
+            for (let char of expression) {
+                if (char === '(') parenthesisCount++;
+                if (char === ')') parenthesisCount--;
+                if (parenthesisCount < 0) {
+                    return { isValid: false, message: 'Unmatched parenthesis.' };
+                }
+            }
+            if (parenthesisCount !== 0) {
+                 return { isValid: false, message: 'Unmatched parenthesis.' };
+            }
+
+            return { isValid: true, message: '' };
+        };
 
         const calculateAmount = (value) => {
-            if (!value) return '';
+            if (!value) return { result: '', error: 'Amount is required.' };
+            const validation = validateExpression(value);
+            if (!validation.isValid) {
+                return { result: '', error: validation.message };
+            }
             try {
                 const result = math.evaluate(value);
                 if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
-                    return parseFloat(result).toFixed(2);
+                    return { result: parseFloat(result).toFixed(2), error: null };
                 }
             } catch (error) {
-                console.error("Calculation error:", error);
-                return '';
+                return { result: '', error: 'Invalid mathematical expression.' };
             }
-            return '';
+            return { result: '', error: 'Invalid mathematical expression.' };
         };
         
         // Function to update the selected button highlighting across both views
@@ -772,7 +825,9 @@
             const dialPad = document.getElementById('dial-pad');
             const logoBtn = document.getElementById('logo-btn');
             const logoImg = document.getElementById('logo-img');
-            
+            const errorMessage = document.getElementById('errorMessage');
+            const inputGroup = document.getElementById('input-container');
+
             let currentQR = null;
             
             const generateQrCode = (upiId, amount) => {
@@ -967,8 +1022,18 @@
                 container.appendChild(label);
 
                 button.addEventListener('click', () => {
+                    const validation = validateExpression(amountInput.value.trim());
+                    if (!validation.isValid) {
+                         errorMessage.textContent = validation.message;
+                         errorMessage.style.display = 'block';
+                         inputGroup.classList.add('input-error');
+                         return;
+                    }
+                    errorMessage.style.display = 'none';
+                    inputGroup.classList.remove('input-error');
+
                     updateButtonHighlighting(upi.id);
-                    const amount = calculateAmount(amountInput.value.trim());
+                    const amount = calculateAmount(amountInput.value.trim()).result;
                     // Store the calculated amount in the global variable
                     currentQrAmount = amount;
                     upiLabelText.textContent = upi.label;
@@ -1028,8 +1093,19 @@
                 }
             });
 
-            // Handle the clear button functionality
+            // Handle the clear button functionality and live validation
             amountInput.addEventListener('input', () => {
+                const validation = validateExpression(amountInput.value);
+                if (!validation.isValid) {
+                     errorMessage.textContent = validation.message;
+                     errorMessage.style.display = 'block';
+                     inputGroup.classList.add('input-error');
+                } else {
+                     errorMessage.textContent = '';
+                     errorMessage.style.display = 'none';
+                     inputGroup.classList.remove('input-error');
+                }
+                
                 if (amountInput.value.length > 0) {
                     clearInputBtn.classList.remove('hidden');
                 } else {
@@ -1040,16 +1116,25 @@
             clearInputBtn.addEventListener('click', () => {
                 amountInput.value = '';
                 clearInputBtn.classList.add('hidden');
+                errorMessage.textContent = '';
+                errorMessage.style.display = 'none';
+                inputGroup.classList.remove('input-error');
                 amountInput.focus();
             });
 
             // Calculator functionality on blur
             amountInput.addEventListener('blur', (e) => {
-                const calculatedValue = calculateAmount(e.target.value.trim());
-                if (calculatedValue !== '') {
-                    e.target.value = calculatedValue;
-                } else {
+                const { result, error } = calculateAmount(e.target.value.trim());
+                if (error) {
+                    errorMessage.textContent = error;
+                    errorMessage.style.display = 'block';
+                    inputGroup.classList.add('input-error');
                     e.target.value = '';
+                } else {
+                    e.target.value = result;
+                    errorMessage.textContent = '';
+                    errorMessage.style.display = 'none';
+                    inputGroup.classList.remove('input-error');
                 }
             });
 
@@ -1066,12 +1151,18 @@
                 } else if (value === 'clear') {
                     amountInput.value = '';
                 } else if (value === 'equals') {
-                    const calculatedValue = calculateAmount(amountInput.value.trim());
-                    if (calculatedValue !== '') {
-                        e.target.value = calculatedValue;
+                    const { result, error } = calculateAmount(amountInput.value.trim());
+                    if (error) {
+                        errorMessage.textContent = error;
+                        errorMessage.style.display = 'block';
+                        inputGroup.classList.add('input-error');
+                        return;
                     } else {
-                        e.target.value = '';
+                        amountInput.value = result;
                     }
+                    errorMessage.textContent = '';
+                    errorMessage.style.display = 'none';
+                    inputGroup.classList.remove('input-error');
                 } else {
                     amountInput.value += value;
                 }
@@ -1080,6 +1171,18 @@
                     clearInputBtn.classList.remove('hidden');
                 } else {
                     clearInputBtn.classList.add('hidden');
+                }
+                
+                // Validate after each button press
+                const validation = validateExpression(amountInput.value);
+                if (!validation.isValid) {
+                    errorMessage.textContent = validation.message;
+                    errorMessage.style.display = 'block';
+                    inputGroup.classList.add('input-error');
+                } else {
+                    errorMessage.textContent = '';
+                    errorMessage.style.display = 'none';
+                    inputGroup.classList.remove('input-error');
                 }
             });
             
