@@ -33,7 +33,7 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            overflow: hidden;
+            /* Removed overflow: hidden to allow history pane to slide in */
         }
 
         /* Custom scrollbar styling */
@@ -380,6 +380,51 @@
         .cute-amount-pill .amount-value {
             color: #E5E7EB;
         }
+        
+        .qr-action-btn {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .qr-action-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* NEW: Styles for History Pane transition */
+        .history-pane-transition {
+            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .history-pane-enter {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+
+        .history-pane-exit {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+        
+        /* NEW: Styles for QR Code fade-in */
+        .qr-code-fade-in {
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
     </style>
 </head>
 
@@ -398,9 +443,12 @@
                 <p id="selected-upi-id" class="text-sm font-bold text-gray-200" style="font-family: 'Ubuntu', sans-serif;">---</p>
             </div>
         </div>
-        <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
-            <span id="history-icon" class="material-symbols-outlined text-gray-800">history</span>
-        </button>
+        <div id="header-right" class="flex items-center space-x-2">
+            <!-- History Button -->
+            <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
+                <span id="history-icon" class="material-symbols-outlined text-gray-800">history</span>
+            </button>
+        </div>
     </div>
 
     <!-- Main QR Generator View -->
@@ -522,13 +570,16 @@
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-200 text-2xl font-bold transition-transform transform hover:scale-110">&times;</button>
             <div class="flex flex-col items-center space-y-2">
                 <h2 class="text-lg font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Payment QR Code</h2>
-                <div id="amount-display" class="cute-amount-pill hidden">
-                    <span class="currency-symbol">₹</span>
-                    <span id="amount-value" class="amount-value"></span>
+                <!-- New container for the amount and share button -->
+                <div class="flex items-center space-x-2">
+                    <div id="amount-display" class="cute-amount-pill hidden">
+                        <span class="currency-symbol">₹</span>
+                        <span id="amount-value" class="amount-value"></span>
+                    </div>
                 </div>
             </div>
             <!-- QR code container -->
-            <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden">
+            <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden qr-code-fade-in">
                 <!-- QR code will be generated here -->
             </div>
             
@@ -677,14 +728,22 @@
             const historyIcon = document.getElementById('history-icon');
             
             const showMainView = () => {
+                historyView.classList.remove('history-pane-transition');
+                historyView.classList.add('history-pane-exit');
                 mainView.classList.remove('hidden');
-                historyView.classList.add('hidden');
                 historyIcon.innerText = 'history';
+
+                // Wait for the exit transition to finish before hiding the element
+                setTimeout(() => {
+                    historyView.classList.add('hidden');
+                }, 500); // Duration of the CSS transition
             };
 
             const showHistoryView = () => {
-                mainView.classList.add('hidden');
                 historyView.classList.remove('hidden');
+                historyView.classList.remove('history-pane-exit');
+                historyView.classList.add('history-pane-transition');
+                mainView.classList.add('hidden');
                 historyIcon.innerText = 'arrow_back';
                 renderHistory();
             };
@@ -717,6 +776,9 @@
             let currentQR = null;
             
             const generateQrCode = (upiId, amount) => {
+                // Remove existing QR to allow a fresh generation
+                qrCodeContainer.innerHTML = '';
+                qrCodeContainer.style.opacity = '0';
                 qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
 
@@ -763,8 +825,6 @@
                     upiUri += `&cu=INR`;
                 }
                 
-                qrCodeContainer.innerHTML = '';
-
                 currentQR = new QRCodeStyling({
                     width: 300,
                     height: 300,
@@ -795,9 +855,13 @@
                 });
 
                 currentQR.append(qrCodeContainer);
+                
+                // NEW: Trigger the fade-in animation
+                setTimeout(() => {
+                    qrCodeContainer.style.opacity = '1';
+                }, 50);
 
                 qrCodeContainer.classList.remove('loading');
-                qrCodeContainer.style.opacity = '1';
 
                 if (amount && parseFloat(amount) > 0) {
                     amountValue.textContent = `${parseFloat(amount).toFixed(2)}`;
@@ -1004,9 +1068,9 @@
                 } else if (value === 'equals') {
                     const calculatedValue = calculateAmount(amountInput.value.trim());
                     if (calculatedValue !== '') {
-                        amountInput.value = calculatedValue;
+                        e.target.value = calculatedValue;
                     } else {
-                        amountInput.value = '';
+                        e.target.value = '';
                     }
                 } else {
                     amountInput.value += value;
