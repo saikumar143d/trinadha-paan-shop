@@ -486,6 +486,23 @@
             opacity: 0;
         }
 
+        /* NEW: Logo container style */
+        .logo-container {
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease-in-out;
+            width: 3rem;
+            height: 3rem;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
     </style>
 </head>
 
@@ -494,9 +511,9 @@
     <!-- Floating Header Elements -->
     <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2 floating-header-animated">
         <div id="header-left" class="flex items-center space-x-4">
-            <!-- Updated logo to use the provided image -->
-            <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
-                <img id="logo-img" src="https://od.lk/s/NDJfNDk0NzI1Mjdf/ChatGPT%20Image%20Sep%203%2C%202025%2C%2011_46_02%20AM.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-full object-cover object-center transition-opacity duration-500" />
+            <!-- Updated logo container style -->
+            <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg p-0 flex items-center justify-center flex-none">
+                <img id="logo-img" src="https://od.lk/s/NDJfNDk1NzA5Njhf/Main%20Logo.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-lg object-cover object-center transition-opacity duration-500" />
             </button>
             <!-- New UPI ID Display with dynamic label in Header -->
             <div id="upi-display-container" class="flex flex-col text-left text-white">
@@ -1100,7 +1117,7 @@
                 button.style.setProperty('--upi-color', upi.color);
                 button.style.setProperty('--upi-opposite-color', upi.oppositeColor);
                 button.innerHTML = `
-                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563/D1D5DB?text=Icon'">
+                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
                 `;
                 button.addEventListener('click', () => {
                     updateButtonHighlighting(upi.id);
