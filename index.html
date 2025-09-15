@@ -8,21 +8,21 @@
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <!-- Google Fonts - Ubuntu, Karla -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap"></noscript>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap"></noscript>
     <!-- Material Symbols Icons -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /></noscript>
     <!-- Lucide Icons for dial pad -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@latest" async></script>
     <!-- Favicon - Updated to use the new image URL -->
     <link rel="icon" href="https://od.lk/s/NDJfNDk0NzI1MzNf/stylized-qr-code-icon-with-vibrant-colors-modern-design_1299084-18665.avif" />
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- math.js CDN for secure calculation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.0/math.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.0/math.min.js" async></script>
     
     <style>
         body {
@@ -33,7 +33,6 @@
             -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
-            /* Removed overflow: hidden to allow history pane to slide in */
         }
 
         /* Custom scrollbar styling */
@@ -221,14 +220,26 @@
         .modal {
             background-color: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(8px);
+            opacity: 0; /* New property for modal fade */
+            pointer-events: none; /* New property for modal fade */
             transition: opacity 0.3s ease;
+        }
+        
+        .modal.visible {
+            opacity: 1;
+            pointer-events: auto;
         }
 
         .modal-content {
             background-color: #1a1a1a;
             border-radius: 1.5rem;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-            animation: modalPopIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transform: scale(0.9); /* New property for modal scale */
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+        
+        .modal.visible .modal-content {
+            transform: scale(1);
         }
 
         /* Updated popup button active style to reflect the old design */
@@ -277,6 +288,12 @@
         .dial-pad button:active {
             transform: scale(0.95);
         }
+
+        /* New press-down animation for UPI buttons */
+        .upi-btn-base:active,
+        .history-item:active {
+            transform: scale(0.98);
+        }
         
         .history-item-animated {
             opacity: 0;
@@ -294,6 +311,20 @@
         .upi-btn-base.upi-btn-active-glow {
             box-shadow: 0 0 12px var(--upi-color), 0 0 0 3px rgba(var(--upi-rgb), 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
             border-color: var(--upi-color);
+            animation: pulse-glow 1.5s infinite; /* New pulse animation */
+        }
+        
+        /* New Pulse Glow Keyframes */
+        @keyframes pulse-glow {
+            0% {
+                box-shadow: 0 0 12px var(--upi-color), 0 0 0 0 rgba(var(--upi-rgb), 0.3);
+            }
+            50% {
+                box-shadow: 0 0 15px var(--upi-color), 0 0 0 5px rgba(var(--upi-rgb), 0.5);
+            }
+            100% {
+                box-shadow: 0 0 12px var(--upi-color), 0 0 0 0 rgba(var(--upi-rgb), 0.3);
+            }
         }
         
         /* New style for the history footer tag */
@@ -403,20 +434,15 @@
         }
 
         /* NEW: Styles for History Pane transition */
-        .history-pane-transition {
+        .history-view {
             transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-            transform: translateY(0);
+            opacity: 0;
+            transform: translateY(100%);
+        }
+        
+        .history-view.history-visible {
             opacity: 1;
-        }
-
-        .history-pane-enter {
-            transform: translateY(100%);
-            opacity: 0;
-        }
-
-        .history-pane-exit {
-            transform: translateY(100%);
-            opacity: 0;
+            transform: translateY(0);
         }
         
         /* NEW: Styles for QR Code fade-in */
@@ -436,6 +462,23 @@
             margin-top: 0.5rem;
             display: none;
         }
+        
+        /* NEW: Header fade-in animation on page load */
+        @keyframes header-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .floating-header-animated {
+            animation: header-fade-in 0.6s ease-out 0.2s forwards;
+            opacity: 0;
+        }
 
     </style>
 </head>
@@ -443,7 +486,7 @@
 <body class="flex flex-col items-center min-h-screen p-4">
 
     <!-- Floating Header Elements -->
-    <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2">
+    <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2 floating-header-animated">
         <div id="header-left" class="flex items-center space-x-4">
             <!-- Updated logo to use the provided image -->
             <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg bg-[#f9fafb] border border-gray-300 p-0 flex items-center justify-center flex-none">
@@ -569,7 +612,7 @@
         </div>
         
         <!-- Footer Section -->
-        <div id="history-footer" class="mt-4 pt-4">
+        <div id="history-footer" class="mt-4 pt-4 floating-header-animated">
             <div class="history-footer-tag flex flex-col items-center justify-center text-center text-gray-400 text-xs">
                 <p class="font-bold text-sm tracking-wide">Live it UP</p>
                 <p class="text-xs mt-1">Made with ❤️ in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-sm text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
@@ -603,7 +646,7 @@
         </div>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js" async></script>
     <script>
         // PWA Service Worker Registration
         if ('serviceWorker' in navigator) {
@@ -779,24 +822,23 @@
             const historyView = document.getElementById('history-view');
             const historyBtn = document.getElementById('history-btn');
             const historyIcon = document.getElementById('history-icon');
+            const qrModalOverlay = document.getElementById('qr-modal-overlay');
             
+            // Refactored view switching logic for a smoother animation
             const showMainView = () => {
-                historyView.classList.remove('history-pane-transition');
-                historyView.classList.add('history-pane-exit');
-                mainView.classList.remove('hidden');
+                historyView.classList.remove('history-visible');
                 historyIcon.innerText = 'history';
 
-                // Wait for the exit transition to finish before hiding the element
                 setTimeout(() => {
                     historyView.classList.add('hidden');
-                }, 500); // Duration of the CSS transition
+                    mainView.classList.remove('hidden');
+                }, 500); 
             };
 
             const showHistoryView = () => {
                 historyView.classList.remove('hidden');
-                historyView.classList.remove('history-pane-exit');
-                historyView.classList.add('history-pane-transition');
                 mainView.classList.add('hidden');
+                historyView.classList.add('history-visible');
                 historyIcon.innerText = 'arrow_back';
                 renderHistory();
             };
@@ -812,7 +854,6 @@
             // Existing Logic
             const upiButtonContainer = document.getElementById('upi-button-container');
             const amountInput = document.getElementById('amountInput');
-            const qrModalOverlay = document.getElementById('qr-modal-overlay');
             const closeModalBtn = document.getElementById('close-modal-btn');
             const clearInputBtn = document.getElementById('clear-input-btn');
             const qrCodeContainer = document.getElementById('qr-code-container');
@@ -834,7 +875,6 @@
                 // Remove existing QR to allow a fresh generation
                 qrCodeContainer.innerHTML = '';
                 qrCodeContainer.style.opacity = '0';
-                qrCodeContainer.classList.add('loading');
                 qrCodeContainer.classList.remove('hidden');
 
                 const upi = getUpiData(upiId);
@@ -916,8 +956,6 @@
                     qrCodeContainer.style.opacity = '1';
                 }, 50);
 
-                qrCodeContainer.classList.remove('loading');
-
                 if (amount && parseFloat(amount) > 0) {
                     amountValue.textContent = `${parseFloat(amount).toFixed(2)}`;
                     amountDisplay.classList.remove('hidden');
@@ -975,6 +1013,7 @@
                             // Store the amount in the global variable for use in popup
                             currentQrAmount = item.amount;
                             qrModalOverlay.classList.remove('hidden');
+                            qrModalOverlay.classList.add('visible');
                         });
 
                         historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
@@ -982,6 +1021,7 @@
                             currentQrAmount = item.amount;
                             saveHistory(item.id, item.amount);
                             qrModalOverlay.classList.remove('hidden');
+                            qrModalOverlay.classList.add('visible');
                         });
 
                         historyItem.querySelector('.delete-btn').addEventListener('click', () => {
@@ -1041,6 +1081,7 @@
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
                     qrModalOverlay.classList.remove('hidden');
+                    qrModalOverlay.classList.add('visible');
 
                     amountInput.value = '';
                     clearInputBtn.classList.add('hidden');
@@ -1081,15 +1122,21 @@
             renderUpiButtons();
 
             closeModalBtn.addEventListener('click', () => {
-                qrModalOverlay.classList.add('hidden');
+                qrModalOverlay.classList.remove('visible');
                 // Clear QR code container when modal is closed
-                qrCodeContainer.innerHTML = '';
+                setTimeout(() => {
+                    qrModalOverlay.classList.add('hidden');
+                    qrCodeContainer.innerHTML = '';
+                }, 300); // Duration of the fade out
             });
 
             qrModalOverlay.addEventListener('click', (e) => {
                 if (e.target.id === 'qr-modal-overlay') {
-                    qrModalOverlay.classList.add('hidden');
-                    qrCodeContainer.innerHTML = '';
+                    qrModalOverlay.classList.remove('visible');
+                    setTimeout(() => {
+                         qrModalOverlay.classList.add('hidden');
+                         qrCodeContainer.innerHTML = '';
+                    }, 300);
                 }
             });
 
