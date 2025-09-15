@@ -318,6 +318,68 @@
                 transform: translateY(0);
             }
         }
+        
+        /* New Styles for the Amount Pill with glass effect */
+        .glass-pill {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 1rem;
+            min-height: 3rem;
+            border-radius: 9999px;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .glass-pill .currency-symbol {
+            background: linear-gradient(45deg, #FFAC33, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .glass-pill .amount-value {
+            color: #E5E7EB;
+        }
+        
+        /* Compact, Minimal, and Cute Glass Pill Styles */
+        .cute-amount-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .cute-amount-pill .currency-symbol {
+            background: linear-gradient(45deg, #FFAC33, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 0.3rem;
+            font-size: 1.2rem;
+        }
+        
+        .cute-amount-pill .amount-value {
+            color: #E5E7EB;
+        }
     </style>
 </head>
 
@@ -380,7 +442,7 @@
 
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="7">7</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="8">8</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="9">9</button>
+                <button class="flex-grow flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="9">9</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="*">
                     <!-- SVG for multiplication sign from Lucide -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
@@ -460,7 +522,10 @@
             <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-200 text-2xl font-bold transition-transform transform hover:scale-110">&times;</button>
             <div class="flex flex-col items-center space-y-2">
                 <h2 class="text-lg font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Payment QR Code</h2>
-                <span id="amount-display" class="hidden font-semibold text-sm amount-pill" style="font-family: 'Karla', sans-serif;"></span>
+                <div id="amount-display" class="cute-amount-pill hidden">
+                    <span class="currency-symbol">₹</span>
+                    <span id="amount-value" class="amount-value"></span>
+                </div>
             </div>
             <!-- QR code container -->
             <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden">
@@ -527,6 +592,8 @@
         
         // A global variable to track the currently selected UPI ID
         let selectedUpiId = null;
+        // A new global variable to hold the amount for the QR code
+        let currentQrAmount = '';
 
         const getUpiData = (id) => {
             return upiData.find(u => u.id === id) || {
@@ -642,6 +709,7 @@
             const upiLabelText = document.getElementById('upi-label-text');
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
             const amountDisplay = document.getElementById('amount-display');
+            const amountValue = document.getElementById('amount-value');
             const dialPad = document.getElementById('dial-pad');
             const logoBtn = document.getElementById('logo-btn');
             const logoImg = document.getElementById('logo-img');
@@ -732,7 +800,7 @@
                 qrCodeContainer.style.opacity = '1';
 
                 if (amount && parseFloat(amount) > 0) {
-                    amountDisplay.textContent = `₹${parseFloat(amount).toFixed(2)}`;
+                    amountValue.textContent = `${parseFloat(amount).toFixed(2)}`;
                     amountDisplay.classList.remove('hidden');
                 } else {
                     amountDisplay.classList.add('hidden');
@@ -785,11 +853,14 @@
                                 return;
                             }
                             generateQrCode(item.id, item.amount);
+                            // Store the amount in the global variable for use in popup
+                            currentQrAmount = item.amount;
                             qrModalOverlay.classList.remove('hidden');
                         });
 
                         historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
                             generateQrCode(item.id, item.amount);
+                            currentQrAmount = item.amount;
                             saveHistory(item.id, item.amount);
                             qrModalOverlay.classList.remove('hidden');
                         });
@@ -834,6 +905,8 @@
                 button.addEventListener('click', () => {
                     updateButtonHighlighting(upi.id);
                     const amount = calculateAmount(amountInput.value.trim());
+                    // Store the calculated amount in the global variable
+                    currentQrAmount = amount;
                     upiLabelText.textContent = upi.label;
                     selectedUpiIdDisplay.textContent = upi.id;
                     generateQrCode(upi.id, amount);
@@ -859,14 +932,12 @@
                 button.addEventListener('click', () => {
                     updateButtonHighlighting(upi.id);
                     
-                    const amount = calculateAmount(amountInput.value.trim());
+                    // Use the globally stored amount instead of recalculating from the cleared input
+                    const amount = currentQrAmount;
                     upiLabelText.textContent = upi.label;
                     selectedUpiIdDisplay.textContent = upi.id;
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
-
-                    amountInput.value = '';
-                    clearInputBtn.classList.add('hidden');
                 });
                 return button;
             };
@@ -882,11 +953,14 @@
 
             closeModalBtn.addEventListener('click', () => {
                 qrModalOverlay.classList.add('hidden');
+                // Clear QR code container when modal is closed
+                qrCodeContainer.innerHTML = '';
             });
 
             qrModalOverlay.addEventListener('click', (e) => {
                 if (e.target.id === 'qr-modal-overlay') {
                     qrModalOverlay.classList.add('hidden');
+                    qrCodeContainer.innerHTML = '';
                 }
             });
 
