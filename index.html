@@ -728,17 +728,31 @@
         // A new global variable to hold the amount for the QR code
         let currentQrAmount = '';
 
+        // NEW: Map numbers to notes for a musical scale (C Major Pentatonic)
+        const NoteMap = {
+            '1': 'C4', '2': 'D4', '3': 'E4',
+            '4': 'G4', '5': 'A4', '6': 'C5',
+            '7': 'D5', '8': 'E5', '9': 'G5',
+            '0': 'A3', // Lower A for zero
+            '.': 'A5', // Higher A for decimal point
+            '(': 'B5', // Parentheses for higher pitch
+            ')': 'G5'
+        };
+
         // UPDATED: Tone.js Audio Engine for thematic feedback
         const AudioEngine = {
-            synth: null,
-            noise: null,
+            synth: null, // For numbers and musical tones
+            operatorSynth: null, // For operators (now using a separate synth configuration)
+            clearSynth: null, // NEW: For clear/AC button
+            backspaceSynth: null, // For backspace
             isInitialized: false, // Flag to ensure synths are created only once
 
             initSynths: function() {
                 if (!window.Tone || this.isInitialized) return;
                 
-                // 1. Initialize the synths and connect them to the main output
+                // 1. Synth for Notes (Numbers, Equals) - Smoother, less digital tone
                 this.synth = new Tone.PolySynth(Tone.Synth, {
+                    volume: -10, // Slightly quieter
                     envelope: {
                         attack: 0.005,
                         decay: 0.1,
@@ -746,21 +760,53 @@
                         release: 0.1
                     },
                     oscillator: {
-                        type: 'sine'
+                        type: 'triangle' // Use triangle for softer, flute-like tone
                     },
                 }).toDestination();
 
-                this.noise = new Tone.NoiseSynth({
+                // 2. Synth for Operators (Sharper, square wave tone for distinction)
+                this.operatorSynth = new Tone.PolySynth(Tone.Synth, {
+                    volume: -5, // Increased volume for clarity
+                    envelope: {
+                        attack: 0.01,
+                        decay: 0.1,
+                        sustain: 0.05,
+                        release: 0.1
+                    },
+                    oscillator: {
+                        type: 'square' // Sharper, digital tone
+                    }
+                }).toDestination();
+
+                // 3. UPDATED: Elegant Clear Synth (DuoSynth for rich, resolved tone)
+                this.clearSynth = new Tone.DuoSynth({
+                    volume: -5,
+                    voice0: {
+                        oscillator: { type: 'sine' },
+                        envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.5 }
+                    },
+                    voice1: {
+                        oscillator: { type: 'sawtooth' },
+                        envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.5 }
+                    },
+                    vibratoAmount: 0.5,
+                    vibratoRate: 5
+                }).toDestination();
+
+                // 4. UPDATED: Modern Backspace Synth (Filtered Noise for crisp, elegant evacuation sound)
+                this.backspaceSynth = new Tone.NoiseSynth({
+                    volume: -10,
                     noise: {
-                        type: 'white'
+                        type: 'pink'
                     },
                     envelope: {
-                        attack: 0.001,
-                        decay: 0.1,
+                        attack: 0.005,
+                        decay: 0.08, 
                         sustain: 0,
                         release: 0.01
                     }
-                }).toDestination();
+                // Chain the noise through a bandpass filter for a crisp 'flick' sound
+                }).chain(new Tone.Filter(4000, 'bandpass'), Tone.Destination);
                 
                 this.isInitialized = true;
             },
@@ -778,32 +824,37 @@
                 }
             },
 
-            playTone: function(type) {
+            playTone: function(type, value) { 
                 if (!this.isInitialized) return; 
 
                 try {
+                    const now = Tone.now();
                     switch (type) {
                         case 'number':
-                            // Simple, short digital click
-                            this.synth.triggerAttackRelease('C5', '16n');
+                            // Map value to a specific note in the NoteMap
+                            const note = NoteMap[value] || 'C4'; 
+                            this.synth.triggerAttackRelease(note, '16n');
                             break;
                         case 'operator':
-                            // Slightly higher, longer tone for operation
-                            this.synth.triggerAttackRelease(['E5', 'G5'], '8n');
+                            // Play two higher, distinct notes for a sharp chime effect
+                            this.operatorSynth.triggerAttackRelease(['F5', 'A5'], '16n');
                             break;
                         case 'equals':
-                            // Satisfying resolution sound (low to high sweep)
-                            const now = Tone.now();
+                            // Satisfying ascending flourish (C4 -> E4 -> G4 -> C5)
                             this.synth.triggerAttackRelease('C4', '8n', now);
-                            this.synth.triggerAttackRelease('G4', '8n', now + 0.1);
+                            this.synth.triggerAttackRelease('E4', '8n', now + 0.075);
+                            this.synth.triggerAttackRelease('G4', '8n', now + 0.15);
+                            this.synth.triggerAttackRelease('C5', '4n', now + 0.225);
                             break;
                         case 'clear':
-                            // Descending, muffled sound
-                            this.synth.triggerAttackRelease(['C4', 'A3', 'F3'], '16n');
+                            // UPDATED: Elegant ascending arpeggio (C major chord)
+                            this.clearSynth.triggerAttackRelease('C5', '4n');
+                            this.clearSynth.triggerAttackRelease('E5', '4n', Tone.now() + 0.05);
+                            this.clearSynth.triggerAttackRelease('G5', '4n', Tone.now() + 0.1);
                             break;
                         case 'backspace':
-                            // Short, sharp noise
-                            this.noise.triggerAttackRelease('16n');
+                            // UPDATED: Crisp, filtered noise for "evacuate" effect
+                            this.backspaceSynth.triggerAttackRelease('8n');
                             break;
                     }
                 } catch (e) {
@@ -1313,16 +1364,17 @@
                 if (!button) return;
 
                 const value = button.dataset.value;
-                const operators = ['+', '-', '*', '/', '(', ')'];
-                const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+                const operators = ['+', '-', '*', '/']; // Simplified operators list for clarity
+                const musicalKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '(', ')'];
                 let toneType = null;
 
-                if (numbers.includes(value) || value === '.') {
+                // Determine if it's a number/musical key or an operator
+                if (musicalKeys.includes(value)) {
                     amountInput.value += value;
-                    toneType = 'number';
+                    toneType = 'number'; 
                 } else if (operators.includes(value)) {
                     amountInput.value += value;
-                    toneType = 'operator';
+                    toneType = 'operator'; 
                 } else if (value === 'backspace') {
                     amountInput.value = amountInput.value.slice(0, -1);
                     toneType = 'backspace';
@@ -1346,9 +1398,9 @@
                     inputGroup.classList.remove('input-error');
                 }
                 
-                // Play the tone after processing
+                // Play the tone after processing, passing the specific button value
                 if (toneType) {
-                    AudioEngine.playTone(toneType);
+                    AudioEngine.playTone(toneType, value);
                 }
 
 
