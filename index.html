@@ -743,16 +743,16 @@
         const AudioEngine = {
             synth: null, // For numbers and musical tones
             operatorSynth: null, // For operators (now using a separate synth configuration)
-            clearSynth: null, // NEW: For clear/AC button
-            backspaceSynth: null, // For backspace
+            clearSynth: null, // For clear/AC button
+            backspaceSynth: null, // UPDATED: For backspace
             isInitialized: false, // Flag to ensure synths are created only once
 
             initSynths: function() {
                 if (!window.Tone || this.isInitialized) return;
                 
-                // 1. Synth for Notes (Numbers, Equals) - Smoother, less digital tone
+                // 1. Synth for Notes (Numbers, Equals) - Volume set to -1dB for uniform loudness
                 this.synth = new Tone.PolySynth(Tone.Synth, {
-                    volume: -10, // Slightly quieter
+                    volume: -1, // Set to -1dB for loud, stable, equal volume
                     envelope: {
                         attack: 0.005,
                         decay: 0.1,
@@ -760,13 +760,13 @@
                         release: 0.1
                     },
                     oscillator: {
-                        type: 'triangle' // Use triangle for softer, flute-like tone
+                        type: 'triangle' // Softer, flute-like tone
                     },
                 }).toDestination();
 
                 // 2. Synth for Operators (Sharper, square wave tone for distinction)
                 this.operatorSynth = new Tone.PolySynth(Tone.Synth, {
-                    volume: -5, // Increased volume for clarity
+                    volume: -1, // Set to -1dB for loud, stable, equal volume
                     envelope: {
                         attack: 0.01,
                         decay: 0.1,
@@ -778,9 +778,9 @@
                     }
                 }).toDestination();
 
-                // 3. UPDATED: Elegant Clear Synth (DuoSynth for rich, resolved tone)
+                // 3. Elegant Clear Synth (DuoSynth for rich, resolved tone)
                 this.clearSynth = new Tone.DuoSynth({
-                    volume: -5,
+                    volume: -1, // Set to -1dB for loud, stable, equal volume
                     voice0: {
                         oscillator: { type: 'sine' },
                         envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.5 }
@@ -793,20 +793,23 @@
                     vibratoRate: 5
                 }).toDestination();
 
-                // 4. UPDATED: Modern Backspace Synth (Filtered Noise for crisp, elegant evacuation sound)
-                this.backspaceSynth = new Tone.NoiseSynth({
-                    volume: -10,
-                    noise: {
-                        type: 'pink'
-                    },
+                // 4. Backspace Synth (AMSynth for a clean, quick-fading "Vanish" tone)
+                this.backspaceSynth = new Tone.AMSynth({
+                    volume: -1, // Set to -1dB for loud, stable, equal volume
                     envelope: {
                         attack: 0.005,
-                        decay: 0.08, 
+                        decay: 0.2, // Noticeable, fast decay for "vanishing" effect
                         sustain: 0,
-                        release: 0.01
-                    }
-                // Chain the noise through a bandpass filter for a crisp 'flick' sound
-                }).chain(new Tone.Filter(4000, 'bandpass'), Tone.Destination);
+                        release: 0.05
+                    },
+                    oscillator: {
+                        type: 'sine'
+                    },
+                    modulation: {
+                        type: 'square'
+                    },
+                    modulationIndex: 10, 
+                }).toDestination();
                 
                 this.isInitialized = true;
             },
@@ -847,14 +850,14 @@
                             this.synth.triggerAttackRelease('C5', '4n', now + 0.225);
                             break;
                         case 'clear':
-                            // UPDATED: Elegant ascending arpeggio (C major chord)
+                            // Elegant ascending arpeggio (C major chord)
                             this.clearSynth.triggerAttackRelease('C5', '4n');
                             this.clearSynth.triggerAttackRelease('E5', '4n', Tone.now() + 0.05);
                             this.clearSynth.triggerAttackRelease('G5', '4n', Tone.now() + 0.1);
                             break;
                         case 'backspace':
-                            // UPDATED: Crisp, filtered noise for "evacuate" effect
-                            this.backspaceSynth.triggerAttackRelease('8n');
+                            // Plays a quick-fading AM tone to simulate vanishing
+                            this.backspaceSynth.triggerAttackRelease('A5', '8n'); 
                             break;
                     }
                 } catch (e) {
