@@ -728,46 +728,58 @@
         // A new global variable to hold the amount for the QR code
         let currentQrAmount = '';
 
-        // NEW: Tone.js Audio Engine for thematic feedback
+        // UPDATED: Tone.js Audio Engine for thematic feedback
         const AudioEngine = {
             synth: null,
             noise: null,
-            init: function() {
-                // Check if Tone is available and context is not running
-                if (window.Tone && Tone.context.state !== 'running') {
-                    // Initialize the synths and connect them to the main output
-                    this.synth = new Tone.PolySynth(Tone.Synth, {
-                        envelope: {
-                            attack: 0.005,
-                            decay: 0.1,
-                            sustain: 0.1,
-                            release: 0.1
-                        },
-                        oscillator: {
-                            type: 'sine'
-                        },
-                    }).toDestination();
+            isInitialized: false, // Flag to ensure synths are created only once
 
-                    this.noise = new Tone.NoiseSynth({
-                        noise: {
-                            type: 'white'
-                        },
-                        envelope: {
-                            attack: 0.001,
-                            decay: 0.1,
-                            sustain: 0,
-                            release: 0.01
-                        }
-                    }).toDestination();
-                    
-                    Tone.context.resume();
+            initSynths: function() {
+                if (!window.Tone || this.isInitialized) return;
+                
+                // 1. Initialize the synths and connect them to the main output
+                this.synth = new Tone.PolySynth(Tone.Synth, {
+                    envelope: {
+                        attack: 0.005,
+                        decay: 0.1,
+                        sustain: 0.1,
+                        release: 0.1
+                    },
+                    oscillator: {
+                        type: 'sine'
+                    },
+                }).toDestination();
+
+                this.noise = new Tone.NoiseSynth({
+                    noise: {
+                        type: 'white'
+                    },
+                    envelope: {
+                        attack: 0.001,
+                        decay: 0.1,
+                        sustain: 0,
+                        release: 0.01
+                    }
+                }).toDestination();
+                
+                this.isInitialized = true;
+            },
+            
+            // Function to start the audio context on user gesture
+            startContext: async function() {
+                if (window.Tone && Tone.context.state !== 'running') {
+                    try {
+                        // This resumes the AudioContext after a user gesture
+                        await Tone.start();
+                        console.log("Tone.js audio context started successfully.");
+                    } catch (e) {
+                        console.error("Failed to start Tone.js context:", e);
+                    }
                 }
             },
+
             playTone: function(type) {
-                if (!this.synth || !this.noise) {
-                    this.init();
-                    if (!this.synth || !this.noise) return;
-                }
+                if (!this.isInitialized) return; 
 
                 try {
                     switch (type) {
@@ -1279,6 +1291,20 @@
                     inputGroup.classList.remove('input-error');
                 }
             });
+            
+            // 1. Initialize synths once
+            AudioEngine.initSynths();
+
+            // 2. Start context on the very first interaction with the dial pad (Fix for Auto-Play Policy)
+            const startAudioOnFirstInteraction = () => {
+                AudioEngine.startContext();
+                // Remove the listener after the first successful interaction
+                dialPad.removeEventListener('mousedown', startAudioOnFirstInteraction);
+                dialPad.removeEventListener('touchstart', startAudioOnFirstInteraction);
+            };
+
+            dialPad.addEventListener('mousedown', startAudioOnFirstInteraction, { once: true });
+            dialPad.addEventListener('touchstart', startAudioOnFirstInteraction, { once: true });
 
             // Dial pad functionality
             dialPad.addEventListener('click', (e) => {
@@ -1291,7 +1317,7 @@
                 const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
                 let toneType = null;
 
-                if (numbers.includes(value)) {
+                if (numbers.includes(value) || value === '.') {
                     amountInput.value += value;
                     toneType = 'number';
                 } else if (operators.includes(value)) {
