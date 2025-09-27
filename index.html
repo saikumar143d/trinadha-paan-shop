@@ -315,6 +315,17 @@
                 transform: translateY(0);
             }
         }
+        
+        /* NEW: Vanish animation for clearing history */
+        @keyframes fadeOutUp {
+            to {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.9);
+            }
+        }
+        .history-item-vanish {
+            animation: fadeOutUp 0.3s ease-out forwards;
+        }
 
         .upi-btn-base.upi-btn-active-glow {
             box-shadow: 0 0 12px var(--upi-color), 0 0 0 3px rgba(var(--upi-rgb), 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -744,7 +755,8 @@
             synth: null, // For numbers and musical tones
             operatorSynth: null, // For operators (now using a separate synth configuration)
             clearSynth: null, // For clear/AC button
-            backspaceSynth: null, // UPDATED: For backspace
+            backspaceSynth: null, // For backspace
+            magicalSynth: null, // NEW: For UPI button click
             isInitialized: false, // Flag to ensure synths are created only once
 
             initSynths: function() {
@@ -811,6 +823,22 @@
                     modulationIndex: 10, 
                 }).toDestination();
                 
+                // 5. NEW: Magical Synth for UPI buttons (Shimmery, resonant sound)
+                // Use a Synth passed through Chorus and Reverb for the magical/blowing effect
+                this.magicalSynth = new Tone.Synth({
+                    volume: -1, // Set to -1dB for loud, stable, equal volume
+                    oscillator: {
+                        type: 'sine'
+                    },
+                    envelope: {
+                        attack: 0.01,
+                        decay: 1.5, // Long decay for 'blow' effect
+                        sustain: 0.1,
+                        release: 2
+                    }
+                }).chain(new Tone.Chorus(5, 0.5, 0.9), new Tone.Reverb({ decay: 2, wet: 0.4 }), Tone.Destination);
+
+
                 this.isInitialized = true;
             },
             
@@ -858,6 +886,10 @@
                         case 'backspace':
                             // Plays a quick-fading AM tone to simulate vanishing
                             this.backspaceSynth.triggerAttackRelease('A5', '8n'); 
+                            break;
+                        case 'magical':
+                            // NEW: Resonant, shimmery tone for UPI selection
+                            this.magicalSynth.triggerAttackRelease('A4', '2n');
                             break;
                     }
                 } catch (e) {
@@ -1228,10 +1260,14 @@
                           errorMessage.textContent = validation.message;
                           errorMessage.style.display = 'block';
                           inputGroup.classList.add('input-error');
+                          AudioEngine.playTone('clear'); // Play error tone on validation failure
                           return;
                     }
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
+
+                    // NEW: Play magical tone on successful UPI selection
+                    AudioEngine.playTone('magical');
 
                     updateButtonHighlighting(upi.id);
                     const amount = calculateAmount(amountInput.value.trim()).result;
@@ -1261,6 +1297,8 @@
                     <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
                 `;
                 button.addEventListener('click', () => {
+                    // Play magical tone when switching UPI IDs inside the modal
+                    AudioEngine.playTone('magical'); 
                     updateButtonHighlighting(upi.id);
                     
                     // Use the globally stored amount instead of recalculating from the cleared input
@@ -1275,8 +1313,28 @@
 
             if (clearHistoryBtn) {
                 clearHistoryBtn.addEventListener('click', () => {
-                    localStorage.removeItem(historyKey);
-                    renderHistory();
+                    const historyList = document.getElementById('history-list');
+                    const historyItems = historyList.querySelectorAll('.history-item');
+                    if (historyItems.length === 0) return;
+
+                    const staggerTime = 50;
+                    let totalAnimationTime = 0;
+
+                    historyItems.forEach((item, index) => {
+                        // Stagger the animation start time
+                        setTimeout(() => {
+                            item.classList.add('history-item-vanish');
+                        }, index * staggerTime);
+                        
+                        // Calculate the time when the last item's animation finishes (350ms is base animation duration + buffer)
+                        totalAnimationTime = Math.max(totalAnimationTime, (index * staggerTime) + 350);
+                    });
+
+                    // Clear local storage and re-render ONLY after all items have vanished
+                    setTimeout(() => {
+                        localStorage.removeItem(historyKey);
+                        renderHistory();
+                    }, totalAnimationTime);
                 });
             }
 
@@ -1335,7 +1393,6 @@
                 const { result, error } = calculateAmount(e.target.value.trim());
                 if (error) {
                     errorMessage.textContent = error;
-                    errorMessage.style.display = 'block';
                     inputGroup.classList.add('input-error');
                     e.target.value = '';
                 } else {
