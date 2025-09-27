@@ -23,6 +23,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- math.js CDN for secure calculation -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.0/math.min.js" async></script>
+    <!-- NEW: Tone.js CDN for thematic audio feedback -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     
     <style>
         body {
@@ -726,6 +728,79 @@
         // A new global variable to hold the amount for the QR code
         let currentQrAmount = '';
 
+        // NEW: Tone.js Audio Engine for thematic feedback
+        const AudioEngine = {
+            synth: null,
+            noise: null,
+            init: function() {
+                // Check if Tone is available and context is not running
+                if (window.Tone && Tone.context.state !== 'running') {
+                    // Initialize the synths and connect them to the main output
+                    this.synth = new Tone.PolySynth(Tone.Synth, {
+                        envelope: {
+                            attack: 0.005,
+                            decay: 0.1,
+                            sustain: 0.1,
+                            release: 0.1
+                        },
+                        oscillator: {
+                            type: 'sine'
+                        },
+                    }).toDestination();
+
+                    this.noise = new Tone.NoiseSynth({
+                        noise: {
+                            type: 'white'
+                        },
+                        envelope: {
+                            attack: 0.001,
+                            decay: 0.1,
+                            sustain: 0,
+                            release: 0.01
+                        }
+                    }).toDestination();
+                    
+                    Tone.context.resume();
+                }
+            },
+            playTone: function(type) {
+                if (!this.synth || !this.noise) {
+                    this.init();
+                    if (!this.synth || !this.noise) return;
+                }
+
+                try {
+                    switch (type) {
+                        case 'number':
+                            // Simple, short digital click
+                            this.synth.triggerAttackRelease('C5', '16n');
+                            break;
+                        case 'operator':
+                            // Slightly higher, longer tone for operation
+                            this.synth.triggerAttackRelease(['E5', 'G5'], '8n');
+                            break;
+                        case 'equals':
+                            // Satisfying resolution sound (low to high sweep)
+                            const now = Tone.now();
+                            this.synth.triggerAttackRelease('C4', '8n', now);
+                            this.synth.triggerAttackRelease('G4', '8n', now + 0.1);
+                            break;
+                        case 'clear':
+                            // Descending, muffled sound
+                            this.synth.triggerAttackRelease(['C4', 'A3', 'F3'], '16n');
+                            break;
+                        case 'backspace':
+                            // Short, sharp noise
+                            this.noise.triggerAttackRelease('16n');
+                            break;
+                    }
+                } catch (e) {
+                    console.error('Tone.js playback error:', e);
+                }
+            }
+        };
+
+
         const getUpiData = (id) => {
             return upiData.find(u => u.id === id) || {
                 id,
@@ -1084,10 +1159,10 @@
                 button.addEventListener('click', () => {
                     const validation = validateExpression(amountInput.value.trim());
                     if (!validation.isValid) {
-                         errorMessage.textContent = validation.message;
-                         errorMessage.style.display = 'block';
-                         inputGroup.classList.add('input-error');
-                         return;
+                          errorMessage.textContent = validation.message;
+                          errorMessage.style.display = 'block';
+                          inputGroup.classList.add('input-error');
+                          return;
                     }
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
@@ -1154,8 +1229,8 @@
                 if (e.target.id === 'qr-modal-overlay') {
                     qrModalOverlay.classList.remove('visible');
                     setTimeout(() => {
-                         qrModalOverlay.classList.add('hidden');
-                         qrCodeContainer.innerHTML = '';
+                          qrModalOverlay.classList.add('hidden');
+                          qrCodeContainer.innerHTML = '';
                     }, 300);
                 }
             });
@@ -1164,13 +1239,13 @@
             amountInput.addEventListener('input', () => {
                 const validation = validateExpression(amountInput.value);
                 if (!validation.isValid) {
-                     errorMessage.textContent = validation.message;
-                     errorMessage.style.display = 'block';
-                     inputGroup.classList.add('input-error');
+                      errorMessage.textContent = validation.message;
+                      errorMessage.style.display = 'block';
+                      inputGroup.classList.add('input-error');
                 } else {
-                     errorMessage.textContent = '';
-                     errorMessage.style.display = 'none';
-                     inputGroup.classList.remove('input-error');
+                      errorMessage.textContent = '';
+                      errorMessage.style.display = 'none';
+                      inputGroup.classList.remove('input-error');
                 }
                 
                 if (amountInput.value.length > 0) {
@@ -1212,27 +1287,44 @@
                 if (!button) return;
 
                 const value = button.dataset.value;
+                const operators = ['+', '-', '*', '/', '(', ')'];
+                const numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.'];
+                let toneType = null;
 
-                if (value === 'backspace') {
+                if (numbers.includes(value)) {
+                    amountInput.value += value;
+                    toneType = 'number';
+                } else if (operators.includes(value)) {
+                    amountInput.value += value;
+                    toneType = 'operator';
+                } else if (value === 'backspace') {
                     amountInput.value = amountInput.value.slice(0, -1);
+                    toneType = 'backspace';
                 } else if (value === 'clear') {
                     amountInput.value = '';
+                    toneType = 'clear';
                 } else if (value === 'equals') {
                     const { result, error } = calculateAmount(amountInput.value.trim());
                     if (error) {
                         errorMessage.textContent = error;
                         errorMessage.style.display = 'block';
                         inputGroup.classList.add('input-error');
+                        toneType = 'clear'; // Use clear tone for error/failure
                         return;
                     } else {
                         amountInput.value = result;
+                        toneType = 'equals';
                     }
                     errorMessage.textContent = '';
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
-                } else {
-                    amountInput.value += value;
                 }
+                
+                // Play the tone after processing
+                if (toneType) {
+                    AudioEngine.playTone(toneType);
+                }
+
 
                 if (amountInput.value.length > 0) {
                     clearInputBtn.classList.remove('hidden');
