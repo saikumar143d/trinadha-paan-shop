@@ -274,18 +274,31 @@
             transform: scale(1);
         }
 
-        /* Updated popup button active style to reflect the old design */
+        /* --- START OF POPUP UPI BUTTON ENHANCEMENT (NO ANIMATIONS) --- */
         .popup-upi-btn-active {
-            border: 2px solid var(--upi-color);
-            box-shadow: 0 0 0 2px #0c0d10, 0 0 0 4px var(--upi-opposite-color);
-            transition: all 0.2s ease-in-out;
-            transform: scale(1.05);
+            /* 1. Thicker, vibrant border */
+            border: 3px solid var(--upi-color);
+            
+            /* 2. Complex, static shadow/glow for a multi-layered reflection look */
+            box-shadow: 
+                0 0 0 2px #0c0d10, /* Dark inner ring for separation */
+                0 0 10px rgba(var(--upi-rgb), 0.5), /* Soft inner halo (primary color) */
+                0 0 20px rgba(var(--upi-rgb), 0.3), /* Wider, stronger halo (primary color) */
+                inset 0 0 10px 5px rgba(var(--upi-rgb), 0.2); /* Deep inset color fill */
+            
+            /* Removed animations */
+            transition: border-color 0.3s, box-shadow 0.3s;
+            transform: none; /* Ensure no scaling is applied */
         }
         
         /* New style for inactive popup buttons with a slight border */
         .popup-upi-btn:not(.popup-upi-btn-active) {
             border: 1.5px solid rgba(255, 255, 255, 0.2);
+            /* Added smooth transition for inactive elements too */
+            transition: all 0.3s ease; 
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
         }
+        /* --- END OF POPUP UPI BUTTON ENHANCEMENT (NO ANIMATIONS) --- */
 
 
         /* Updated QR Code Container Gradient */
@@ -1024,6 +1037,8 @@
                 popupBtn.classList.add('popup-upi-btn-active');
                 popupBtn.style.setProperty('--upi-color', upi.color);
                 popupBtn.style.setProperty('--upi-opposite-color', upi.oppositeColor);
+                // NEW: Also set the RGB variable for the popup button glow
+                popupBtn.style.setProperty('--upi-rgb', hexToRgb(upi.color));
             }
         };
 
