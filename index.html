@@ -317,17 +317,48 @@
         .history-item {
             transition: transform 0.1s ease-out; /* Reduced transition time */
         }
-
-        .dial-pad button:hover {
-            transform: scale(1.05);
-        }
         
-        .dial-pad button:active {
-            transform: scale(0.95);
+        /* --- START OF DIAL PAD ENHANCEMENT --- */
+        /* Enhanced styles for number/operator buttons (gray background) */
+        .dial-pad button[data-value]:not([data-value="clear"]):not([data-value="equals"]) {
+            transition: all 0.15s ease-out, box-shadow 0.2s;
         }
 
-        /* Removed hover effect from UPI buttons */
+        .dial-pad button[data-value]:not([data-value="clear"]):not([data-value="equals"]):hover {
+            background-color: #374151; /* bg-gray-700 on hover */
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.6);
+            transform: scale(1.02); /* Slight scale */
+        }
 
+        .dial-pad button[data-value]:not([data-value="clear"]):not([data-value="equals"]):active {
+            background-color: #4b5563; /* bg-gray-600 on active press */
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.8);
+            transform: scale(0.98); /* Press down effect */
+        }
+
+        /* Enhanced styles for special buttons (AC and =) (orange background) */
+        .dial-pad button[data-value="clear"],
+        .dial-pad button[data-value="equals"] {
+            transition: all 0.15s ease-out, box-shadow 0.2s;
+        }
+
+        .dial-pad button[data-value="clear"]:hover,
+        .dial-pad button[data-value="equals"]:hover {
+            background-color: #f97316; /* bg-orange-600 */
+            box-shadow: 0 0 15px #f97316, 0 4px 12px rgba(0, 0, 0, 0.6);
+            transform: scale(1.02);
+        }
+
+        .dial-pad button[data-value="clear"]:active,
+        .dial-pad button[data-value="equals"]:active {
+            background-color: #ea580c; /* bg-orange-700 */
+            box-shadow: 0 0 20px #ea580c, 0 2px 4px rgba(0, 0, 0, 0.8);
+            transform: scale(0.98);
+        }
+        /* --- END OF DIAL PAD ENHANCEMENT --- */
+
+        /* Removed old generic .dial-pad button:hover/.dial-pad button:active rules as the new specific rules cover them */
+        
         .upi-btn-base:active,
         .history-item:active {
             transform: scale(0.98);
@@ -639,7 +670,10 @@
     <!-- Modal for QR Code Display -->
     <div id="qr-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-[100]">
         <div id="qr-modal" class="modal-content rounded-lg p-6 relative w-11/12 max-w-sm flex flex-col items-center">
-            <button id="close-modal-btn" class="absolute top-4 right-4 text-gray-400 hover:text-gray-200 text-2xl font-bold transition-transform transform hover:scale-110">&times;</button>
+            <!-- UPDATED: Enhanced Close Button with Material Icon and Glass/Shadow styling -->
+            <button id="close-modal-btn" class="absolute top-4 right-4 w-10 h-10 rounded-lg flex items-center justify-center p-0 text-gray-300 transition-all duration-300 bg-white/10 border border-gray-700 shadow-xl hover:bg-white/20 hover:shadow-orange-500/50 hover:text-orange-400 hover:scale-[1.03]">
+                <span class="material-symbols-outlined text-xl">close</span>
+            </button>
             <div class="flex flex-col items-center space-y-2">
                 <h2 class="text-lg font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Payment QR Code</h2>
                 <!-- New container for the amount and share button -->
@@ -1328,7 +1362,6 @@
                 }, 300); // Duration of the fade out
             });
 
-            // *** MODIFICATION: Removed the event listener that closes the modal on external clicks ***
             // The modal now ONLY closes via the 'X' button.
 
             // Handle the clear button functionality and live validation
