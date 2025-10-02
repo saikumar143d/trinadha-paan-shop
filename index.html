@@ -163,6 +163,36 @@
             object-fit: cover;
         }
         
+        /* Compact, Minimal, and Cute Glass Pill Styles */
+        .cute-amount-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-family: 'Ubuntu', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+        
+        .cute-amount-pill .currency-symbol {
+            background: linear-gradient(45deg, #FFAC33, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 0.3rem;
+            font-size: 1.2rem;
+        }
+        
+        .cute-amount-pill .amount-value {
+            color: #E5E7EB;
+        }
+        
         /* Minimized Button Styles */
         .minimized-upi-btn {
             width: 70px;
@@ -401,57 +431,6 @@
             color: #E5E7EB;
         }
         
-        /* Compact, Minimal, and Cute Glass Pill Styles */
-        .cute-amount-pill {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-family: 'Ubuntu', sans-serif;
-            font-weight: 700;
-            font-size: 1.2rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .cute-amount-pill .currency-symbol {
-            background: linear-gradient(45deg, #FFAC33, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-right: 0.3rem;
-            font-size: 1.2rem;
-        }
-        
-        .cute-amount-pill .amount-value {
-            color: #E5E7EB;
-        }
-        
-        .qr-action-btn {
-            width: 4rem;
-            height: 4rem;
-            border-radius: 9999px;
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.2s ease-in-out;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-        }
-        
-        .qr-action-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
         /* NEW: Styles for History Pane transition */
         .history-view {
             transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
@@ -820,7 +799,7 @@
                     modulation: {
                         type: 'square'
                     },
-                    modulationIndex: 10, 
+                    modulationIndex: 10,  
                 }).toDestination();
                 
                 // 5. NEW: Magical Synth for UPI buttons (Shimmery, resonant sound)
@@ -855,15 +834,15 @@
                 }
             },
 
-            playTone: function(type, value) { 
-                if (!this.isInitialized) return; 
+            playTone: function(type, value) {  
+                if (!this.isInitialized) return;  
 
                 try {
                     const now = Tone.now();
                     switch (type) {
                         case 'number':
                             // Map value to a specific note in the NoteMap
-                            const note = NoteMap[value] || 'C4'; 
+                            const note = NoteMap[value] || 'C4';  
                             this.synth.triggerAttackRelease(note, '16n');
                             break;
                         case 'operator':
@@ -885,7 +864,7 @@
                             break;
                         case 'backspace':
                             // Plays a quick-fading AM tone to simulate vanishing
-                            this.backspaceSynth.triggerAttackRelease('A5', '8n'); 
+                            this.backspaceSynth.triggerAttackRelease('A5', '8n');  
                             break;
                         case 'magical':
                             // NEW: Resonant, shimmery tone for UPI selection
@@ -1257,11 +1236,11 @@
                 button.addEventListener('click', () => {
                     const validation = validateExpression(amountInput.value.trim());
                     if (!validation.isValid) {
-                          errorMessage.textContent = validation.message;
-                          errorMessage.style.display = 'block';
-                          inputGroup.classList.add('input-error');
-                          AudioEngine.playTone('clear'); // Play error tone on validation failure
-                          return;
+                             errorMessage.textContent = validation.message;
+                             errorMessage.style.display = 'block';
+                             inputGroup.classList.add('input-error');
+                             AudioEngine.playTone('clear'); // Play error tone on validation failure
+                             return;
                     }
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
@@ -1298,7 +1277,7 @@
                 `;
                 button.addEventListener('click', () => {
                     // Play magical tone when switching UPI IDs inside the modal
-                    AudioEngine.playTone('magical'); 
+                    AudioEngine.playTone('magical');  
                     updateButtonHighlighting(upi.id);
                     
                     // Use the globally stored amount instead of recalculating from the cleared input
@@ -1349,15 +1328,8 @@
                 }, 300); // Duration of the fade out
             });
 
-            qrModalOverlay.addEventListener('click', (e) => {
-                if (e.target.id === 'qr-modal-overlay') {
-                    qrModalOverlay.classList.remove('visible');
-                    setTimeout(() => {
-                          qrModalOverlay.classList.add('hidden');
-                          qrCodeContainer.innerHTML = '';
-                    }, 300);
-                }
-            });
+            // *** MODIFICATION: Removed the event listener that closes the modal on external clicks ***
+            // The modal now ONLY closes via the 'X' button.
 
             // Handle the clear button functionality and live validation
             amountInput.addEventListener('input', () => {
@@ -1431,10 +1403,10 @@
                 // Determine if it's a number/musical key or an operator
                 if (musicalKeys.includes(value)) {
                     amountInput.value += value;
-                    toneType = 'number'; 
+                    toneType = 'number';  
                 } else if (operators.includes(value)) {
                     amountInput.value += value;
-                    toneType = 'operator'; 
+                    toneType = 'operator';  
                 } else if (value === 'backspace') {
                     amountInput.value = amountInput.value.slice(0, -1);
                     toneType = 'backspace';
