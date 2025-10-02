@@ -670,9 +670,11 @@
     <!-- Modal for QR Code Display -->
     <div id="qr-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-[100]">
         <div id="qr-modal" class="modal-content rounded-lg p-6 relative w-11/12 max-w-sm flex flex-col items-center">
-            <!-- UPDATED: Enhanced Close Button with Material Icon and Glass/Shadow styling -->
-            <button id="close-modal-btn" class="absolute top-4 right-4 w-10 h-10 rounded-lg flex items-center justify-center p-0 text-gray-300 transition-all duration-300 bg-white/10 border border-gray-700 shadow-xl hover:bg-white/20 hover:shadow-orange-500/50 hover:text-orange-400 hover:scale-[1.03]">
-                <span class="material-symbols-outlined text-xl">close</span>
+            <!-- UPDATED: Enhanced Close Button with Material Icon, increased size, refined glass aesthetic, and stronger orange hover glow -->
+            <button id="close-modal-btn" class="absolute top-3 right-3 w-12 h-12 rounded-xl flex items-center justify-center p-0 text-gray-300 transition-all duration-300 
+                bg-white/10 border border-gray-700 shadow-2xl 
+                hover:bg-white/20 hover:border-orange-500 hover:text-orange-400 hover:scale-[1.05] hover:shadow-[0_0_20px_rgba(251,146,60,0.6)]">
+                <span class="material-symbols-outlined text-2xl font-semibold">close</span>
             </button>
             <div class="flex flex-col items-center space-y-2">
                 <h2 class="text-lg font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Payment QR Code</h2>
