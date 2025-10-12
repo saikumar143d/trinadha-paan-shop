@@ -26,6 +26,9 @@
     <!-- NEW: Tone.js CDN for thematic audio feedback -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
     
+    <!-- NEW: Canvas Confetti CDN for success animation -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    
     <style>
         body {
             font-family: 'Karla', sans-serif;
@@ -48,6 +51,20 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        
+        /* NEW: Keyframes for the gradient flow animation */
+        @keyframes gradientFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+        
+        /* NEW: Animation activation on the gradient text within the visible footer */
+        .footer-is-visible .gradient-text {
+            background-size: 200%; /* Required for the flow effect */
+            animation: gradientFlow 3s linear infinite;
+        }
+        /* --- END OF NEW GRADIENT ANIMATION CSS --- */
+
 
         .header-content,
         .footer-content {
@@ -346,7 +363,7 @@
         .dial-pad button[data-value]:not([data-value="clear"]):not([data-value="equals"]):active {
             background-color: #4b5563; /* bg-gray-600 on active press */
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.8);
-            transform: scale(0.98); /* Press down effect */
+            transform: scale(0.95); /* Adjusted for stronger press down/bounce effect */
         }
 
         /* Enhanced styles for special buttons (AC and =) (orange background) */
@@ -366,9 +383,21 @@
         .dial-pad button[data-value="equals"]:active {
             background-color: #ea580c; /* bg-orange-700 */
             box-shadow: 0 0 20px #ea580c, 0 2px 4px rgba(0, 0, 0, 0.8);
-            transform: scale(0.98);
+            transform: scale(0.95); /* Adjusted for stronger press down/bounce effect */
         }
         /* --- END OF DIAL PAD ENHANCEMENT --- */
+        
+        /* --- START OF CLEAR HISTORY BUTTON ANIMATIONS --- */
+        @keyframes vibrate {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-2px); }
+            75% { transform: translateX(2px); }
+        }
+
+        #clear-history-btn:hover { 
+            animation: vibrate 0.2s ease-in-out; 
+        }
+        /* --- END OF CLEAR HISTORY BUTTON ANIMATIONS --- */
 
         /* Removed old generic .dial-pad button:hover/.dial-pad button:active rules as the new specific rules cover them */
         
@@ -487,11 +516,7 @@
             transform: translateY(0);
         }
         
-        /* NEW: Styles for QR Code fade-in */
-        .qr-code-fade-in {
-            opacity: 0;
-            transition: opacity 0.5s ease-in;
-        }
+        /* NOTE: The .qr-code-fade-in CSS block was removed to use Tailwind classes directly */
 
         /* NEW: Styles for error state and message */
         .input-error {
@@ -699,8 +724,8 @@
                     </div>
                 </div>
             </div>
-            <!-- QR code container -->
-            <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden qr-code-fade-in">
+            <!-- QR code container: Removed opacity and transition classes -->
+            <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden">
                 <!-- QR code will be generated here -->
             </div>
             
@@ -926,6 +951,74 @@
             }
         };
 
+        // Confetti logic for successful QR generation
+        const triggerConfetti = (upiColor) => {
+            if (!window.confetti) return;
+            const colors = [upiColor, '#FFD700', '#FFAC33', '#ffffff'];
+            const duration = 1.5 * 1000;
+
+            // Confetti shot from the center of the screen
+            confetti({
+                particleCount: 100,
+                startVelocity: 30,
+                spread: 120,
+                ticks: 60,
+                origin: { y: 0.5, x: 0.5 },
+                colors: colors,
+                disableForReducedMotion: true
+            });
+
+            // Second, bigger burst from above
+            confetti({
+                particleCount: 80,
+                angle: 90,
+                spread: 70,
+                origin: { x: 0.5, y: 0.1 },
+                colors: colors,
+                disableForReducedMotion: true
+            });
+            
+            // Third shot from the sides
+            confetti({
+                particleCount: 60,
+                angle: 60,
+                spread: 55,
+                origin: { x: 0, y: 0.8 },
+                colors: colors,
+                disableForReducedMotion: true
+            });
+
+            confetti({
+                particleCount: 60,
+                angle: 120,
+                spread: 55,
+                origin: { x: 1, y: 0.8 },
+                colors: colors,
+                disableForReducedMotion: true
+            });
+        }
+        
+        // NEW: Confetti logic for Clear History button
+        const triggerClearConfetti = (element) => {
+            if (!window.confetti) return;
+            const rect = element.getBoundingClientRect();
+            // Calculate normalized coordinates (0 to 1) for the button center
+            const x = (rect.left + rect.width / 2) / window.innerWidth;
+            const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+            const colors = ['#f87171', '#ef4444', '#b91c1c', '#f97316']; // Red/Orange delete palette
+
+            confetti({
+                particleCount: 50,
+                startVelocity: 25,
+                spread: 45,
+                ticks: 60,
+                origin: { x: x, y: y },
+                colors: colors,
+                disableForReducedMotion: true
+            });
+        }
+
 
         const getUpiData = (id) => {
             return upiData.find(u => u.id === id) || {
@@ -1049,6 +1142,8 @@
             const historyBtn = document.getElementById('history-btn');
             const historyIcon = document.getElementById('history-icon');
             const qrModalOverlay = document.getElementById('qr-modal-overlay');
+            const historyFooter = document.getElementById('history-footer'); // Get footer element
+
             
             // Refactored view switching logic for a smoother animation
             const showMainView = () => {
@@ -1056,6 +1151,11 @@
                 historyIcon.innerText = 'history';
                 historyView.classList.add('hidden');
                 mainView.classList.remove('hidden');
+                
+                // NEW: Stop gradient scroll animation when leaving history view
+                if (historyFooter) {
+                    historyFooter.classList.remove('footer-is-visible');
+                }
             };
 
             const showHistoryView = () => {
@@ -1064,6 +1164,14 @@
                 historyView.classList.add('history-visible');
                 historyIcon.innerText = 'arrow_back';
                 renderHistory();
+
+                // NEW: Start gradient scroll animation when entering history view
+                if (historyFooter) {
+                    // Timeout ensures the animation starts after the element is painted/slid up
+                    setTimeout(() => {
+                        historyFooter.classList.add('footer-is-visible');
+                    }, 500); 
+                }
             };
 
             historyBtn.addEventListener('click', () => {
@@ -1097,7 +1205,8 @@
             const generateQrCode = (upiId, amount) => {
                 // Remove existing QR to allow a fresh generation
                 qrCodeContainer.innerHTML = '';
-                qrCodeContainer.style.opacity = '0';
+                
+                // Set initial state for instant visibility (or the modal fade will handle it)
                 qrCodeContainer.classList.remove('hidden');
 
                 const upi = getUpiData(upiId);
@@ -1174,17 +1283,15 @@
 
                 currentQR.append(qrCodeContainer);
                 
-                // NEW: Trigger the fade-in animation
-                setTimeout(() => {
-                    qrCodeContainer.style.opacity = '1';
-                }, 50);
-
                 if (amount && parseFloat(amount) > 0) {
                     amountValue.textContent = `${parseFloat(amount).toFixed(2)}`;
                     amountDisplay.classList.remove('hidden');
                 } else {
                     amountDisplay.classList.add('hidden');
                 }
+
+                // NEW: Trigger confetti upon successful QR generation
+                triggerConfetti(upi.color);
             };
             
             const renderUpiButtons = () => {
@@ -1343,9 +1450,11 @@
 
             if (clearHistoryBtn) {
                 clearHistoryBtn.addEventListener('click', () => {
-                    const historyList = document.getElementById('history-list');
-                    const historyItems = historyList.querySelectorAll('.history-item');
+                    const historyItems = document.getElementById('history-list').querySelectorAll('.history-item');
                     if (historyItems.length === 0) return;
+                    
+                    // NEW: Trigger confetti explosion before clearing
+                    triggerClearConfetti(clearHistoryBtn);
 
                     const staggerTime = 50;
                     let totalAnimationTime = 0;
@@ -1376,6 +1485,7 @@
                 setTimeout(() => {
                     qrModalOverlay.classList.add('hidden');
                     qrCodeContainer.innerHTML = '';
+                    // Removed the opacity class resets that were part of the animation removal
                 }, 300); // Duration of the fade out
             });
 
@@ -1385,13 +1495,13 @@
             amountInput.addEventListener('input', () => {
                 const validation = validateExpression(amountInput.value);
                 if (!validation.isValid) {
-                      errorMessage.textContent = validation.message;
-                      errorMessage.style.display = 'block';
-                      inputGroup.classList.add('input-error');
+                     errorMessage.textContent = validation.message;
+                     errorMessage.style.display = 'block';
+                     inputGroup.classList.add('input-error');
                 } else {
-                      errorMessage.textContent = '';
-                      errorMessage.style.display = 'none';
-                      inputGroup.classList.remove('input-error');
+                     errorMessage.textContent = '';
+                     errorMessage.style.display = 'none';
+                     inputGroup.classList.remove('input-error');
                 }
                 
                 if (amountInput.value.length > 0) {
@@ -1420,6 +1530,7 @@
                 } else {
                     e.target.value = result;
                     errorMessage.textContent = '';
+                    e.target.value.length > 0 ? clearInputBtn.classList.remove('hidden') : clearInputBtn.classList.add('hidden');
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
                 }
