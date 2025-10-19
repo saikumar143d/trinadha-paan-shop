@@ -87,6 +87,11 @@
             max-width: 400px;
             animation: fadeIn 0.8s ease-in-out;
         }
+        
+        /* NEW: Smaller padding for history view card (as seen in image) */
+        #history-view.card {
+            padding: 1.5rem;
+        }
 
         .input-group {
             background-color: #1a1c20;
@@ -117,7 +122,7 @@
             }
         }
 
-        /* Revamped UPI Button Styles */
+        /* Revamped UPI Button Styles (Main View) */
         .upi-btn {
             border-radius: 9999px;
             transition: all 0.2s ease-in-out;
@@ -332,14 +337,61 @@
             animation: none;
         }
 
+        /* --- START HISTORY ITEM STYLING FIXES --- */
+
+        /* Hiding history actions by default, showing only on hover of the parent item */
         .history-item-actions {
             display: none;
-            gap: 0.5rem;
+            /* Positioning is now relative to the history item for fine control */
+            position: absolute; 
+            right: 1rem; /* Tailwind 'right-4' equivalent */
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .history-item:hover .history-item-actions {
             display: flex;
         }
+        
+        /* Base style for history items (now defined by inline/dynamic code in renderHistory) */
+        .history-item {
+            background-color: #1f2125; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            position: relative;
+            align-items: center;
+            /* Ensure the item padding and rounded corners are applied correctly */
+            padding: 1rem;
+            border-radius: 0.75rem;
+        }
+        
+        /* Styling for the wrapper around the action buttons */
+        .history-item-actions-wrapper {
+            background-color: #0c0d10; /* Very dark background for the pill container */
+            padding: 0.25rem;
+            border-radius: 0.75rem;
+            box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Styling for the action buttons inside the wrapper */
+        .history-action-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px; /* Pill shape */
+            background-color: #333; /* Dark background for the pill buttons */
+            color: #ccc; /* Light gray text */
+            transition: all 0.2s;
+        }
+
+        .history-action-btn:hover {
+            background-color: #4b5563;
+            color: #fff;
+        }
+        
+        /* --- END HISTORY ITEM STYLING FIXES --- */
+
 
         /* NEW: Soft Hover and Active animations for buttons */
         .dial-pad button,
@@ -397,6 +449,17 @@
         #clear-history-btn:hover { 
             animation: vibrate 0.2s ease-in-out; 
         }
+        
+        /* NEW: Style for the Clear History button based on the image */
+        #clear-history-btn {
+            background-color: #ef4444; /* Red color */
+            border-radius: 9999px; /* Pill shape */
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
         /* --- END OF CLEAR HISTORY BUTTON ANIMATIONS --- */
 
         /* Removed old generic .dial-pad button:hover/.dial-pad button:active rules as the new specific rules cover them */
@@ -451,14 +514,25 @@
         
         /* New style for the history footer tag */
         .history-footer-tag {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(5px);
-            border-radius: 12px;
-            padding: 1rem;
-            margin-top: 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            animation: slideInFromBottom 0.5s ease-out forwards;
+            background: none;
+            backdrop-filter: none;
+            border: none;
+            box-shadow: none;
+            padding: 0;
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+        
+        /* NEW: Styles for the Made with text */
+        .made-with-text {
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500;
+            color: #d1d5db; /* gray-300 */
+        }
+        
+        .made-with-text .heart-icon {
+            color: #ef4444; /* red-500 */
+            margin: 0 0.25rem;
         }
 
         @keyframes slideInFromBottom {
@@ -516,18 +590,26 @@
             transform: translateY(0);
         }
         
-        /* NOTE: The .qr-code-fade-in CSS block was removed to use Tailwind classes directly */
-
-        /* NEW: Styles for error state and message */
+        /* REVISED: Enhanced Styles for error state (Red Border only) */
         .input-error {
-            border-color: #ef4444 !important;
-            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.3) !important;
+            /* Stronger solid border */
+            border: 2px solid #ff4d4d !important; /* Slightly brighter, more defined red */
+            
+            /* Multi-layered shadow for depth and intense glow */
+            box-shadow: 
+                0 0 5px rgba(255, 77, 77, 0.8),    /* Inner glow (bright red) */
+                0 0 15px rgba(255, 0, 0, 0.5),    /* Wider, softer primary halo */
+                0 0 0 4px rgba(255, 77, 77, 0.2), /* Translucent outline layer */
+                inset 0 1px 3px rgba(255, 0, 0, 0.6); /* Inner light/recession effect */
+            
+            /* Ensure the transition is smooth for the error state changes */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .error-message {
             color: #ef4444;
             font-size: 0.875rem;
             margin-top: 0.5rem;
-            display: none;
+            display: none; /* Kept display: none in CSS as a fallback */
         }
         
         /* NEW: Header fade-in animation on page load */
@@ -601,7 +683,7 @@
                     <span class="material-symbols-outlined text-lg">cancel</span>
                 </button>
             </div>
-            <!-- New error message display -->
+            <!-- Error message element: This element is present but now permanently hidden by JavaScript logic -->
             <span id="errorMessage" class="error-message text-red-500 mt-2"></span>
         </div>
 
@@ -684,7 +766,9 @@
     <!-- Payment History View -->
     <div id="history-view" class="hidden card mt-20 relative flex flex-col h-full max-h-[85vh]">
         <div class="flex justify-between items-center mb-4">
-            <h3 id="history-header" class="text-lg font-bold gradient-text" style="font-family: 'Ubuntu', sans-serif;">History</h3>
+            <!-- UPDATED: Title to match image -->
+            <h3 id="history-header" class="text-xl font-bold gradient-text" style="font-family: 'Ubuntu', sans-serif;">Payment History</h3>
+            <!-- UPDATED: Clear button style to match provided code's wrapper -->
             <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-full font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-300 hidden">
                 <span class="material-symbols-outlined text-white mr-1 text-base">delete_forever</span> Clear
             </button>
@@ -697,9 +781,10 @@
         
         <!-- Footer Section -->
         <div id="history-footer" class="mt-4 pt-4 floating-header-animated">
-            <div class="history-footer-tag flex flex-col items-center justify-center text-center text-gray-400 text-xs">
-                <p class="font-bold text-sm tracking-wide">Live it UP</p>
-                <p class="text-xs mt-1">Made with ❤️ in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-sm text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
+            <!-- UPDATED: Footer text to match image -->
+            <p class="font-bold text-sm tracking-wide text-gray-300 text-center">Live it UP</p>
+            <div class="history-footer-tag flex items-center justify-center text-center text-gray-400 text-sm">
+                <p class="made-with-text">Made with <span class="heart-icon">❤️</span> in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-base text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
             </div>
         </div>
 
@@ -951,7 +1036,7 @@
             }
         };
 
-        // Confetti logic for successful QR generation
+        // Confetti logic for successful QR generation (REMOVED: Now only used for clear history)
         const triggerConfetti = (upiColor) => {
             if (!window.confetti) return;
             const colors = [upiColor, '#FFD700', '#FFAC33', '#ffffff'];
@@ -1047,15 +1132,18 @@
                 minute: 'numeric',
                 hour12: true
             });
-            history.unshift({
-                id,
-                amount: parseFloat(amount || 0).toFixed(2),
-                timestamp
-            });
-            localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+            // Only save if a UPI ID is selected and amount is a non-empty string (including '0.00' if a math operation resulted in zero, though my new logic returns '' for zero)
+            if (id) {
+                history.unshift({
+                    id,
+                    amount: amount || '0.00', // Ensure amount is saved as '0.00' if it's explicitly empty for history visibility
+                    timestamp
+                });
+                localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+            }
         };
         
-        // NEW: Function to perform input validation
+        // RE-ADDED: Function to perform input validation
         const validateExpression = (expression) => {
             if (expression.trim() === '') {
                 return { isValid: true, message: '' };
@@ -1066,7 +1154,8 @@
             }
 
             // Check for consecutive operators (except for unary minus)
-            if (expression.match(/[\+\*\/\.\-]{2,}/) || expression.match(/\/\*|\*\//)) {
+            // Fix: Allows minus sign as unary operator (e.g., -5, 5*-5) but prevents double operators like ++ or *-
+            if (expression.match(/[\+\*\/\.]{2,}/) || expression.match(/\/\*|\*\//) || expression.match(/[\+\*\/]\-/)) {
                 return { isValid: false, message: 'Consecutive operators are not allowed.' };
             }
             
@@ -1091,20 +1180,35 @@
             return { isValid: true, message: '' };
         };
 
+        // UPDATED: calculateAmount now makes the amount optional.
         const calculateAmount = (value) => {
-            if (!value) return { result: '', error: 'Amount is required.' };
+            // 1. Explicitly allow empty input, returning an empty string amount.
+            if (value.trim() === '') {
+                return { result: '', error: null }; 
+            }
+            
             const validation = validateExpression(value);
             if (!validation.isValid) {
                 return { result: '', error: validation.message };
             }
             try {
                 const result = math.evaluate(value);
+                
+                // 2. Handle calculation results of zero (e.g., 5-5) as optional amount ('').
+                if (result === 0) {
+                    return { result: '', error: null };
+                }
+                
                 if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
+                    // Standard success path (non-zero amount)
+                    // Note: UPI minimum amount is 1.00, but we allow less for flexibility
                     return { result: parseFloat(result).toFixed(2), error: null };
                 }
             } catch (error) {
+                // Calculation failed (e.g., division by zero)
                 return { result: '', error: 'Invalid mathematical expression.' };
             }
+            // Should not be reached, but fallback for safety
             return { result: '', error: 'Invalid mathematical expression.' };
         };
         
@@ -1170,7 +1274,7 @@
                     // Timeout ensures the animation starts after the element is painted/slid up
                     setTimeout(() => {
                         historyFooter.classList.add('footer-is-visible');
-                    }, 500); 
+                    }, 500);  
                 }
             };
 
@@ -1199,6 +1303,10 @@
             const logoImg = document.getElementById('logo-img');
             const errorMessage = document.getElementById('errorMessage');
             const inputGroup = document.getElementById('input-container');
+
+            // Ensure error display elements are clean on load
+            errorMessage.style.display = 'none';
+            inputGroup.classList.remove('input-error');
 
             let currentQR = null;
             
@@ -1247,6 +1355,8 @@
                 if (payeeName) {
                     upiUri += `&pn=${encodeURIComponent(payeeName)}`;
                 }
+                
+                // CHECK FOR AMOUNT: Only append amount parameter if amount is a valid number greater than 0
                 if (amount && parseFloat(amount) > 0) {
                     upiUri += `&am=${encodeURIComponent(amount)}`;
                     upiUri += `&cu=INR`;
@@ -1283,15 +1393,13 @@
 
                 currentQR.append(qrCodeContainer);
                 
-                if (amount && parseFloat(amount) > 0) {
+                // If amount is present and > 0, display the amount pill
+                if (amount && parseFloat(amount) > 0 && !isNaN(parseFloat(amount))) {
                     amountValue.textContent = `${parseFloat(amount).toFixed(2)}`;
                     amountDisplay.classList.remove('hidden');
                 } else {
                     amountDisplay.classList.add('hidden');
                 }
-
-                // NEW: Trigger confetti upon successful QR generation
-                triggerConfetti(upi.color);
             };
             
             const renderUpiButtons = () => {
@@ -1315,43 +1423,70 @@
                     clearHistoryBtn.classList.add('hidden');
                 } else {
                     history.forEach((item, index) => {
-                        const historyItem = document.createElement('div');
                         const upiInfo = getUpiData(item.id);
-                        historyItem.className = 'history-item p-4 bg-gray-900 rounded-xl flex items-center space-x-4 cursor-pointer hover:bg-gray-800 transition-colors duration-200 relative group history-item-animated';
+                        
+                        // Use a single container div with all necessary classes
+                        const historyItem = document.createElement('div');
+                        historyItem.classList.add(
+                            'history-item', 'flex', 'items-center', 'space-x-4', 'cursor-pointer', 
+                            'hover:bg-gray-800', 'transition-colors', 'duration-200', 'relative', 
+                            'group', 'history-item-animated', 'p-4', 'rounded-xl', 'w-full'
+                        );
                         historyItem.style.animationDelay = `${index * 0.05}s`;
+                        
+                        // Apply the orange left border based on the UPI color (using an inline style for the border-left)
+                        historyItem.style.borderLeft = `5px solid ${upiInfo.color}`; 
+                        historyItem.style.backgroundColor = '#1f2125'; // Ensure specific dark background
+
+                        const itemIconUrl = upiInfo.icon || 'https://placehold.co/40x40/4B5563?text=Icon';
+                        const timePart = item.timestamp.split(', ')[1] || item.timestamp;
+
                         historyItem.innerHTML = `
-                            <img src="${upiInfo.icon}" alt="${upiInfo.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
-                            <div class="flex-1">
-                                <p class="text-gray-200 font-semibold" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
-                                <p class="text-gray-400 text-sm" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${item.timestamp}</p>
+                            <!-- Icon -->
+                            <img src="${itemIconUrl}" alt="${upiInfo.label} Icon" 
+                                class="w-10 h-10 rounded-full border-2 border-gray-700 object-cover flex-shrink-0" 
+                                onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
+                            
+                            <!-- Text Content (Label and Time/Amount) -->
+                            <div class="flex-1 min-w-0 ml-2">
+                                <p class="text-gray-200 font-semibold truncate" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
+                                <p class="text-gray-400 text-sm truncate" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${timePart}</p>
                             </div>
-                            <div class="history-item-actions flex items-center space-x-2 absolute right-4 top-1/2 transform -translate-y-1/2">
-                                <button class="regenerate-btn text-gray-400 hover:text-green-500 transition-colors">
-                                    <span class="material-symbols-outlined">sync</span>
+                            
+                            <!-- Action buttons with wrapper for pill-look -->
+                            <div class="history-item-actions flex items-center space-x-2 history-item-actions-wrapper">
+                                <button class="regenerate-btn history-action-btn text-gray-300 hover:text-green-500 hover:bg-gray-700 transition-colors">
+                                    <span class="material-symbols-outlined text-base">sync</span>
                                 </button>
-                                <button class="delete-btn text-gray-400 hover:text-red-500 transition-colors" data-index="${index}">
-                                    <span class="material-symbols-outlined">delete</span>
+                                <button class="delete-btn history-action-btn text-gray-300 hover:text-red-500 hover:bg-gray-700 transition-colors" data-index="${index}">
+                                    <span class="material-symbols-outlined text-base">delete</span>
                                 </button>
                             </div>
                         `;
                         
+                        // Attach listeners
                         historyItem.addEventListener('click', (e) => {
                             if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
                                 return;
                             }
                             generateQrCode(item.id, item.amount);
-                            // Store the amount in the global variable for use in popup
                             currentQrAmount = item.amount;
-                            qrModalOverlay.classList.remove('hidden');
-                            qrModalOverlay.classList.add('visible');
+                            
+                            setTimeout(() => {
+                                qrModalOverlay.classList.remove('hidden');
+                                qrModalOverlay.classList.add('visible');
+                            }, 0);
                         });
 
                         historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
                             generateQrCode(item.id, item.amount);
                             currentQrAmount = item.amount;
                             saveHistory(item.id, item.amount);
-                            qrModalOverlay.classList.remove('hidden');
-                            qrModalOverlay.classList.add('visible');
+                            
+                            setTimeout(() => {
+                                qrModalOverlay.classList.remove('hidden');
+                                qrModalOverlay.classList.add('visible');
+                            }, 0);
                         });
 
                         historyItem.querySelector('.delete-btn').addEventListener('click', () => {
@@ -1392,30 +1527,39 @@
                 container.appendChild(label);
 
                 button.addEventListener('click', () => {
-                    const validation = validateExpression(amountInput.value.trim());
-                    if (!validation.isValid) {
-                             errorMessage.textContent = validation.message;
-                             errorMessage.style.display = 'block';
-                             inputGroup.classList.add('input-error');
-                             AudioEngine.playTone('clear'); // Play error tone on validation failure
-                             return;
+                    // Validation check
+                    const inputExpression = amountInput.value.trim();
+                    const { result, error } = calculateAmount(inputExpression);
+
+                    if (error) {
+                        // Action on Error: ONLY SHOW RED BORDER, HIDE TEXT, PLAY TONE
+                        errorMessage.style.display = 'none'; // Ensure text is hidden
+                        inputGroup.classList.add('input-error');
+                        AudioEngine.playTone('clear'); 
+                        return;
                     }
+                    
+                    // Action on Success: Clear border and proceed
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
-
+                    
                     // NEW: Play magical tone on successful UPI selection
                     AudioEngine.playTone('magical');
 
                     updateButtonHighlighting(upi.id);
-                    const amount = calculateAmount(amountInput.value.trim()).result;
-                    // Store the calculated amount in the global variable
-                    currentQrAmount = amount;
+                    
+                    // Store the calculated amount/expression in the global variable
+                    currentQrAmount = result;
                     upiLabelText.textContent = upi.label;
                     selectedUpiIdDisplay.textContent = upi.id;
-                    generateQrCode(upi.id, amount);
-                    saveHistory(upi.id, amount);
-                    qrModalOverlay.classList.remove('hidden');
-                    qrModalOverlay.classList.add('visible');
+                    generateQrCode(upi.id, result);
+                    saveHistory(upi.id, result);
+
+                    // FIX: Ensure modal visibility is set using timeout for synchronization
+                    setTimeout(() => {
+                        qrModalOverlay.classList.remove('hidden');
+                        qrModalOverlay.classList.add('visible');
+                    }, 0);
 
                     amountInput.value = '';
                     clearInputBtn.classList.add('hidden');
@@ -1438,12 +1582,18 @@
                     AudioEngine.playTone('magical');  
                     updateButtonHighlighting(upi.id);
                     
-                    // Use the globally stored amount instead of recalculating from the cleared input
+                    // Use the globally stored amount (calculated)
                     const amount = currentQrAmount;
                     upiLabelText.textContent = upi.label;
                     selectedUpiIdDisplay.textContent = upi.id;
                     generateQrCode(upi.id, amount);
                     saveHistory(upi.id, amount);
+                    
+                    // FIX: Ensure modal visibility is set
+                    setTimeout(() => {
+                        qrModalOverlay.classList.remove('hidden');
+                        qrModalOverlay.classList.add('visible');
+                    }, 0);
                 });
                 return button;
             };
@@ -1491,17 +1641,17 @@
 
             // The modal now ONLY closes via the 'X' button.
 
-            // Handle the clear button functionality and live validation
+            // UPDATED: Live validation on input (Red Border only)
             amountInput.addEventListener('input', () => {
                 const validation = validateExpression(amountInput.value);
                 if (!validation.isValid) {
-                     errorMessage.textContent = validation.message;
-                     errorMessage.style.display = 'block';
-                     inputGroup.classList.add('input-error');
+                    // Show red border, hide text
+                    errorMessage.style.display = 'none';
+                    inputGroup.classList.add('input-error');
                 } else {
-                     errorMessage.textContent = '';
-                     errorMessage.style.display = 'none';
-                     inputGroup.classList.remove('input-error');
+                    // Clear state
+                    errorMessage.style.display = 'none';
+                    inputGroup.classList.remove('input-error');
                 }
                 
                 if (amountInput.value.length > 0) {
@@ -1514,26 +1664,29 @@
             clearInputBtn.addEventListener('click', () => {
                 amountInput.value = '';
                 clearInputBtn.classList.add('hidden');
-                errorMessage.textContent = '';
-                errorMessage.style.display = 'none';
-                inputGroup.classList.remove('input-error');
+                errorMessage.style.display = 'none'; // Ensure error message stays hidden
+                inputGroup.classList.remove('input-error'); // Ensure error border is removed
                 amountInput.focus();
             });
 
-            // Calculator functionality on blur
+            // UPDATED: Calculator functionality on blur (Red Border only)
             amountInput.addEventListener('blur', (e) => {
                 const { result, error } = calculateAmount(e.target.value.trim());
+
                 if (error) {
-                    errorMessage.textContent = error;
+                    // Show red border, hide text, clear field
+                    errorMessage.style.display = 'none';
                     inputGroup.classList.add('input-error');
-                    e.target.value = '';
+                    e.target.value = ''; 
                 } else {
+                    // Clear state
                     e.target.value = result;
-                    errorMessage.textContent = '';
-                    e.target.value.length > 0 ? clearInputBtn.classList.remove('hidden') : clearInputBtn.classList.add('hidden');
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
                 }
+                
+                // Set clear button visibility based on final value
+                e.target.value.length > 0 ? clearInputBtn.classList.remove('hidden') : clearInputBtn.classList.add('hidden');
             });
             
             // 1. Initialize synths once
@@ -1550,18 +1703,17 @@
             dialPad.addEventListener('mousedown', startAudioOnFirstInteraction, { once: true });
             dialPad.addEventListener('touchstart', startAudioOnFirstInteraction, { once: true });
 
-            // Dial pad functionality
+            // UPDATED: Dial pad functionality (Red Border only)
             dialPad.addEventListener('click', (e) => {
                 e.preventDefault();
                 const button = e.target.closest('button');
                 if (!button) return;
 
                 const value = button.dataset.value;
-                const operators = ['+', '-', '*', '/']; // Simplified operators list for clarity
+                const operators = ['+', '-', '*', '/']; 
                 const musicalKeys = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '(', ')'];
                 let toneType = null;
 
-                // Determine if it's a number/musical key or an operator
                 if (musicalKeys.includes(value)) {
                     amountInput.value += value;
                     toneType = 'number';  
@@ -1576,17 +1728,25 @@
                     toneType = 'clear';
                 } else if (value === 'equals') {
                     const { result, error } = calculateAmount(amountInput.value.trim());
+
                     if (error) {
-                        errorMessage.textContent = error;
-                        errorMessage.style.display = 'block';
+                        // Action on Error: ONLY SHOW RED BORDER, HIDE TEXT, PLAY TONE
+                        errorMessage.style.display = 'none';
                         inputGroup.classList.add('input-error');
-                        toneType = 'clear'; // Use clear tone for error/failure
+                        AudioEngine.playTone('clear'); 
                         return;
                     } else {
-                        amountInput.value = result;
-                        toneType = 'equals';
+                        // Only set result if it's a valid calculation
+                        if (result) {
+                            amountInput.value = result;
+                            toneType = 'equals';
+                        } else {
+                             // If result is empty (''), clear input but treat as successful 'zero' calculation
+                            amountInput.value = '';
+                            toneType = 'clear'; // Use clear tone to acknowledge the action
+                        }
                     }
-                    errorMessage.textContent = '';
+                    // Clear error state if successful
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
                 }
@@ -1603,14 +1763,12 @@
                     clearInputBtn.classList.add('hidden');
                 }
                 
-                // Validate after each button press
+                // Live input validation after button press (Red Border only)
                 const validation = validateExpression(amountInput.value);
                 if (!validation.isValid) {
-                    errorMessage.textContent = validation.message;
-                    errorMessage.style.display = 'block';
+                    errorMessage.style.display = 'none';
                     inputGroup.classList.add('input-error');
                 } else {
-                    errorMessage.textContent = '';
                     errorMessage.style.display = 'none';
                     inputGroup.classList.remove('input-error');
                 }
