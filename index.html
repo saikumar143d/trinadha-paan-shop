@@ -7,7 +7,7 @@
     <title>Trinadha Paan Shop</title>
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
-    <!-- Google Fonts - Ubuntu, Karla -->
+    <!-- Google Fonts - Ubuntu, Karla (Using Ubuntu as the main geometric font) -->
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap"></noscript>
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -31,7 +31,8 @@
     
     <style>
         body {
-            font-family: 'Karla', sans-serif;
+            /* Nothing OS Font Aesthetic - Geometric Sans */
+            font-family: 'Ubuntu', sans-serif;
             background-color: #000000;
             transition: background-color 0.5s;
             -webkit-user-select: none;
@@ -46,305 +47,61 @@
             background: transparent;
         }
         
+        /* Monochromatic text for titles/accents */
         .gradient-text {
-            background: linear-gradient(45deg, #FFD700, #FFAC33);
+            background: linear-gradient(45deg, #E5E7EB, #F3F4F6); 
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
         
-        /* NEW: Keyframes for the gradient flow animation */
+        /* Keyframes for the flow animation */
         @keyframes gradientFlow {
             0% { background-position: 0% 50%; }
             100% { background-position: 100% 50%; }
         }
         
-        /* NEW: Animation activation on the gradient text within the visible footer */
         .footer-is-visible .gradient-text {
-            background-size: 200%; /* Required for the flow effect */
+            background-size: 200%;
             animation: gradientFlow 3s linear infinite;
-        }
-        /* --- END OF NEW GRADIENT ANIMATION CSS --- */
-
-
-        .header-content,
-        .footer-content {
-            background-color: #f9fafb;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            border-bottom: 2px solid #d1d5db;
-        }
-
-        .footer-content {
-            border-top: 2px solid #d1d5db;
-            box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
         }
 
         .card {
-            background-color: #1a1c20;
-            border-radius: 1.0rem;
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
-            padding: 2rem;
+            /* Monochromatic/Dark Aesthetic */
+            background-color: #0c0d10; /* Almost black */
+            border-radius: 0.75rem; /* Sharper corners */
+            /* Subtle white outline/shadow */
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.1); 
+            padding: 1.5rem;
             width: 100%;
             max-width: 400px;
             animation: fadeIn 0.8s ease-in-out;
         }
         
-        /* NEW: Smaller padding for history view card (as seen in image) */
         #history-view.card {
             padding: 1.5rem;
         }
 
         .input-group {
             background-color: #1a1c20;
-            border-radius: 0.75rem;
-            border: 1px solid #444;
+            border-radius: 0.5rem;
+            border: 2px solid #374151; /* Dark gray border */
             transition: all 0.2s ease-in-out;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            box-shadow: none;
             position: relative;
         }
 
         .input-group:focus-within {
-            border-color: #ea580c;
-            box-shadow: 0 0 0 3px rgba(234, 88, 12, 0.3), 0 4px 8px rgba(0, 0, 0, 0.4);
+            /* High-contrast White Focus Glow (Nothing Style) */
+            border-color: #F3F4F6;
+            box-shadow: 0 0 0 2px #1a1c20, 0 0 0 4px #F3F4F6;
         }
 
-        .upi-btn-container {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-            width: 100%;
-            padding: 0 1rem;
-        }
+        /* --- START HISTORY ITEM STYLING FIXES (Refined Monochromatic) --- */
 
-        @media (min-width: 640px) {
-            .upi-btn-container {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        /* Revamped UPI Button Styles (Main View) */
-        .upi-btn {
-            border-radius: 9999px;
-            transition: all 0.2s ease-in-out;
-            padding: 0.25rem 1.5rem 0.25rem 0.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            cursor: pointer;
-            border: 2px solid;
-            overflow: hidden;
-            background-color: #ffffff;
-            color: #1f2937;
-        }
-        
-        /* New Stylish UPI Button Styles */
-        .new-upi-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 1rem;
-            border-radius: 1rem;
-            background-color: #1a1c20;
-            color: #ffffff;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 4px 8px rgba(0, 0, 0, 0.3);
-            border: 2px solid transparent;
-        }
-
-        .new-upi-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6), 0 6px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        .new-upi-btn.active {
-            border-color: var(--upi-color);
-            box-shadow: 0 0 15px rgba(var(--upi-rgb), 0.7), inset 0 2px 4px rgba(0, 0, 0, 0.6);
-            transform: translateY(0);
-        }
-
-        .new-upi-btn-icon-container {
-            width: 80px;
-            height: 80px;
-            background-color: #333;
-            border-radius: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 2px solid #555;
-        }
-
-        .new-upi-btn-icon-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        /* Compact, Minimal, and Cute Glass Pill Styles */
-        .cute-amount-pill {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.2rem 0.6rem;
-            border-radius: 9999px;
-            font-family: 'Ubuntu', sans-serif;
-            font-weight: 700;
-            font-size: 1.2rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: all 0.3s ease;
-            white-space: nowrap;
-        }
-        
-        .cute-amount-pill .currency-symbol {
-            background: linear-gradient(45deg, #FFAC33, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-right: 0.3rem;
-            font-size: 1.2rem;
-        }
-        
-        .cute-amount-pill .amount-value {
-            color: #E5E7EB;
-        }
-        
-        /* Minimized Button Styles */
-        .minimized-upi-btn {
-            width: 70px;
-            height: 70px;
-            padding: 0;
-            flex-direction: row;
-        }
-
-        .minimized-upi-btn .new-upi-btn-icon-container {
-            width: 100%;
-            height: 100%;
-            margin-bottom: 0;
-            border-radius: 1rem;
-        }
-
-
-        .upi-btn .upi-icon-container {
-            height: 40px;
-            width: 40px;
-            border-radius: 9999px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #ffffff;
-            border: 2px solid #e5e7eb;
-            margin: -2px;
-            margin-right: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        
-        .upi-btn .upi-icon-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .upi-btn-active {
-            box-shadow: 0 0 12px var(--color-active)80, 0 0 0 3px var(--color-active)30, 0 0 8px rgba(0, 0, 0, 0.4);
-            border-color: var(--color-active);
-            color: var(--color-active);
-            background-color: rgba(255,255,255,0.2); /* Semi-transparent white background */
-        }
-
-        .upi-btn-icon {
-            transition: transform 0.2s ease-in-out;
-        }
-        
-
-        .upi-btn span {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: 1rem; /* Adjusting font size to be slightly larger */
-        }
-
-        .modal {
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(8px);
-            opacity: 0; /* New property for modal fade */
-            pointer-events: none; /* New property for modal fade */
-            transition: opacity 0.3s ease;
-        }
-        
-        .modal.visible {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            background-color: #1a1a1a;
-            border-radius: 1.5rem;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
-            transform: scale(0.9); /* New property for modal scale */
-            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-        
-        .modal.visible .modal-content {
-            transform: scale(1);
-        }
-
-        /* --- START OF POPUP UPI BUTTON ENHANCEMENT (NO ANIMATIONS) --- */
-        .popup-upi-btn-active {
-            /* 1. Thicker, vibrant border */
-            border: 3px solid var(--upi-color);
-            
-            /* 2. Complex, static shadow/glow for a multi-layered reflection look */
-            box-shadow: 
-                0 0 0 2px #0c0d10, /* Dark inner ring for separation */
-                0 0 10px rgba(var(--upi-rgb), 0.5), /* Soft inner halo (primary color) */
-                0 0 20px rgba(var(--upi-rgb), 0.3), /* Wider, stronger halo (primary color) */
-                inset 0 0 10px 5px rgba(var(--upi-rgb), 0.2); /* Deep inset color fill */
-            
-            /* Removed animations */
-            transition: border-color 0.3s, box-shadow 0.3s;
-            transform: none; /* Ensure no scaling is applied */
-        }
-        
-        /* New style for inactive popup buttons with a slight border */
-        .popup-upi-btn:not(.popup-upi-btn-active) {
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
-            /* Added smooth transition for inactive elements too */
-            transition: all 0.3s ease; 
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.6);
-        }
-        /* --- END OF POPUP UPI BUTTON ENHANCEMENT (NO ANIMATIONS) --- */
-
-
-        /* Updated QR Code Container Gradient */
-        .qr-code-container::before {
-            content: '';
-            position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            border-radius: 0.75rem;
-            background: linear-gradient(45deg, #FFD700, #FFAC33, #FFD700);
-            z-index: -1;
-            animation: none;
-        }
-
-        /* --- START HISTORY ITEM STYLING FIXES --- */
-
-        /* Hiding history actions by default, showing only on hover of the parent item */
         .history-item-actions {
             display: none;
-            /* Positioning is now relative to the history item for fine control */
             position: absolute; 
-            right: 1rem; /* Tailwind 'right-4' equivalent */
+            right: 1rem; 
             top: 50%;
             transform: translateY(-50%);
         }
@@ -353,297 +110,215 @@
             display: flex;
         }
         
-        /* Base style for history items (now defined by inline/dynamic code in renderHistory) */
         .history-item {
             background-color: #1f2125; 
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
             position: relative;
             align-items: center;
-            /* Ensure the item padding and rounded corners are applied correctly */
             padding: 1rem;
             border-radius: 0.75rem;
         }
         
-        /* Styling for the wrapper around the action buttons */
         .history-item-actions-wrapper {
-            background-color: #0c0d10; /* Very dark background for the pill container */
+            background-color: rgba(12, 13, 16, 0.85); /* Dark pill wrapper */
             padding: 0.25rem;
             border-radius: 0.75rem;
-            box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
         
-        /* Styling for the action buttons inside the wrapper */
         .history-action-btn {
             width: 32px;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 9999px; /* Pill shape */
-            background-color: #333; /* Dark background for the pill buttons */
-            color: #ccc; /* Light gray text */
+            border-radius: 0.5rem; /* Sharper pill shape */
+            background-color: transparent;
+            color: #ffffff;
             transition: all 0.2s;
         }
 
         .history-action-btn:hover {
-            background-color: #4b5563;
-            color: #fff;
+            background-color: #1a1c20;
+            color: #ef4444; /* Red accent on hover */
         }
         
         /* --- END HISTORY ITEM STYLING FIXES --- */
 
-
-        /* NEW: Soft Hover and Active animations for buttons */
-        .dial-pad button,
-        .upi-btn-base,
-        .history-item {
-            transition: transform 0.1s ease-out; /* Reduced transition time */
-        }
-        
-        /* --- START OF DIAL PAD ENHANCEMENT --- */
-        /* Enhanced styles for number/operator buttons (gray background) */
-        .dial-pad button[data-value]:not([data-value="clear"]):not([data-value="equals"]) {
+        /* --- START OF DIAL PAD ENHANCEMENT (Monochromatic with Red Accents) --- */
+        .dial-pad button {
+            background-color: #1a1c20 !important; /* Dark gray */
+            color: #ffffff !important;
+            border: 1px solid #374151 !important;
+            border-radius: 0.5rem !important; /* Sharper corners */
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1); 
             transition: all 0.15s ease-out, box-shadow 0.2s;
         }
 
-        .dial-pad button[data-value]:not([data-value="clear"]):not([data-value="equals"]):hover {
-            background-color: #374151; /* bg-gray-700 on hover */
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.15), 0 4px 12px rgba(0, 0, 0, 0.6);
-            transform: scale(1.02); /* Slight scale */
-        }
-
-        .dial-pad button[data-value]:not([data-value="clear"]):not([data-value="equals"]):active {
-            background-color: #4b5563; /* bg-gray-600 on active press */
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3), 0 2px 4px rgba(0, 0, 0, 0.8);
-            transform: scale(0.95); /* Adjusted for stronger press down/bounce effect */
-        }
-
-        /* Enhanced styles for special buttons (AC and =) (orange background) */
+        /* Red Accent for Action Keys */
         .dial-pad button[data-value="clear"],
         .dial-pad button[data-value="equals"] {
-            transition: all 0.15s ease-out, box-shadow 0.2s;
+            background-color: #ef4444 !important; /* Red Accent */
+            color: #fff !important;
+            border-color: #b91c1c !important;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
         }
 
+        .dial-pad button:hover {
+            background-color: #374151 !important;
+            transform: scale(1.0);
+        }
+        .dial-pad button:active {
+            background-color: #555 !important;
+            transform: scale(0.98);
+        }
         .dial-pad button[data-value="clear"]:hover,
         .dial-pad button[data-value="equals"]:hover {
-            background-color: #f97316; /* bg-orange-600 */
-            box-shadow: 0 0 15px #f97316, 0 4px 12px rgba(0, 0, 0, 0.6);
-            transform: scale(1.02);
-        }
-
-        .dial-pad button[data-value="clear"]:active,
-        .dial-pad button[data-value="equals"]:active {
-            background-color: #ea580c; /* bg-orange-700 */
-            box-shadow: 0 0 20px #ea580c, 0 2px 4px rgba(0, 0, 0, 0.8);
-            transform: scale(0.95); /* Adjusted for stronger press down/bounce effect */
+            background-color: #dc2626 !important; /* Darker red on hover */
+            box-shadow: 0 0 15px #ef4444, 0 4px 12px rgba(0, 0, 0, 0.6);
         }
         /* --- END OF DIAL PAD ENHANCEMENT --- */
-        
-        /* --- START OF CLEAR HISTORY BUTTON ANIMATIONS --- */
-        @keyframes vibrate {
-            0%,100% { transform: translateX(0); }
-            25% { transform: translateX(-2px); }
-            75% { transform: translateX(2px); }
-        }
-
-        #clear-history-btn:hover { 
-            animation: vibrate 0.2s ease-in-out; 
-        }
-        
-        /* NEW: Style for the Clear History button based on the image */
-        #clear-history-btn {
-            background-color: #ef4444; /* Red color */
-            border-radius: 9999px; /* Pill shape */
-            font-size: 1rem;
-            font-weight: 700;
-            padding: 0.5rem 1rem;
-            color: white;
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
-        }
-        /* --- END OF CLEAR HISTORY BUTTON ANIMATIONS --- */
-
-        /* Removed old generic .dial-pad button:hover/.dial-pad button:active rules as the new specific rules cover them */
         
         .upi-btn-base:active,
         .history-item:active {
             transform: scale(0.98);
         }
-        
-        .history-item-animated {
-            opacity: 0;
-            transform: translateY(20px);
-            animation: history-fade-in 0.5s ease-out forwards;
-        }
 
-        @keyframes history-fade-in {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        /* NEW: Vanish animation for clearing history */
-        @keyframes fadeOutUp {
-            to {
-                opacity: 0;
-                transform: translateY(-20px) scale(0.9);
-            }
-        }
-        .history-item-vanish {
-            animation: fadeOutUp 0.3s ease-out forwards;
-        }
-
+        /* UPI Button Active Glow (Main Screen) */
         .upi-btn-base.upi-btn-active-glow {
-            box-shadow: 0 0 12px var(--upi-color), 0 0 0 3px rgba(var(--upi-rgb), 0.3), inset 0 2px 4px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.2);
+            /* Enhanced active state for Nothing theme: White/UPI color glow */
+            box-shadow: 
+                0 0 0 2px #0c0d10, /* Dark base layer */
+                0 0 5px var(--upi-color), /* Primary color inner glow */
+                0 0 15px rgba(255, 255, 255, 0.4); /* White outer glow */
             border-color: var(--upi-color);
-            animation: pulse-glow 1.5s infinite; /* New pulse animation */
-        }
-        
-        /* New Pulse Glow Keyframes */
-        @keyframes pulse-glow {
-            0% {
-                box-shadow: 0 0 12px var(--upi-color), 0 0 0 0 rgba(var(--upi-rgb), 0.3);
-            }
-            50% {
-                box-shadow: 0 0 15px var(--upi-color), 0 0 0 5px rgba(var(--upi-rgb), 0.5);
-            }
-            100% {
-                box-shadow: 0 0 12px var(--upi-color), 0 0 0 0 rgba(var(--upi-rgb), 0.3);
-            }
-        }
-        
-        /* New style for the history footer tag */
-        .history-footer-tag {
-            background: none;
-            backdrop-filter: none;
-            border: none;
-            box-shadow: none;
-            padding: 0;
-            margin-top: 1.5rem;
-            text-align: center;
-        }
-        
-        /* NEW: Styles for the Made with text */
-        .made-with-text {
-            font-size: 0.875rem; /* text-sm */
-            font-weight: 500;
-            color: #d1d5db; /* gray-300 */
-        }
-        
-        .made-with-text .heart-icon {
-            color: #ef4444; /* red-500 */
-            margin: 0 0.25rem;
+            transform: scale(1.05);
         }
 
-        @keyframes slideInFromBottom {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* UPI Button Active Glow (Modal) */
+        .popup-upi-btn.popup-upi-btn-active {
+            border: 3px solid var(--upi-color);
+            box-shadow: 
+                0 0 0 2px #0c0d10,
+                0 0 10px rgba(var(--upi-rgb), 0.5), 
+                0 0 20px rgba(var(--upi-rgb), 0.3),
+                inset 0 0 10px 5px rgba(var(--upi-rgb), 0.2); 
+            transition: border-color 0.3s, box-shadow 0.3s;
+            transform: none; 
+        }
+
+        
+        /* Redefined Input Error State (Nothing Red Accent) */
+        .input-error {
+            border: 2px solid #ff4d4d !important;
+            box-shadow: 
+                0 0 5px rgba(255, 77, 77, 0.8),    
+                0 0 15px rgba(255, 0, 0, 0.5),    
+                0 0 0 4px rgba(255, 77, 77, 0.2), 
+                inset 0 1px 3px rgba(255, 0, 0, 0.6); 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         
-        /* New Styles for the Amount Pill with glass effect */
-        .glass-pill {
-            display: flex;
+        /* Header elements monochromatic styling */
+        .logo-container {
+            background-color: #1a1c20;
+            border: 1px solid #374151;
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* MODIFIED: Minimized, Cute Amount Pill for QR Modal (Nothing Style) */
+        .cute-amount-pill {
+            display: inline-flex;
             align-items: center;
-            justify-content: center;
-            padding: 0.5rem 1rem;
-            min-height: 3rem;
+            padding: 0.25rem 0.8rem; /* Minimized padding */
             border-radius: 9999px;
             font-family: 'Ubuntu', sans-serif;
             font-weight: 700;
-            font-size: 1.5rem;
-            background-color: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
+            font-size: 1.1rem; /* Smaller font */
+            background-color: #1a1c20;
+            border: 1px solid #374151; /* Thinner border for minimalist look */
+            color: #F3F4F6;
+            /* Subtler shadow for cute/minimal look */
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(255, 255, 255, 0.05); 
+            transition: all 0.2s ease;
+        }
+        
+        .cute-amount-pill .currency-symbol {
+            /* Use strong red for currency accent */
+            background: #ef4444; 
+            -webkit-background-clip: unset; 
+            -webkit-text-fill-color: #ef4444; 
+            font-size: 1.1rem; /* Matched font size */
+            margin-right: 0.2rem; /* Reduced margin */
+            font-weight: 700;
         }
 
-        .glass-pill .currency-symbol {
-            background: linear-gradient(45deg, #FFAC33, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-right: 0.5rem;
-            font-size: 1.5rem;
-        }
-
-        .glass-pill .amount-value {
+        .cute-amount-pill .amount-value {
             color: #E5E7EB;
         }
-        
-        /* NEW: Styles for History Pane transition */
-        .history-view {
-            transition: transform 0.5s ease-in-out, opacity 0.5s ease-in-out;
-            opacity: 0;
-            transform: translateY(100%);
+
+        /* MODIFIED: Amount pill currency symbol uses RED accent now */
+        .cute-amount-pill .currency-symbol {
+            background: #ef4444; /* Red accent */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         
-        .history-view.history-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        
-        /* REVISED: Enhanced Styles for error state (Red Border only) */
-        .input-error {
-            /* Stronger solid border */
-            border: 2px solid #ff4d4d !important; /* Slightly brighter, more defined red */
-            
-            /* Multi-layered shadow for depth and intense glow */
-            box-shadow: 
-                0 0 5px rgba(255, 77, 77, 0.8),    /* Inner glow (bright red) */
-                0 0 15px rgba(255, 0, 0, 0.5),    /* Wider, softer primary halo */
-                0 0 0 4px rgba(255, 77, 77, 0.2), /* Translucent outline layer */
-                inset 0 1px 3px rgba(255, 0, 0, 0.6); /* Inner light/recession effect */
-            
-            /* Ensure the transition is smooth for the error state changes */
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .error-message {
-            color: #ef4444;
-            font-size: 0.875rem;
-            margin-top: 0.5rem;
-            display: none; /* Kept display: none in CSS as a fallback */
-        }
-        
-        /* NEW: Header fade-in animation on page load */
-        @keyframes header-fade-in {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .floating-header-animated {
-            animation: header-fade-in 0.6s ease-out 0.2s forwards;
-            opacity: 0;
+        #clear-history-btn {
+            background-color: #ef4444; 
+            border-radius: 0.5rem; /* Sharper, modern pill */
+            padding: 0.5rem 1rem;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+            transition: all 0.2s;
         }
 
-        /* NEW: Logo container style */
-        .logo-container {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-            transition: all 0.2s ease-in-out;
-            width: 3rem;
-            height: 3rem;
-            padding: 0;
+        .made-with-text .heart-icon {
+            color: #ef4444; /* Red accent */
+        }
+        
+        /* MODIFIED: Modal Overlay Blur and Opacity */
+        .modal {
+            /* Increased opacity and stronger blur for better background suppression */
+            background-color: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(16px); 
+            -webkit-backdrop-filter: blur(16px);
+            opacity: 0; 
+            /* CHANGE: Change display from 'none' to 'hidden' when setting opacity to 0
+                       so that transitions work when set to 'visible' */
+            display: none;
+            pointer-events: none; 
+            transition: opacity 0.3s ease;
+        }
+        /* Crucial step to enable the transition */
+        .modal.visible {
+            opacity: 1;
+            pointer-events: auto;
+            /* CHANGE: Must be display: flex for visibility before opacity is applied */
             display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+        }
+
+        /* Modal Close Button Monochromatic Look */
+        #close-modal-btn {
+            background-color: #1a1c20;
+            border: 1px solid #374151;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+            color: #E5E7EB;
+        }
+        #close-modal-btn:hover {
+            background-color: #374151;
+            border-color: #F3F4F6;
+            color: #F3F4F6;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal-content {
+            background-color: #0c0d10;
+        }
+        
+        .qr-code-container {
+            border-radius: 0.5rem;
         }
         
     </style>
@@ -656,6 +331,7 @@
         <div id="header-left" class="flex items-center space-x-4">
             <!-- Updated logo container style -->
             <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg p-0 flex items-center justify-center flex-none">
+                <!-- Using a visually monochromatic icon for the theme -->
                 <img id="logo-img" src="https://od.lk/s/NDJfNDk1NzA5Njhf/Main%20Logo.png" alt="Trinadha Paan Shop Logo" class="h-full w-full rounded-lg object-cover object-center transition-opacity duration-500" />
             </button>
             <!-- New UPI ID Display with dynamic label in Header -->
@@ -666,8 +342,8 @@
         </div>
         <div id="header-right" class="flex items-center space-x-2">
             <!-- History Button -->
-            <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-100 rounded-lg border border-gray-300 shadow-lg hover:bg-gray-200 transition-colors duration-300 z-50">
-                <span id="history-icon" class="material-symbols-outlined text-gray-800">history</span>
+            <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-lg border border-gray-700 shadow-lg hover:bg-gray-700 transition-colors duration-300 z-50">
+                <span id="history-icon" class="material-symbols-outlined text-gray-200">history</span>
             </button>
         </div>
     </div>
@@ -675,7 +351,7 @@
     <!-- Main QR Generator View -->
     <div id="main-view" class="flex flex-col items-center mx-auto mt-20 space-y-4 w-full max-w-sm">
         <!-- Amount Input Card -->
-        <div class="card flex flex-col items-center border-2 border-gray-700 p-2">
+        <div class="card flex flex-col items-center border-2 border-gray-900 p-2">
             <div id="input-container" class="input-group w-full flex items-center py-2 px-4 h-16">
                 <span class="material-symbols-outlined text-gray-400">currency_rupee</span>
                 <input id="amountInput" type="text" class="flex-1 min-w-0 bg-transparent text-gray-200 text-lg font-bold focus:outline-none placeholder-gray-500 ml-2" placeholder="" autocomplete="off" style="font-family: 'Ubuntu', sans-serif;">
@@ -695,15 +371,17 @@
         <!-- Dial Pad -->
         <div id="dial-pad" class="w-full max-w-sm mt-8 mb-4">
             <div class="grid grid-cols-4 gap-2 w-full">
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-orange-500 shadow-lg hover:bg-orange-600 transition-colors duration-200 border border-gray-700" data-value="clear">AC</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="(">
+                <!-- AC Button (Red Accent) -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="clear">AC</button>
+                
+                <!-- Operator/Parentheses (Monochromatic) -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="(">
                     <span class="font-extrabold text-3xl">(</span>
                 </button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=")">
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=")">
                     <span class="font-extrabold text-3xl">)</span>
                 </button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="/">
-                    <!-- SVG for division sign from Lucide -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="/">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
                         <line x1="5" x2="19" y1="12" y2="12" />
                         <path d="M12 5v0" />
@@ -714,8 +392,7 @@
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="7">7</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="8">8</button>
                 <button class="flex-grow flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="9">9</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="*">
-                    <!-- SVG for multiplication sign from Lucide -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="*">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
                         <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
                         <path d="m15 9-6 6" />
@@ -726,8 +403,7 @@
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="4">4</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="5">5</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="6">6</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="-">
-                    <!-- SVG for minus sign from Lucide -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="-">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
                         <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
                         <path d="M8 12h8" />
@@ -737,8 +413,7 @@
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="1">1</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="2">2</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="3">3</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="+">
-                    <!-- SVG for plus sign from Lucide -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="+">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
                         <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
                         <path d="M8 12h8" />
@@ -748,15 +423,15 @@
 
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="0">0</button>
                 <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=".">.</button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-orange-400 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="backspace">
-                    <!-- SVG for backspace icon from Lucide -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="backspace">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
                         <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
                         <path d="m18 9-6 6" />
                         <path d="m12 9 6 6" />
                     </svg>
                 </button>
-                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-white bg-orange-500 shadow-lg hover:bg-orange-600 transition-colors duration-200 border border-gray-700" data-value="equals">
+                <!-- Equals Button (Red Accent) -->
+                <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="equals">
                     <span class="material-symbols-outlined text-3xl">equal</span>
                 </button>
             </div>
@@ -766,10 +441,10 @@
     <!-- Payment History View -->
     <div id="history-view" class="hidden card mt-20 relative flex flex-col h-full max-h-[85vh]">
         <div class="flex justify-between items-center mb-4">
-            <!-- UPDATED: Title to match image -->
+            <!-- Title is now white/gray gradient -->
             <h3 id="history-header" class="text-xl font-bold gradient-text" style="font-family: 'Ubuntu', sans-serif;">Payment History</h3>
-            <!-- UPDATED: Clear button style to match provided code's wrapper -->
-            <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-full font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-300 hidden">
+            <!-- Clear button uses Red Accent -->
+            <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-lg font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-300 hidden">
                 <span class="material-symbols-outlined text-white mr-1 text-base">delete_forever</span> Clear
             </button>
         </div>
@@ -781,9 +456,9 @@
         
         <!-- Footer Section -->
         <div id="history-footer" class="mt-4 pt-4 floating-header-animated">
-            <!-- UPDATED: Footer text to match image -->
             <p class="font-bold text-sm tracking-wide text-gray-300 text-center">Live it UP</p>
             <div class="history-footer-tag flex items-center justify-center text-center text-gray-400 text-sm">
+                <!-- Footer text now relies on monochromatic style -->
                 <p class="made-with-text">Made with <span class="heart-icon">❤️</span> in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-base text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
             </div>
         </div>
@@ -793,15 +468,15 @@
     <!-- Modal for QR Code Display -->
     <div id="qr-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-[100]">
         <div id="qr-modal" class="modal-content rounded-lg p-6 relative w-11/12 max-w-sm flex flex-col items-center">
-            <!-- UPDATED: Enhanced Close Button with Material Icon, increased size, refined glass aesthetic, and stronger orange hover glow -->
+            <!-- Close Button Monochromatic Look -->
             <button id="close-modal-btn" class="absolute top-3 right-3 w-12 h-12 rounded-xl flex items-center justify-center p-0 text-gray-300 transition-all duration-300 
-                bg-white/10 border border-gray-700 shadow-2xl 
-                hover:bg-white/20 hover:border-orange-500 hover:text-orange-400 hover:scale-[1.05] hover:shadow-[0_0_20px_rgba(251,146,60,0.6)]">
+                bg-gray-900 border border-gray-700 shadow-2xl 
+                hover:bg-gray-700 hover:border-gray-500 hover:text-white hover:scale-[1.05] hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]">
                 <span class="material-symbols-outlined text-2xl font-semibold">close</span>
             </button>
             <div class="flex flex-col items-center space-y-2">
                 <h2 class="text-lg font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Payment QR Code</h2>
-                <!-- New container for the amount and share button -->
+                <!-- Monochromatic Amount Pill with Red Accent -->
                 <div class="flex items-center space-x-2">
                     <div id="amount-display" class="cute-amount-pill hidden">
                         <span class="currency-symbol">₹</span>
@@ -809,7 +484,7 @@
                     </div>
                 </div>
             </div>
-            <!-- QR code container: Removed opacity and transition classes -->
+            <!-- QR code container uses dark background -->
             <div id="qr-code-container" class="relative p-2 bg-black rounded-lg border border-transparent mt-4 hidden">
                 <!-- QR code will be generated here -->
             </div>
@@ -842,7 +517,7 @@
             "id": "9492416477@upi",
             "label": "TVR",
             "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/",
-            "color": "#e05244", // TVR Red
+            "color": "#ef4444", // Using Red accent for TVR
             "oppositeColor": "#46b6e0",
             "iconBg": "#ffffff",
             "iconBorder": "#e05244"
@@ -873,7 +548,7 @@
         }];
         
         // A global variable to track the currently selected UPI ID
-        let selectedUpiId = null;
+        let selectedUpiId = upiData.length > 0 ? upiData[0].id : null; // Initialize with the first ID
         // A new global variable to hold the amount for the QR code
         let currentQrAmount = '';
 
@@ -888,7 +563,459 @@
             ')': 'G5'
         };
 
-        // UPDATED: Tone.js Audio Engine for thematic feedback
+        // --- Start of Promoted Helper Functions (All functions needed globally) ---
+
+        const getUpiData = (id) => {
+            return upiData.find(u => u.id === id) || {
+                id,
+                label: id,
+                icon: 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon',
+                color: '#ccc',
+                oppositeColor: '#ccc',
+                iconBg: '#fff',
+                iconBorder: '#ccc'
+            };
+        };
+
+        const hexToRgb = (hex) => {
+            const bigint = parseInt(hex.slice(1), 16);
+            const r = (bigint >> 16) & 255;
+            const g = (bigint >> 8) & 255;
+            const b = bigint & 255;
+            return `${r}, ${g}, ${b}`;
+        };
+        
+        const saveHistory = (id, amount) => {
+            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            const timestamp = new Date().toLocaleString('en-IN', {
+                hour: 'numeric',
+                minute: 'numeric',
+                hour12: true
+            });
+            // Only save if a UPI ID is selected and amount is a non-empty string (including '0.00' if a math operation resulted in zero, though my new logic returns '' for zero)
+            if (id) {
+                history.unshift({
+                    id,
+                    amount: amount || '0.00', // Ensure amount is saved as '0.00' if it's explicitly empty for history visibility
+                    timestamp
+                });
+                localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+            }
+        };
+        
+        const validateExpression = (expression) => {
+            if (expression.trim() === '') {
+                return { isValid: true, message: '' };
+            }
+            const invalidChars = expression.match(/[^0-9\+\-\*\/\.\(\)]/g);
+            if (invalidChars) {
+                return { isValid: false, message: `Invalid character(s) found: ${[...new Set(invalidChars)].join('')}` };
+            }
+
+            // Check for consecutive operators (except for unary minus)
+            if (expression.match(/[\+\*\/\.]{2,}/) || expression.match(/\/\*|\*\//) || expression.match(/[\+\*\/]\-/)) {
+                return { isValid: false, message: 'Consecutive operators are not allowed.' };
+            }
+            
+            // Check for leading operators that are not a minus sign
+            if (expression.match(/^[\+\*\/\.]{1}/)) {
+                 return { isValid: false, message: 'Expression cannot start with this operator.' };
+            }
+
+            // Check for unmatched parentheses
+            let parenthesisCount = 0;
+            for (let char of expression) {
+                if (char === '(') parenthesisCount++;
+                if (char === ')') parenthesisCount--;
+                if (parenthesisCount < 0) {
+                    return { isValid: false, message: 'Unmatched parenthesis.' };
+                }
+            }
+            if (parenthesisCount !== 0) {
+                 return { isValid: false, message: 'Unmatched parenthesis.' };
+            }
+
+            return { isValid: true, message: '' };
+        };
+
+        const calculateAmount = (value) => {
+            // 1. Explicitly allow empty input, returning an empty string amount.
+            if (value.trim() === '') {
+                return { result: '', error: null }; 
+            }
+            
+            const validation = validateExpression(value);
+            if (!validation.isValid) {
+                return { result: '', error: validation.message };
+            }
+            try {
+                // Check if mathjs is available before using it
+                if (typeof math === 'undefined' || !math.evaluate) {
+                    return { result: '', error: 'Calculator library not loaded.' };
+                }
+                
+                const result = math.evaluate(value);
+                
+                // 2. Handle calculation results of zero (e.g., 5-5) as optional amount ('').
+                if (result === 0) {
+                    return { result: '', error: null };
+                }
+                
+                if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
+                    // Standard success path (non-zero amount)
+                    return { result: parseFloat(result).toFixed(2), error: null };
+                }
+            } catch (error) {
+                // Calculation failed (e.g., division by zero)
+                return { result: '', error: 'Invalid mathematical expression.' };
+            }
+            // Should not be reached, but fallback for safety
+            return { result: '', error: 'Invalid mathematical expression.' };
+        };
+        
+        let currentQR = null;
+        
+        const generateQrCode = (upiId, amount) => {
+            const qrCodeContainer = document.getElementById('qr-code-container');
+            const amountDisplay = document.getElementById('amount-display');
+            const amountValue = document.getElementById('amount-value');
+
+            // Remove existing QR to allow a fresh generation
+            qrCodeContainer.innerHTML = '';
+            
+            // Set initial state for instant visibility (or the modal fade will handle it)
+            qrCodeContainer.classList.remove('hidden');
+
+            const upi = getUpiData(upiId);
+            
+            // NEW: Use a list of predefined vibrant color palettes for QR codes
+            const colorPalettes = [
+                ["#1BE7FF", "#6EEB83", "#E4FF1A"],
+                ["#F2F3AE", "#EDD382", "#FC9E4F"],
+                ["#C5F9D7", "#F7D486", "#F27A7D"],
+                ["#DEEFB7", "#98DFAF", "#5FB49C"],
+                ["#F08700", "#F49F0A", "#EFCA08"],
+                ["#FFFD82", "#FF9B71", "#E84855"],
+                ["#FF5C4D", "#FF9636", "#FFCD58"],
+                ["#FF8370", "#00B1B0", "#FEC84D"],
+                ["#FEDE00", "#B4F8C8", "#6AB8EE"]
+            ];
+
+            // Randomly select a palette
+            const selectedPalette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+            
+            // Map the palette colors to QR code components
+            const dotsColor = selectedPalette[0];
+            const cornersSquareColor = selectedPalette[1];
+            const cornersDotColor = selectedPalette[2];
+
+            const dotsOptionsTypes = ["dots", "rounded", "extra-rounded", "square", "circular", "edge-cut-smooth", "leaf", "pointed-edge-cut", "pointed-in-smooth", "pointed-smooth", "round", "rounded-in-smooth", "rounded-pointed", "star", "diamond", "doted-light", "classy", "classy-rounded"];
+            const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot", "round", "bevel", "bubble"];
+            const cornersDotOptionsTypes = ["square", "dot", "round", "bevel", "bubble"];
+            
+            const randomDotsType = dotsOptionsTypes[Math.floor(Math.random() * dotsOptionsTypes.length)];
+            const randomCornersSquareType = cornersSquareOptionsTypes[Math.floor(Math.random() * cornersSquareOptionsTypes.length)];
+            const randomCornersDotType = cornersDotOptionsTypes[Math.floor(Math.random() * cornersDotOptionsTypes.length)];
+
+            const payeeName = upi.label;
+            const upiIcon = upi.icon;
+
+            let upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}`;
+            if (payeeName) {
+                upiUri += `&pn=${encodeURIComponent(payeeName)}`;
+            }
+            
+            // CHECK FOR AMOUNT: Only append amount parameter if amount is a valid number greater than 0
+            if (amount && parseFloat(amount) > 0) {
+                upiUri += `&am=${encodeURIComponent(amount)}`;
+                upiUri += `&cu=INR`;
+            }
+            
+            currentQR = new QRCodeStyling({
+                width: 300,
+                height: 300,
+                type: "svg",
+                data: upiUri,
+                image: upiIcon,
+                dotsOptions: {
+                    color: dotsColor,
+                    type: randomDotsType
+                },
+                cornersSquareOptions: {
+                    color: cornersSquareColor,
+                    type: randomCornersSquareType
+                },
+                cornersDotOptions: {
+                    color: cornersDotColor,
+                    type: randomCornersDotType
+                },
+                backgroundOptions: {
+                    color: "#000000",
+                },
+                imageOptions: {
+                    crossOrigin: "anonymous",
+                    margin: 5,
+                    imageSize: 0.3, // Slightly increased image size
+                    hideBackgroundDots: true // This is the key line to hide the dots under the image
+                }
+            });
+
+            currentQR.append(qrCodeContainer);
+            
+            // If amount is present and > 0, display the amount pill
+            if (amount && parseFloat(amount) > 0 && !isNaN(parseFloat(amount))) {
+                amountValue.textContent = `${parseFloat(amount).toFixed(2)}`;
+                amountDisplay.classList.remove('hidden');
+            } else {
+                amountDisplay.classList.add('hidden');
+            }
+        };
+        
+        const showQrModal = (upiId, amount) => {
+            const qrModalOverlay = document.getElementById('qr-modal-overlay');
+            if (!upiId) {
+                console.error("Cannot show QR modal: UPI ID not selected.");
+                return;
+            }
+
+            // NEW: Highlight the selected button across both views BEFORE showing modal
+            updateButtonHighlighting(upiId);
+
+            // 1. Generate the QR code first
+            generateQrCode(upiId, amount);
+            
+            // FIX: Use requestAnimationFrame to ensure the display property change registers before the opacity transition starts
+            // 2. Set the overlay to be visible (flex) but transparent (opacity: 0 by default)
+            qrModalOverlay.classList.remove('hidden'); 
+
+            // 3. Use requestAnimationFrame to force a repaint and then apply the 'visible' class
+            window.requestAnimationFrame(() => {
+                qrModalOverlay.classList.add('visible');
+            });
+        };
+        
+        // Helper function to update UPI ID display in the header
+        const updateHeaderUpiDisplay = (upiId) => {
+            const upiLabelText = document.getElementById('upi-label-text');
+            const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
+            const upiInfo = getUpiData(upiId);
+
+            upiLabelText.textContent = upiInfo.label;
+            selectedUpiIdDisplay.textContent = upiInfo.id;
+        };
+
+        const updateButtonHighlighting = (id) => {
+            selectedUpiId = id;
+            document.querySelectorAll('.upi-btn-base').forEach(btn => {
+                btn.classList.remove('upi-btn-active-glow');
+                btn.style.transform = 'scale(1.0)'; // Ensure base transforms are reset
+            });
+            document.querySelectorAll('.popup-upi-btn').forEach(btn => {
+                btn.classList.remove('popup-upi-btn-active');
+            });
+            
+            const upi = getUpiData(id);
+
+            const mainBtn = document.querySelector(`#upi-button-container [data-upi-id="${id}"]`);
+            if (mainBtn) {
+                mainBtn.classList.add('upi-btn-active-glow');
+            }
+            
+            const popupBtn = document.querySelector(`#popup-upi-buttons [data-upi-id="${id}"]`);
+            if (popupBtn) {
+                popupBtn.classList.add('popup-upi-btn-active');
+                popupBtn.style.setProperty('--upi-color', upi.color);
+                popupBtn.style.setProperty('--upi-opposite-color', upi.oppositeColor);
+                // NEW: Also set the RGB variable for the popup button glow
+                popupBtn.style.setProperty('--upi-rgb', hexToRgb(upi.color));
+            }
+        };
+
+        const createUpiButton = (upi) => {
+            const container = document.createElement('div');
+            container.className = 'flex flex-col items-center gap-2';
+
+            const button = document.createElement('button');
+            button.className = 'w-[70px] h-[70px] p-0 rounded-2xl bg-gray-100 transition-all duration-300 relative upi-btn-base';
+            button.setAttribute('data-upi-id', upi.id);
+            button.style.setProperty('--upi-color', upi.color);
+            button.style.setProperty('--upi-rgb', hexToRgb(upi.color));
+
+            button.innerHTML = `
+                <div class="w-full h-full p-2 flex items-center justify-center rounded-2xl upi-btn-inner-shadow">
+                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4B5563/D1D5DB?text=Icon'">
+                </div>
+            `;
+
+            const label = document.createElement('span');
+            label.className = 'text-xs font-bold text-gray-300';
+            label.textContent = upi.label;
+
+            container.appendChild(button);
+            container.appendChild(label);
+            
+            // Set initial state based on selectedUpiId
+            if (upi.id === selectedUpiId) {
+                updateButtonHighlighting(upi.id);
+                updateHeaderUpiDisplay(upi.id);
+            }
+
+            button.addEventListener('click', () => {
+                const amountInput = document.getElementById('amountInput');
+                const inputGroup = document.getElementById('input-container');
+                const clearInputBtn = document.getElementById('clear-input-btn');
+                const errorMessage = document.getElementById('errorMessage');
+
+                // Validation check
+                const inputExpression = amountInput.value.trim();
+                const { result, error } = calculateAmount(inputExpression);
+
+                // --- UPI Button Click Logic ---
+                
+                // 1. Update highlighting and header display
+                updateButtonHighlighting(upi.id);
+                updateHeaderUpiDisplay(upi.id);
+                
+                if (error) {
+                    errorMessage.style.display = 'none'; // Ensure text is hidden
+                    inputGroup.classList.add('input-error');
+                    AudioEngine.playTone('clear'); 
+                    return;
+                }
+                
+                // 2. Action on Success: Clear error state, play tone
+                errorMessage.style.display = 'none';
+                inputGroup.classList.remove('input-error');
+                
+                AudioEngine.playTone('magical');
+                
+                currentQrAmount = result;
+                
+                // 3. Show QR modal, save history, and clear input
+                showQrModal(upi.id, result);
+                saveHistory(upi.id, result);
+
+                amountInput.value = '';
+                clearInputBtn.classList.add('hidden');
+            });
+
+            return container;
+        };
+
+        const createPopupUpiButton = (upi) => {
+            const button = document.createElement('button');
+            button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 relative popup-upi-btn';
+            button.setAttribute('data-upi-id', upi.id);
+            button.style.setProperty('--upi-color', upi.color);
+            button.style.setProperty('--upi-opposite-color', upi.oppositeColor);
+            button.innerHTML = `
+                <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
+            `;
+            button.addEventListener('click', () => {
+                
+                AudioEngine.playTone('magical');  
+                
+                const amount = currentQrAmount;
+                
+                updateHeaderUpiDisplay(upi.id);
+                
+                showQrModal(upi.id, amount);
+                saveHistory(upi.id, amount);
+            });
+            return button;
+        };
+        
+        const renderHistory = () => {
+            const historyList = document.getElementById('history-list');
+            const clearHistoryBtn = document.getElementById('clear-history-btn');
+            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+            historyList.innerHTML = '';
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
+                clearHistoryBtn.classList.add('hidden');
+            } else {
+                history.forEach((item, index) => {
+                    const upiInfo = getUpiData(item.id);
+                    
+                    // Use a single container div with all necessary classes
+                    const historyItem = document.createElement('div');
+                    historyItem.classList.add(
+                        'history-item', 'flex', 'items-center', 'space-x-4', 'cursor-pointer', 
+                        'hover:bg-gray-800', 'transition-colors', 'duration-200', 'relative', 
+                        'group', 'history-item-animated', 'p-4', 'rounded-xl', 'w-full'
+                    );
+                    historyItem.style.animationDelay = `${index * 0.05}s`;
+                    
+                    // Apply the UPI color accent as the left border
+                    historyItem.style.borderLeft = `5px solid ${upiInfo.color}`; 
+                    historyItem.style.backgroundColor = '#1f2125'; // Ensure specific dark background
+
+                    const itemIconUrl = upiInfo.icon || 'https://placehold.co/40x40/4B5563?text=Icon';
+                    const timePart = item.timestamp.split(', ')[1] || item.timestamp;
+
+                    historyItem.innerHTML = `
+                        <!-- Icon -->
+                        <img src="${itemIconUrl}" alt="${upiInfo.label} Icon" 
+                            class="w-10 h-10 rounded-full border-2 border-gray-700 object-cover flex-shrink-0" 
+                            onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
+                        
+                        <!-- Text Content (Label and Time/Amount) -->
+                        <div class="flex-1 min-w-0 ml-2">
+                            <p class="text-gray-200 font-semibold truncate" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
+                            <p class="text-gray-400 text-sm truncate" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${timePart}</p>
+                        </div>
+                        
+                        <!-- Action buttons with wrapper for pill-look -->
+                        <div class="history-item-actions flex items-center space-x-2 history-item-actions-wrapper">
+                            <button class="regenerate-btn history-action-btn" title="Generate QR again">
+                                <span class="material-symbols-outlined text-base">sync</span>
+                            </button>
+                            <button class="delete-btn history-action-btn" title="Delete entry" data-index="${index}">
+                                <span class="material-symbols-outlined text-base">delete</span>
+                            </button>
+                        </div>
+                    `;
+                    
+                    // Attach listeners
+                    historyItem.addEventListener('click', (e) => {
+                        // Check if the click was directly on an action button or its child icon
+                        if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
+                            return;
+                        }
+                        currentQrAmount = item.amount;
+                        // NEW: Update highlighting and header display upon selecting from history
+                        updateButtonHighlighting(item.id);
+                        updateHeaderUpiDisplay(item.id);
+                        showQrModal(item.id, item.amount);
+                    });
+
+                    historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
+                        currentQrAmount = item.amount;
+                        saveHistory(item.id, item.amount);
+                        // NEW: Update highlighting and header display upon regenerating
+                        updateButtonHighlighting(item.id);
+                        updateHeaderUpiDisplay(item.id);
+                        showQrModal(item.id, item.amount);
+                    });
+
+                    historyItem.querySelector('.delete-btn').addEventListener('click', () => {
+                        let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
+                        const indexToDelete = parseInt(historyItem.querySelector('.delete-btn').dataset.index, 10);
+                        currentHistory.splice(indexToDelete, 1);
+                        localStorage.setItem(historyKey, JSON.stringify(currentHistory));
+                        renderHistory();
+                    });
+
+                    historyList.appendChild(historyItem);
+                });
+                clearHistoryBtn.classList.remove('hidden');
+            }
+        };
+
+        // --- End of Promoted functions for DOM manipulation ---
+
+
+        // UPDATED: Tone.js Audio Engine for thematic feedback (Kept here as a constant object)
         const AudioEngine = {
             synth: null, // For numbers and musical tones
             operatorSynth: null, // For operators (now using a separate synth configuration)
@@ -1105,140 +1232,6 @@
         }
 
 
-        const getUpiData = (id) => {
-            return upiData.find(u => u.id === id) || {
-                id,
-                label: id,
-                icon: 'https://placehold.co/40x40/4B5563/D1D5DB?text=Icon',
-                color: '#ccc',
-                oppositeColor: '#ccc',
-                iconBg: '#fff',
-                iconBorder: '#ccc'
-            };
-        };
-
-        const hexToRgb = (hex) => {
-            const bigint = parseInt(hex.slice(1), 16);
-            const r = (bigint >> 16) & 255;
-            const g = (bigint >> 8) & 255;
-            const b = bigint & 255;
-            return `${r}, ${g}, ${b}`;
-        };
-        
-        const saveHistory = (id, amount) => {
-            const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-            const timestamp = new Date().toLocaleString('en-IN', {
-                hour: 'numeric',
-                minute: 'numeric',
-                hour12: true
-            });
-            // Only save if a UPI ID is selected and amount is a non-empty string (including '0.00' if a math operation resulted in zero, though my new logic returns '' for zero)
-            if (id) {
-                history.unshift({
-                    id,
-                    amount: amount || '0.00', // Ensure amount is saved as '0.00' if it's explicitly empty for history visibility
-                    timestamp
-                });
-                localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
-            }
-        };
-        
-        // RE-ADDED: Function to perform input validation
-        const validateExpression = (expression) => {
-            if (expression.trim() === '') {
-                return { isValid: true, message: '' };
-            }
-            const invalidChars = expression.match(/[^0-9\+\-\*\/\.\(\)]/g);
-            if (invalidChars) {
-                return { isValid: false, message: `Invalid character(s) found: ${[...new Set(invalidChars)].join('')}` };
-            }
-
-            // Check for consecutive operators (except for unary minus)
-            // Fix: Allows minus sign as unary operator (e.g., -5, 5*-5) but prevents double operators like ++ or *-
-            if (expression.match(/[\+\*\/\.]{2,}/) || expression.match(/\/\*|\*\//) || expression.match(/[\+\*\/]\-/)) {
-                return { isValid: false, message: 'Consecutive operators are not allowed.' };
-            }
-            
-            // Check for leading operators that are not a minus sign
-            if (expression.match(/^[\+\*\/\.]{1}/)) {
-                 return { isValid: false, message: 'Expression cannot start with this operator.' };
-            }
-
-            // Check for unmatched parentheses
-            let parenthesisCount = 0;
-            for (let char of expression) {
-                if (char === '(') parenthesisCount++;
-                if (char === ')') parenthesisCount--;
-                if (parenthesisCount < 0) {
-                    return { isValid: false, message: 'Unmatched parenthesis.' };
-                }
-            }
-            if (parenthesisCount !== 0) {
-                 return { isValid: false, message: 'Unmatched parenthesis.' };
-            }
-
-            return { isValid: true, message: '' };
-        };
-
-        // UPDATED: calculateAmount now makes the amount optional.
-        const calculateAmount = (value) => {
-            // 1. Explicitly allow empty input, returning an empty string amount.
-            if (value.trim() === '') {
-                return { result: '', error: null }; 
-            }
-            
-            const validation = validateExpression(value);
-            if (!validation.isValid) {
-                return { result: '', error: validation.message };
-            }
-            try {
-                const result = math.evaluate(value);
-                
-                // 2. Handle calculation results of zero (e.g., 5-5) as optional amount ('').
-                if (result === 0) {
-                    return { result: '', error: null };
-                }
-                
-                if (typeof result === 'number' && !isNaN(result) && isFinite(result)) {
-                    // Standard success path (non-zero amount)
-                    // Note: UPI minimum amount is 1.00, but we allow less for flexibility
-                    return { result: parseFloat(result).toFixed(2), error: null };
-                }
-            } catch (error) {
-                // Calculation failed (e.g., division by zero)
-                return { result: '', error: 'Invalid mathematical expression.' };
-            }
-            // Should not be reached, but fallback for safety
-            return { result: '', error: 'Invalid mathematical expression.' };
-        };
-        
-        // Function to update the selected button highlighting across both views
-        const updateButtonHighlighting = (id) => {
-            selectedUpiId = id;
-            document.querySelectorAll('.upi-btn-base').forEach(btn => {
-                btn.classList.remove('upi-btn-active-glow');
-            });
-            document.querySelectorAll('.popup-upi-btn').forEach(btn => {
-                btn.classList.remove('popup-upi-btn-active');
-            });
-            
-            const upi = getUpiData(id);
-
-            const mainBtn = document.querySelector(`#upi-button-container [data-upi-id="${id}"]`);
-            if (mainBtn) {
-                mainBtn.classList.add('upi-btn-active-glow');
-            }
-            
-            const popupBtn = document.querySelector(`#popup-upi-buttons [data-upi-id="${id}"]`);
-            if (popupBtn) {
-                popupBtn.classList.add('popup-upi-btn-active');
-                popupBtn.style.setProperty('--upi-color', upi.color);
-                popupBtn.style.setProperty('--upi-opposite-color', upi.oppositeColor);
-                // NEW: Also set the RGB variable for the popup button glow
-                popupBtn.style.setProperty('--upi-rgb', hexToRgb(upi.color));
-            }
-        };
-
         document.addEventListener('DOMContentLoaded', () => {
             // View Management
             const mainView = document.getElementById('main-view');
@@ -1291,13 +1284,8 @@
             const amountInput = document.getElementById('amountInput');
             const closeModalBtn = document.getElementById('close-modal-btn');
             const clearInputBtn = document.getElementById('clear-input-btn');
-            const qrCodeContainer = document.getElementById('qr-code-container');
             const popupUpiButtons = document.getElementById('popup-upi-buttons');
             const clearHistoryBtn = document.getElementById('clear-history-btn');
-            const upiLabelText = document.getElementById('upi-label-text');
-            const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
-            const amountDisplay = document.getElementById('amount-display');
-            const amountValue = document.getElementById('amount-value');
             const dialPad = document.getElementById('dial-pad');
             const logoBtn = document.getElementById('logo-btn');
             const logoImg = document.getElementById('logo-img');
@@ -1307,100 +1295,6 @@
             // Ensure error display elements are clean on load
             errorMessage.style.display = 'none';
             inputGroup.classList.remove('input-error');
-
-            let currentQR = null;
-            
-            const generateQrCode = (upiId, amount) => {
-                // Remove existing QR to allow a fresh generation
-                qrCodeContainer.innerHTML = '';
-                
-                // Set initial state for instant visibility (or the modal fade will handle it)
-                qrCodeContainer.classList.remove('hidden');
-
-                const upi = getUpiData(upiId);
-                
-                // NEW: Use a list of predefined vibrant color palettes for QR codes
-                const colorPalettes = [
-                    ["#1BE7FF", "#6EEB83", "#E4FF1A"],
-                    ["#F2F3AE", "#EDD382", "#FC9E4F"],
-                    ["#C5F9D7", "#F7D486", "#F27A7D"],
-                    ["#DEEFB7", "#98DFAF", "#5FB49C"],
-                    ["#F08700", "#F49F0A", "#EFCA08"],
-                    ["#FFFD82", "#FF9B71", "#E84855"],
-                    ["#FF5C4D", "#FF9636", "#FFCD58"],
-                    ["#FF8370", "#00B1B0", "#FEC84D"],
-                    ["#FEDE00", "#B4F8C8", "#6AB8EE"]
-                ];
-
-                // Randomly select a palette
-                const selectedPalette = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
-                
-                // Map the palette colors to QR code components
-                const dotsColor = selectedPalette[0];
-                const cornersSquareColor = selectedPalette[1];
-                const cornersDotColor = selectedPalette[2];
-
-                const dotsOptionsTypes = ["dots", "rounded", "extra-rounded", "square", "circular", "edge-cut-smooth", "leaf", "pointed-edge-cut", "pointed-in-smooth", "pointed-smooth", "round", "rounded-in-smooth", "rounded-pointed", "star", "diamond", "doted-light", "classy", "classy-rounded"];
-                const cornersSquareOptionsTypes = ["square", "extra-rounded", "dot", "round", "bevel", "bubble"];
-                const cornersDotOptionsTypes = ["square", "dot", "round", "bevel", "bubble"];
-                
-                const randomDotsType = dotsOptionsTypes[Math.floor(Math.random() * dotsOptionsTypes.length)];
-                const randomCornersSquareType = cornersSquareOptionsTypes[Math.floor(Math.random() * cornersSquareOptionsTypes.length)];
-                const randomCornersDotType = cornersDotOptionsTypes[Math.floor(Math.random() * cornersDotOptionsTypes.length)];
-
-                const payeeName = upi.label;
-                const upiIcon = upi.icon;
-
-                let upiUri = `upi://pay?pa=${encodeURIComponent(upiId)}`;
-                if (payeeName) {
-                    upiUri += `&pn=${encodeURIComponent(payeeName)}`;
-                }
-                
-                // CHECK FOR AMOUNT: Only append amount parameter if amount is a valid number greater than 0
-                if (amount && parseFloat(amount) > 0) {
-                    upiUri += `&am=${encodeURIComponent(amount)}`;
-                    upiUri += `&cu=INR`;
-                }
-                
-                currentQR = new QRCodeStyling({
-                    width: 300,
-                    height: 300,
-                    type: "svg",
-                    data: upiUri,
-                    image: upiIcon,
-                    dotsOptions: {
-                        color: dotsColor,
-                        type: randomDotsType
-                    },
-                    cornersSquareOptions: {
-                        color: cornersSquareColor,
-                        type: randomCornersSquareType
-                    },
-                    cornersDotOptions: {
-                        color: cornersDotColor,
-                        type: randomCornersDotType
-                    },
-                    backgroundOptions: {
-                        color: "#000000",
-                    },
-                    imageOptions: {
-                        crossOrigin: "anonymous",
-                        margin: 5,
-                        imageSize: 0.3, // Slightly increased image size
-                        hideBackgroundDots: true // This is the key line to hide the dots under the image
-                    }
-                });
-
-                currentQR.append(qrCodeContainer);
-                
-                // If amount is present and > 0, display the amount pill
-                if (amount && parseFloat(amount) > 0 && !isNaN(parseFloat(amount))) {
-                    amountValue.textContent = `${parseFloat(amount).toFixed(2)}`;
-                    amountDisplay.classList.remove('hidden');
-                } else {
-                    amountDisplay.classList.add('hidden');
-                }
-            };
             
             const renderUpiButtons = () => {
                 upiButtonContainer.innerHTML = '';
@@ -1413,190 +1307,6 @@
                 });
             };
 
-            const renderHistory = () => {
-                const historyList = document.getElementById('history-list');
-                const clearHistoryBtn = document.getElementById('clear-history-btn');
-                const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                historyList.innerHTML = '';
-                if (history.length === 0) {
-                    historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
-                    clearHistoryBtn.classList.add('hidden');
-                } else {
-                    history.forEach((item, index) => {
-                        const upiInfo = getUpiData(item.id);
-                        
-                        // Use a single container div with all necessary classes
-                        const historyItem = document.createElement('div');
-                        historyItem.classList.add(
-                            'history-item', 'flex', 'items-center', 'space-x-4', 'cursor-pointer', 
-                            'hover:bg-gray-800', 'transition-colors', 'duration-200', 'relative', 
-                            'group', 'history-item-animated', 'p-4', 'rounded-xl', 'w-full'
-                        );
-                        historyItem.style.animationDelay = `${index * 0.05}s`;
-                        
-                        // Apply the orange left border based on the UPI color (using an inline style for the border-left)
-                        historyItem.style.borderLeft = `5px solid ${upiInfo.color}`; 
-                        historyItem.style.backgroundColor = '#1f2125'; // Ensure specific dark background
-
-                        const itemIconUrl = upiInfo.icon || 'https://placehold.co/40x40/4B5563?text=Icon';
-                        const timePart = item.timestamp.split(', ')[1] || item.timestamp;
-
-                        historyItem.innerHTML = `
-                            <!-- Icon -->
-                            <img src="${itemIconUrl}" alt="${upiInfo.label} Icon" 
-                                class="w-10 h-10 rounded-full border-2 border-gray-700 object-cover flex-shrink-0" 
-                                onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
-                            
-                            <!-- Text Content (Label and Time/Amount) -->
-                            <div class="flex-1 min-w-0 ml-2">
-                                <p class="text-gray-200 font-semibold truncate" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
-                                <p class="text-gray-400 text-sm truncate" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${timePart}</p>
-                            </div>
-                            
-                            <!-- Action buttons with wrapper for pill-look -->
-                            <div class="history-item-actions flex items-center space-x-2 history-item-actions-wrapper">
-                                <button class="regenerate-btn history-action-btn text-gray-300 hover:text-green-500 hover:bg-gray-700 transition-colors">
-                                    <span class="material-symbols-outlined text-base">sync</span>
-                                </button>
-                                <button class="delete-btn history-action-btn text-gray-300 hover:text-red-500 hover:bg-gray-700 transition-colors" data-index="${index}">
-                                    <span class="material-symbols-outlined text-base">delete</span>
-                                </button>
-                            </div>
-                        `;
-                        
-                        // Attach listeners
-                        historyItem.addEventListener('click', (e) => {
-                            if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
-                                return;
-                            }
-                            generateQrCode(item.id, item.amount);
-                            currentQrAmount = item.amount;
-                            
-                            setTimeout(() => {
-                                qrModalOverlay.classList.remove('hidden');
-                                qrModalOverlay.classList.add('visible');
-                            }, 0);
-                        });
-
-                        historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
-                            generateQrCode(item.id, item.amount);
-                            currentQrAmount = item.amount;
-                            saveHistory(item.id, item.amount);
-                            
-                            setTimeout(() => {
-                                qrModalOverlay.classList.remove('hidden');
-                                qrModalOverlay.classList.add('visible');
-                            }, 0);
-                        });
-
-                        historyItem.querySelector('.delete-btn').addEventListener('click', () => {
-                            let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                            const indexToDelete = parseInt(historyItem.querySelector('.delete-btn').dataset.index, 10);
-                            currentHistory.splice(indexToDelete, 1);
-                            localStorage.setItem(historyKey, JSON.stringify(currentHistory));
-                            renderHistory();
-                        });
-
-                        historyList.appendChild(historyItem);
-                    });
-                    clearHistoryBtn.classList.remove('hidden');
-                }
-            };
-            
-            const createUpiButton = (upi) => {
-                const container = document.createElement('div');
-                container.className = 'flex flex-col items-center gap-2';
-
-                const button = document.createElement('button');
-                button.className = 'w-[70px] h-[70px] p-0 rounded-2xl bg-gray-100 transition-all duration-300 relative upi-btn-base';
-                button.setAttribute('data-upi-id', upi.id);
-                button.style.setProperty('--upi-color', upi.color);
-                button.style.setProperty('--upi-rgb', hexToRgb(upi.color));
-
-                button.innerHTML = `
-                    <div class="w-full h-full p-2 flex items-center justify-center rounded-2xl upi-btn-inner-shadow">
-                        <img src="${upi.icon}" alt="${upi.label} Icon" class="w-full h-full rounded-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/60x60/4B5563/D1D5DB?text=Icon'">
-                    </div>
-                `;
-
-                const label = document.createElement('span');
-                label.className = 'text-xs font-bold text-gray-300';
-                label.textContent = upi.label;
-
-                container.appendChild(button);
-                container.appendChild(label);
-
-                button.addEventListener('click', () => {
-                    // Validation check
-                    const inputExpression = amountInput.value.trim();
-                    const { result, error } = calculateAmount(inputExpression);
-
-                    if (error) {
-                        // Action on Error: ONLY SHOW RED BORDER, HIDE TEXT, PLAY TONE
-                        errorMessage.style.display = 'none'; // Ensure text is hidden
-                        inputGroup.classList.add('input-error');
-                        AudioEngine.playTone('clear'); 
-                        return;
-                    }
-                    
-                    // Action on Success: Clear border and proceed
-                    errorMessage.style.display = 'none';
-                    inputGroup.classList.remove('input-error');
-                    
-                    // NEW: Play magical tone on successful UPI selection
-                    AudioEngine.playTone('magical');
-
-                    updateButtonHighlighting(upi.id);
-                    
-                    // Store the calculated amount/expression in the global variable
-                    currentQrAmount = result;
-                    upiLabelText.textContent = upi.label;
-                    selectedUpiIdDisplay.textContent = upi.id;
-                    generateQrCode(upi.id, result);
-                    saveHistory(upi.id, result);
-
-                    // FIX: Ensure modal visibility is set using timeout for synchronization
-                    setTimeout(() => {
-                        qrModalOverlay.classList.remove('hidden');
-                        qrModalOverlay.classList.add('visible');
-                    }, 0);
-
-                    amountInput.value = '';
-                    clearInputBtn.classList.add('hidden');
-                });
-
-                return container;
-            };
-
-            const createPopupUpiButton = (upi) => {
-                const button = document.createElement('button');
-                button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center transition-all duration-300 relative popup-upi-btn';
-                button.setAttribute('data-upi-id', upi.id);
-                button.style.setProperty('--upi-color', upi.color);
-                button.style.setProperty('--upi-opposite-color', upi.oppositeColor);
-                button.innerHTML = `
-                    <img src="${upi.icon}" alt="${upi.label} Icon" class="w-10 h-10 rounded-full" onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
-                `;
-                button.addEventListener('click', () => {
-                    // Play magical tone when switching UPI IDs inside the modal
-                    AudioEngine.playTone('magical');  
-                    updateButtonHighlighting(upi.id);
-                    
-                    // Use the globally stored amount (calculated)
-                    const amount = currentQrAmount;
-                    upiLabelText.textContent = upi.label;
-                    selectedUpiIdDisplay.textContent = upi.id;
-                    generateQrCode(upi.id, amount);
-                    saveHistory(upi.id, amount);
-                    
-                    // FIX: Ensure modal visibility is set
-                    setTimeout(() => {
-                        qrModalOverlay.classList.remove('hidden');
-                        qrModalOverlay.classList.add('visible');
-                    }, 0);
-                });
-                return button;
-            };
 
             if (clearHistoryBtn) {
                 clearHistoryBtn.addEventListener('click', () => {
@@ -1634,7 +1344,7 @@
                 // Clear QR code container when modal is closed
                 setTimeout(() => {
                     qrModalOverlay.classList.add('hidden');
-                    qrCodeContainer.innerHTML = '';
+                    document.getElementById('qr-code-container').innerHTML = '';
                     // Removed the opacity class resets that were part of the animation removal
                 }, 300); // Duration of the fade out
             });
