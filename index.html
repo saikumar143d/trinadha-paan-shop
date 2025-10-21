@@ -408,7 +408,7 @@
                     <span class="material-symbols-outlined text-lg">cancel</span>
                 </button>
             </div>
-            <!-- Error message element: This element is present but now permanently hidden by JavaScript logic -->
+            <!-- Error message element: This is present but permanently hidden by JavaScript logic -->
             <span id="errorMessage" class="error-message text-red-500 mt-2"></span>
         </div>
 
@@ -578,11 +578,8 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between pt-2 w-full">
-                    <!-- Reset Button: Changed icon from 'restore' to 'sync_arrow_up' -->
-                    <button id="edit-reset-btn" class="w-12 h-10 flex items-center justify-center p-0 text-red-400 border border-red-400 rounded-md hover:text-white hover:bg-red-600 transition-colors text-sm" title="Restore to initial defaults">
-                        <span class="material-symbols-outlined text-xl">sync_arrow_up</span>
-                    </button>
+                <div class="flex justify-end pt-2 w-full">
+                    <!-- REMOVED: Reset button -->
                     <div class="flex space-x-2">
                         <button id="edit-cancel-btn" class="px-4 py-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
                         <button id="edit-save-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-lg">Save Changes</button>
@@ -593,7 +590,7 @@
             <input type="hidden" id="editing-upi-id-original">
             <input type="hidden" id="editing-upi-index">
             <input type="hidden" id="editing-upi-color">
-            <input type="hidden" id="editing-upi-original-data"> 
+            <!-- REVERTED: Removed the editing-upi-original-data hidden field since reset is gone -->
         </div>
     </div>
     
@@ -634,7 +631,7 @@
             { "name": "Generic Icon", "logo": "https://placehold.co/40x40/4B5563/D1D5DB?text=Icon" }
         ];
         
-        // --- Hardcoded initial data for reset functionality ---
+        // --- Hardcoded initial data for local storage ---
         const INITIAL_UPI_DATA = [{
             "id": "9492416477@upi",
             "label": "TVR",
@@ -708,12 +705,6 @@
             };
         };
         
-        // NEW: Function to get the original hardcoded data
-        const getInitialUpiData = (id) => {
-             return INITIAL_UPI_DATA.find(u => u.id === id) || null;
-        };
-
-
         const hexToRgb = (hex) => {
             const bigint = parseInt(hex.slice(1), 16);
             const r = (bigint >> 16) & 255;
@@ -1000,10 +991,7 @@
             document.getElementById('editing-upi-index').value = upiData.indexOf(upi);
             document.getElementById('editing-upi-color').value = upi.color; 
             
-            // Store original data as string for easy reset
-            const originalData = getInitialUpiData(upiId);
-            document.getElementById('editing-upi-original-data').value = originalData ? JSON.stringify(originalData) : JSON.stringify({});
-
+            // REVERTED: Removed original data storage field
 
             populateEditFields(upi); // Populate fields with current values
 
@@ -1515,7 +1503,6 @@
             // Edit Modal Element References
             const editSaveBtn = document.getElementById('edit-save-btn');
             const editCancelBtn = document.getElementById('edit-cancel-btn');
-            const editResetBtn = document.getElementById('edit-reset-btn'); // NEW Reset Button
 
 
             // Refactored view switching logic for a smoother animation
@@ -1634,38 +1621,6 @@
             
             editCancelBtn.addEventListener('click', hideEditModal);
             
-            // --- Edit Modal Reset Listener (Revamped) ---
-            editResetBtn.addEventListener('click', () => {
-                const originalDataJson = document.getElementById('editing-upi-original-data').value;
-                const originalData = JSON.parse(originalDataJson);
-                const originalId = document.getElementById('editing-upi-id-original').value;
-                const index = parseInt(document.getElementById('editing-upi-index').value, 10);
-                
-                if (originalData) {
-                    // 1. Populate the form fields immediately with original data
-                    populateEditFields(originalData); 
-
-                    // 2. Update the main application data (upiData)
-                    if (index >= 0 && index < upiData.length) {
-                        upiData[index].id = originalData.id;
-                        upiData[index].label = originalData.label;
-                        upiData[index].icon = originalData.icon;
-                        // Color is kept but saved to local storage
-                        upiData[index].color = originalData.color; 
-                        
-                        saveUpiData(); // Save to local storage
-                        renderUpiButtons(); // Re-render buttons 
-                        
-                        // If the currently selected ID was the one being reset, update the selection
-                        if (selectedUpiId === originalId) {
-                            updateButtonHighlighting(originalData.id);
-                            updateHeaderUpiDisplay(originalData.id);
-                        }
-                    }
-                }
-            });
-
-
             // --- Edit Modal Save Listener ---
             editSaveBtn.addEventListener('click', () => {
                 const originalId = document.getElementById('editing-upi-id-original').value;
