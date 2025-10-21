@@ -333,6 +333,43 @@
             border-radius: 0.5rem;
         }
         
+        /* Logo Library Grid */
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        
+        .logo-option {
+            background-color: #1a1c20;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.15s ease-out;
+            opacity: 0.7;
+            /* Ensure images scale correctly within the square area */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            aspect-ratio: 1 / 1;
+        }
+        
+        .logo-option:hover {
+            opacity: 1;
+            border-color: #374151;
+        }
+
+        .logo-option.selected-logo {
+            opacity: 1;
+            border-color: #ef4444; /* Red accent for selection */
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+        }
+        .logo-option img {
+            max-width: 80%;
+            max-height: 80%;
+            border-radius: 50%;
+        }
     </style>
 </head>
 
@@ -506,6 +543,51 @@
             </div>
         </div>
     </div>
+
+    <!-- NEW: Modal for Editing UPI Button Details -->
+    <div id="edit-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-[110]">
+        <div id="edit-modal" class="modal-content rounded-lg p-6 relative w-11/12 max-w-sm flex flex-col items-center space-y-4">
+            <h2 class="text-lg font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Edit UPI Account</h2>
+            
+            <div class="w-full space-y-4">
+                <!-- Current Logo Preview -->
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 flex-shrink-0 bg-gray-800 rounded-full border border-gray-700 flex items-center justify-center">
+                        <img id="edit-current-logo" src="" alt="Current Logo" class="w-10 h-10 rounded-full object-cover">
+                    </div>
+                    <h3 id="edit-current-label" class="text-xl font-bold text-gray-200"></h3>
+                </div>
+
+                <!-- UPI ID Input -->
+                <div>
+                    <label for="edit-upi-id" class="block text-sm font-medium text-gray-400 mb-1">UPI ID</label>
+                    <input type="text" id="edit-upi-id" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., user@bankupi">
+                </div>
+
+                <!-- Account Label Input -->
+                <div>
+                    <label for="edit-upi-label" class="block text-sm font-medium text-gray-400 mb-1">Account Name/Label</label>
+                    <input type="text" id="edit-upi-label" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., My Personal Account">
+                </div>
+                
+                <!-- Logo Selector -->
+                <div>
+                    <h4 class="text-sm font-medium text-gray-400 mb-2">Select Logo</h4>
+                    <div id="logo-library" class="logo-grid max-h-40 overflow-y-auto p-2 bg-gray-900 rounded-lg border border-gray-800">
+                        <!-- Logos will be injected here -->
+                    </div>
+                </div>
+
+                <div class="flex justify-between pt-2">
+                    <button id="edit-cancel-btn" class="px-4 py-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
+                    <button id="edit-save-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-lg">Save Changes</button>
+                </div>
+            </div>
+            <input type="hidden" id="editing-upi-id-original">
+            <input type="hidden" id="editing-upi-index">
+            <input type="hidden" id="editing-upi-color">
+        </div>
+    </div>
     
     <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js" async></script>
     <script>
@@ -524,6 +606,25 @@
 
         const upiDataKey = 'upiData';
         const historyKey = 'upiHistory';
+        
+        // --- UPI Logo Library ---
+        const FULL_LOGO_LIBRARY = [
+            // Existing (Default/Initial) Logos used in hardcoded upiData
+            { "name": "TVR Default", "logo": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/" },
+            { "name": "BHIM/TSK Default", "logo": "https://img.icons8.com/color/512/bhim.png" },
+            { "name": "BGV Default", "logo": "https://ucarecdn.com/caa1a595-b532-46b1-b4d4-1c5e21486b85/-/format/webp/-/quality/smart/" },
+            { "name": "PhonePe (Old Default)", "logo": "https://img.utdstc.com/icon/a06/2b4/a062b4fb17896e98996ae80f05de6ceeafda19e3247c92d495214dbc1ea4f050:200" },
+            // New Logos from Library provided by user
+            { "name": "Axis Bank", "logo": "https://od.lk/s/NDJfNDk1Njc4NjVf/Axis.png" },
+            { "name": "CRED", "logo": "https://od.lk/s/NDJfNDk1Njc4NjJf/cred.png" },
+            { "name": "Google Pay", "logo": "https://od.lk/s/NDJfNDk1Njc4NjFf/Google%20Pay.png" },
+            { "name": "Mobikwik", "logo": "https://od.lk/s/NDJfNDk1Njc4NjBf/Mobikwik.png" },
+            { "name": "Paytm", "logo": "https://od.lk/s/NDJfNDk1Njc4NTlf/Paytm.png" },
+            { "name": "PhonePe (Standard)", "logo": "https://od.lk/s/NDJfNDk1Njc4NThf/Phonepe.png" },
+            { "name": "BharatPe", "logo": "https://od.lk/s/NDJfNDk5MDE3MzFf/BharatPe.png" },
+            { "name": "SBI", "logo": "https://od.lk/s/NDJfNDk5MDE3MzBf/SBI.png" },
+            { "name": "Generic Icon", "logo": "https://placehold.co/40x40/4B5563/D1D5DB?text=Icon" }
+        ];
 
         let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || [{
             "id": "9492416477@upi",
@@ -563,6 +664,12 @@
         let selectedUpiId = upiData.length > 0 ? upiData[0].id : null; // Initialize with the first ID
         // A new global variable to hold the amount for the QR code
         let currentQrAmount = '';
+        
+        // Variable to track the logo selected in the edit modal
+        let selectedLogoUrl = ''; 
+        
+        // Duration for long press/hold
+        const LONG_PRESS_DURATION = 500;
 
         // NEW: Map numbers to notes for a musical scale (C Major Pentatonic)
         const NoteMap = {
@@ -595,6 +702,10 @@
             const g = (bigint >> 8) & 255;
             const b = bigint & 255;
             return `${r}, ${g}, ${b}`;
+        };
+        
+        const saveUpiData = () => {
+            localStorage.setItem(upiDataKey, JSON.stringify(upiData));
         };
         
         const saveHistory = (id, amount) => {
@@ -843,12 +954,59 @@
             }
         };
 
+        const showEditModal = (upiId) => {
+            const upi = upiData.find(u => u.id === upiId);
+            if (!upi) return;
+
+            const editModalOverlay = document.getElementById('edit-modal-overlay');
+            
+            document.getElementById('editing-upi-id-original').value = upi.id;
+            document.getElementById('editing-upi-index').value = upiData.indexOf(upi);
+            document.getElementById('editing-upi-color').value = upi.color; // Save color for persistence
+
+            document.getElementById('edit-upi-id').value = upi.id;
+            document.getElementById('edit-upi-label').value = upi.label;
+            document.getElementById('edit-current-logo').src = upi.icon;
+            document.getElementById('edit-current-label').textContent = upi.label;
+            
+            selectedLogoUrl = upi.icon; // Initialize selected logo to current icon
+            
+            const logoLibraryEl = document.getElementById('logo-library');
+            logoLibraryEl.innerHTML = '';
+            
+            FULL_LOGO_LIBRARY.forEach(logoItem => {
+                const imgContainer = document.createElement('div');
+                imgContainer.className = 'logo-option';
+                if (logoItem.logo === upi.icon) {
+                    imgContainer.classList.add('selected-logo');
+                }
+                // Use title for accessibility/hover feedback
+                imgContainer.title = logoItem.name; 
+                imgContainer.setAttribute('data-logo-url', logoItem.logo);
+                imgContainer.innerHTML = `<img src="${logoItem.logo}" alt="${logoItem.name} Logo" class="w-full h-auto rounded-full">`;
+                
+                imgContainer.addEventListener('click', () => {
+                    document.querySelectorAll('#logo-library .logo-option').forEach(el => el.classList.remove('selected-logo'));
+                    imgContainer.classList.add('selected-logo');
+                    selectedLogoUrl = logoItem.logo;
+                    document.getElementById('edit-current-logo').src = selectedLogoUrl;
+                    document.getElementById('edit-current-label').textContent = logoItem.name; // Update label temporarily
+                });
+                
+                logoLibraryEl.appendChild(imgContainer);
+            });
+
+            editModalOverlay.classList.remove('hidden');
+            window.requestAnimationFrame(() => {
+                editModalOverlay.classList.add('visible');
+            });
+        };
+        
         const createUpiButton = (upi) => {
             const container = document.createElement('div');
             container.className = 'flex flex-col items-center gap-2';
 
             const button = document.createElement('button');
-            // Removed duration-300 from class list to use the faster CSS transition
             button.className = 'w-[70px] h-[70px] p-0 rounded-2xl bg-gray-100 relative upi-btn-base'; 
             button.setAttribute('data-upi-id', upi.id);
             button.style.setProperty('--upi-color', upi.color);
@@ -873,40 +1031,96 @@
                 updateHeaderUpiDisplay(upi.id);
             }
 
-            button.addEventListener('click', () => {
+            let pressTimer = null;
+            let pressStartTimestamp = 0;
+            const upiId = upi.id; // Store ID locally for closures
+
+            // --- Long Press / Right Click Logic ---
+            
+            // Universal handler for triggering the Edit Modal
+            const handleEditTrigger = (e) => {
+                e.preventDefault(); 
+                e.stopPropagation(); 
+                showEditModal(upiId);
+            };
+
+            // 1. Pointer Down (Mobile Long Press)
+            button.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0) return;
+                
+                // Start long press timer on touch devices
+                if (e.pointerType === 'touch') {
+                    pressStartTimestamp = Date.now();
+                    e.preventDefault(); 
+
+                    if (pressTimer) clearTimeout(pressTimer);
+                    
+                    pressTimer = setTimeout(() => {
+                        handleEditTrigger(e);
+                        pressTimer = null; 
+                    }, LONG_PRESS_DURATION);
+                }
+            });
+
+            // 2. Pointer Up (Mobile Touch)
+            button.addEventListener('pointerup', (e) => {
+                if (e.button !== 0) return;
+
+                if (pressTimer !== null) {
+                    clearTimeout(pressTimer);
+                    pressTimer = null;
+                    
+                    const pressDuration = Date.now() - pressStartTimestamp;
+                    
+                    // If it was a short tap (< LONG_PRESS_DURATION), execute QR action
+                    if (e.pointerType === 'touch' && pressDuration < LONG_PRESS_DURATION) {
+                        e.target.closest('button').click(); // Simulate a click for the QR action
+                    }
+                }
+            });
+
+            // 3. Right Click (Desktop)
+            button.addEventListener('contextmenu', handleEditTrigger);
+
+            // 4. Standard Click (Desktop / Mobile fall-through) - Kept for QR Generation
+            button.addEventListener('click', (e) => {
+                // If pressTimer is null, the click wasn't part of a short touch interaction, so process QR.
+                // This handles desktop clicks and ensures standard click logic runs if long press didn't trigger.
+                
+                // Block touch-initiated clicks that were already handled by pointerup/pointerdown logic if they were part of a long press
+                if (pressTimer === null && e.pointerType === 'touch') {
+                    return; 
+                }
+                
                 const amountInput = document.getElementById('amountInput');
                 const inputGroup = document.getElementById('input-container');
                 const clearInputBtn = document.getElementById('clear-input-btn');
                 const errorMessage = document.getElementById('errorMessage');
 
-                // Validation check
+                // 1. Validation check and Calculation
                 const inputExpression = amountInput.value.trim();
                 const { result, error } = calculateAmount(inputExpression);
 
-                // --- UPI Button Click Logic ---
-                
-                // 1. Update highlighting and header display
-                updateButtonHighlighting(upi.id);
-                updateHeaderUpiDisplay(upi.id);
+                // 2. Update highlighting and header display (always happens)
+                updateButtonHighlighting(upiId);
+                updateHeaderUpiDisplay(upiId);
                 
                 if (error) {
-                    errorMessage.style.display = 'none'; // Ensure text is hidden
+                    errorMessage.style.display = 'none';
                     inputGroup.classList.add('input-error');
                     AudioEngine.playTone('clear'); 
                     return;
                 }
                 
-                // 2. Action on Success: Clear error state, play tone
+                // 3. Action on Success: Show QR modal, save history, and clear input
                 errorMessage.style.display = 'none';
                 inputGroup.classList.remove('input-error');
-                
                 AudioEngine.playTone('magical');
                 
                 currentQrAmount = result;
                 
-                // 3. Show QR modal, save history, and clear input
-                showQrModal(upi.id, result);
-                saveHistory(upi.id, result);
+                showQrModal(upiId, result);
+                saveHistory(upiId, result);
 
                 amountInput.value = '';
                 clearInputBtn.classList.add('hidden');
@@ -1255,9 +1469,14 @@
             const historyBtn = document.getElementById('history-btn');
             const historyIcon = document.getElementById('history-icon');
             const qrModalOverlay = document.getElementById('qr-modal-overlay');
-            const historyFooter = document.getElementById('history-footer'); // Get footer element
-
+            const editModalOverlay = document.getElementById('edit-modal-overlay'); // NEW
+            const historyFooter = document.getElementById('history-footer'); 
             
+            // Edit Modal Element References
+            const editSaveBtn = document.getElementById('edit-save-btn');
+            const editCancelBtn = document.getElementById('edit-cancel-btn');
+
+
             // Refactored view switching logic for a smoother animation
             const showMainView = () => {
                 historyView.classList.remove('history-visible');
@@ -1355,17 +1574,63 @@
 
             renderUpiButtons();
 
+            // --- QR Modal Close Listener ---
             closeModalBtn.addEventListener('click', () => {
                 qrModalOverlay.classList.remove('visible');
-                // Clear QR code container when modal is closed
                 setTimeout(() => {
                     qrModalOverlay.classList.add('hidden');
                     document.getElementById('qr-code-container').innerHTML = '';
-                    // Removed the opacity class resets that were part of the animation removal
-                }, 300); // Duration of the fade out
+                }, 300); 
             });
 
-            // The modal now ONLY closes via the 'X' button.
+            // --- Edit Modal Close Listener ---
+            const hideEditModal = () => {
+                editModalOverlay.classList.remove('visible');
+                setTimeout(() => {
+                    editModalOverlay.classList.add('hidden');
+                }, 300); 
+            };
+            
+            editCancelBtn.addEventListener('click', hideEditModal);
+            
+            // --- Edit Modal Save Listener ---
+            editSaveBtn.addEventListener('click', () => {
+                const originalId = document.getElementById('editing-upi-id-original').value;
+                const index = parseInt(document.getElementById('editing-upi-index').value, 10);
+                const color = document.getElementById('editing-upi-color').value;
+                
+                const newId = document.getElementById('edit-upi-id').value.trim();
+                const newLabel = document.getElementById('edit-upi-label').value.trim();
+                const newIcon = selectedLogoUrl; // From the global tracker
+
+                if (!newId || !newLabel || !newIcon) {
+                    // Simple validation check
+                    alert("UPI ID, Label, and Icon cannot be empty.");
+                    return;
+                }
+                
+                if (index >= 0 && index < upiData.length) {
+                    // Update the local data structure
+                    upiData[index].id = newId;
+                    upiData[index].label = newLabel;
+                    upiData[index].icon = newIcon;
+                    // Keep the color and other properties the same unless specified otherwise
+                    upiData[index].color = color;
+                    // Note: If ID changes, history references might break, but for this exercise, we prioritize saving the new data.
+                    
+                    saveUpiData(); // Save to local storage
+                    renderUpiButtons(); // Re-render buttons immediately
+                    
+                    // If the currently selected ID changed, update the selection too
+                    if (selectedUpiId === originalId) {
+                        updateButtonHighlighting(newId);
+                        updateHeaderUpiDisplay(newId);
+                    }
+
+                    hideEditModal(); // Close the modal
+                }
+            });
+
 
             // UPDATED: Live validation on input (Red Border only)
             amountInput.addEventListener('input', () => {
