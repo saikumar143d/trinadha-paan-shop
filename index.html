@@ -578,14 +578,22 @@
                     </div>
                 </div>
 
-                <div class="flex justify-between pt-2">
-                    <button id="edit-cancel-btn" class="px-4 py-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
-                    <button id="edit-save-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-lg">Save Changes</button>
+                <div class="flex justify-between pt-2 w-full">
+                    <!-- Updated Reset Button -->
+                    <button id="edit-reset-btn" class="w-12 h-10 flex items-center justify-center p-0 text-red-400 border border-red-400 rounded-md hover:text-white hover:bg-red-600 transition-colors text-sm" title="Reset to initial defaults">
+                        <span class="material-symbols-outlined text-xl">restore</span>
+                    </button>
+                    <div class="flex space-x-2">
+                        <button id="edit-cancel-btn" class="px-4 py-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
+                        <button id="edit-save-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-lg">Save Changes</button>
+                    </div>
                 </div>
             </div>
+            <!-- Hidden inputs store original/context data -->
             <input type="hidden" id="editing-upi-id-original">
             <input type="hidden" id="editing-upi-index">
             <input type="hidden" id="editing-upi-color">
+            <input type="hidden" id="editing-upi-original-data"> 
         </div>
     </div>
     
@@ -625,8 +633,9 @@
             { "name": "SBI", "logo": "https://od.lk/s/NDJfNDk5MDE3MzBf/SBI.png" },
             { "name": "Generic Icon", "logo": "https://placehold.co/40x40/4B5563/D1D5DB?text=Icon" }
         ];
-
-        let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || [{
+        
+        // --- Hardcoded initial data for reset functionality ---
+        const INITIAL_UPI_DATA = [{
             "id": "9492416477@upi",
             "label": "TVR",
             "icon": "https://ucarecdn.com/19a5ba37-4a18-471f-a5d8-5e9689551355/-/format/auto/",
@@ -659,6 +668,9 @@
             "iconBg": "#ffffff",
             "iconBorder": "#017c07"
         }];
+
+        // Load data from localStorage or use initial defaults
+        let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || JSON.parse(JSON.stringify(INITIAL_UPI_DATA));
         
         // A global variable to track the currently selected UPI ID
         let selectedUpiId = upiData.length > 0 ? upiData[0].id : null; // Initialize with the first ID
@@ -695,6 +707,12 @@
                 iconBorder: '#ccc'
             };
         };
+        
+        // NEW: Function to get the original hardcoded data
+        const getInitialUpiData = (id) => {
+             return INITIAL_UPI_DATA.find(u => u.id === id) || null;
+        };
+
 
         const hexToRgb = (hex) => {
             const bigint = parseInt(hex.slice(1), 16);
@@ -953,6 +971,23 @@
                 popupBtn.style.setProperty('--upi-rgb', hexToRgb(upi.color));
             }
         };
+        
+        const populateEditFields = (upi) => {
+            document.getElementById('edit-upi-id').value = upi.id;
+            document.getElementById('edit-upi-label').value = upi.label;
+            document.getElementById('edit-current-logo').src = upi.icon;
+            document.getElementById('edit-current-label').textContent = upi.label;
+            selectedLogoUrl = upi.icon; // Initialize selected logo to current icon
+            
+            // Clear existing logo selection
+            document.querySelectorAll('#logo-library .logo-option').forEach(el => el.classList.remove('selected-logo'));
+            
+            // Re-select the currently active logo in the library
+            const selectedEl = document.querySelector(`#logo-library [data-logo-url="${upi.icon}"]`);
+            if (selectedEl) {
+                 selectedEl.classList.add('selected-logo');
+            }
+        }
 
         const showEditModal = (upiId) => {
             const upi = upiData.find(u => u.id === upiId);
@@ -960,41 +995,46 @@
 
             const editModalOverlay = document.getElementById('edit-modal-overlay');
             
+            // Store context data
             document.getElementById('editing-upi-id-original').value = upi.id;
             document.getElementById('editing-upi-index').value = upiData.indexOf(upi);
-            document.getElementById('editing-upi-color').value = upi.color; // Save color for persistence
+            document.getElementById('editing-upi-color').value = upi.color; 
+            
+            // Store original data as string for easy reset
+            const originalData = getInitialUpiData(upiId);
+            document.getElementById('editing-upi-original-data').value = originalData ? JSON.stringify(originalData) : JSON.stringify({});
 
-            document.getElementById('edit-upi-id').value = upi.id;
-            document.getElementById('edit-upi-label').value = upi.label;
-            document.getElementById('edit-current-logo').src = upi.icon;
-            document.getElementById('edit-current-label').textContent = upi.label;
-            
-            selectedLogoUrl = upi.icon; // Initialize selected logo to current icon
-            
+
+            populateEditFields(upi); // Populate fields with current values
+
+            // --- Populate Logo Library ---
             const logoLibraryEl = document.getElementById('logo-library');
-            logoLibraryEl.innerHTML = '';
-            
-            FULL_LOGO_LIBRARY.forEach(logoItem => {
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'logo-option';
-                if (logoItem.logo === upi.icon) {
-                    imgContainer.classList.add('selected-logo');
-                }
-                // Use title for accessibility/hover feedback
-                imgContainer.title = logoItem.name; 
-                imgContainer.setAttribute('data-logo-url', logoItem.logo);
-                imgContainer.innerHTML = `<img src="${logoItem.logo}" alt="${logoItem.name} Logo" class="w-full h-auto rounded-full">`;
-                
-                imgContainer.addEventListener('click', () => {
-                    document.querySelectorAll('#logo-library .logo-option').forEach(el => el.classList.remove('selected-logo'));
-                    imgContainer.classList.add('selected-logo');
-                    selectedLogoUrl = logoItem.logo;
-                    document.getElementById('edit-current-logo').src = selectedLogoUrl;
-                    document.getElementById('edit-current-label').textContent = logoItem.name; // Update label temporarily
+            // Check if logos are already rendered (prevent re-rendering static list)
+            if (logoLibraryEl.childElementCount === 0) {
+                 FULL_LOGO_LIBRARY.forEach(logoItem => {
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'logo-option';
+                    
+                    // Use title for accessibility/hover feedback
+                    imgContainer.title = logoItem.name; 
+                    imgContainer.setAttribute('data-logo-url', logoItem.logo);
+                    imgContainer.innerHTML = `<img src="${logoItem.logo}" alt="${logoItem.name} Logo" class="w-full h-auto rounded-full">`;
+                    
+                    imgContainer.addEventListener('click', () => {
+                        document.querySelectorAll('#logo-library .logo-option').forEach(el => el.classList.remove('selected-logo'));
+                        imgContainer.classList.add('selected-logo');
+                        selectedLogoUrl = logoItem.logo;
+                        document.getElementById('edit-current-logo').src = selectedLogoUrl;
+                        document.getElementById('edit-current-label').textContent = logoItem.name; // Update label temporarily
+                    });
+                    
+                    logoLibraryEl.appendChild(imgContainer);
                 });
-                
-                logoLibraryEl.appendChild(imgContainer);
-            });
+            }
+            
+            // Re-apply selection state after ensuring the library is populated
+            populateEditFields(upi);
+
 
             editModalOverlay.classList.remove('hidden');
             window.requestAnimationFrame(() => {
@@ -1475,6 +1515,7 @@
             // Edit Modal Element References
             const editSaveBtn = document.getElementById('edit-save-btn');
             const editCancelBtn = document.getElementById('edit-cancel-btn');
+            const editResetBtn = document.getElementById('edit-reset-btn'); // NEW Reset Button
 
 
             // Refactored view switching logic for a smoother animation
@@ -1593,6 +1634,16 @@
             
             editCancelBtn.addEventListener('click', hideEditModal);
             
+            // --- Edit Modal Reset Listener (NEW) ---
+            editResetBtn.addEventListener('click', () => {
+                const originalDataJson = document.getElementById('editing-upi-original-data').value;
+                const originalData = JSON.parse(originalDataJson);
+
+                if (originalData) {
+                    populateEditFields(originalData); // Populate fields with original hardcoded data
+                }
+            });
+
             // --- Edit Modal Save Listener ---
             editSaveBtn.addEventListener('click', () => {
                 const originalId = document.getElementById('editing-upi-id-original').value;
