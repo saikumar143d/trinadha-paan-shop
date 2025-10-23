@@ -381,7 +381,7 @@
             <!-- Updated logo container style -->
             <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg p-0 flex items-center justify-center flex-none">
                 <!-- Using a visually monochromatic icon for the theme -->
-                <img id="logo-img" src="https://od.lk/s/NDJfNDk5MTA5MjJf/App%20Logo.png" alt="S4D QR Gen Logo" class="h-full w-full rounded-lg object-cover object-center transition-opacity duration-500" />
+                <img id="logo-img" src="https://od.lk/s/NDJfNDk5MTA5MjJf/Main_Logo.png" alt="S4D QR Gen Logo" class="h-full w-full rounded-lg object-cover object-center transition-opacity duration-500" />
             </button>
             <!-- New UPI ID Display with dynamic label in Header -->
             <div id="upi-display-container" class="flex flex-col text-left text-white">
@@ -670,7 +670,9 @@
         let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || JSON.parse(JSON.stringify(INITIAL_UPI_DATA));
         
         // A global variable to track the currently selected UPI ID
-        let selectedUpiId = upiData.length > 0 ? upiData[0].id : null; // Initialize with the first ID
+        // CHANGE: Initialize with null so the header displays the default "---" text.
+        let selectedUpiId = null; 
+        
         // A new global variable to hold the amount for the QR code
         let currentQrAmount = '';
         
@@ -930,8 +932,16 @@
         const updateHeaderUpiDisplay = (upiId) => {
             const upiLabelText = document.getElementById('upi-label-text');
             const selectedUpiIdDisplay = document.getElementById('selected-upi-id');
-            const upiInfo = getUpiData(upiId);
+            
+            // CHANGE: Check if upiId is null/falsy, and display default state if it is.
+            if (!upiId) {
+                upiLabelText.textContent = 'Select a UPI ID:';
+                selectedUpiIdDisplay.textContent = '---';
+                return;
+            }
 
+            const upiInfo = getUpiData(upiId);
+            // Display selected UPI ID details
             upiLabelText.textContent = upiInfo.label;
             selectedUpiIdDisplay.textContent = upiInfo.id;
         };
@@ -1053,11 +1063,8 @@
             container.appendChild(button);
             container.appendChild(label);
             
-            // Set initial state based on selectedUpiId
-            if (upi.id === selectedUpiId) {
-                updateButtonHighlighting(upi.id);
-                updateHeaderUpiDisplay(upi.id);
-            }
+            // REMOVED: Automatic header update and button highlighting on initial render.
+            // This is now handled by the click listener and the final call to updateHeaderUpiDisplay(null).
 
             let pressTimer = null;
             let pressStartTimestamp = 0;
@@ -1129,7 +1136,7 @@
                 const inputExpression = amountInput.value.trim();
                 const { result, error } = calculateAmount(inputExpression);
 
-                // 2. Update highlighting and header display (always happens)
+                // 2. Update highlighting and header display (always happens on click)
                 updateButtonHighlighting(upiId);
                 updateHeaderUpiDisplay(upiId);
                 
@@ -1174,6 +1181,7 @@
                 
                 const amount = currentQrAmount;
                 
+                // Update header display on button click inside modal
                 updateHeaderUpiDisplay(upi.id);
                 
                 showQrModal(upi.id, amount);
@@ -1601,6 +1609,10 @@
             }
 
             renderUpiButtons();
+            
+            // NEW: Set the header display to default/non-selected state on load.
+            updateHeaderUpiDisplay(selectedUpiId);
+
 
             // --- QR Modal Close Listener ---
             closeModalBtn.addEventListener('click', () => {
