@@ -281,14 +281,14 @@ body {
  
 /* MODIFIED: Modal Overlay Blur and Opacity and Positioning Fix */
 .modal {
-    /* FIX: Removed old conflicting positioning from HTML, enforce it here */
+    /* FIX: Explicitly set positioning for full screen coverage and control */
     position: fixed; 
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     
-    /* FIX: Centering logic moved from HTML to CSS */
+    /* FIX: Centering logic for the child modal window */
     display: none; /* Initial hidden state */
     align-items: center; /* Center vertically */
     justify-content: center; /* Center horizontally */
