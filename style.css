@@ -1,278 +1,371 @@
-<!DOCTYPE html>
+/* Lock scrolling on mobile */
+html, body {
+    height: 100%;
+    overflow: hidden; 
+}
 
-<html lang="en">
+body {
+    /* Nothing OS Font Aesthetic - Geometric Sans */
+    font-family: 'Ubuntu', sans-serif;
+    /* FIX: Added !important to enforce pure dark theme */
+    background-color: #000000 !important;
+    transition: background-color 0.5s;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>S4D QR Gen | Custom UPI QR Generator</title>
+/* Custom scrollbar styling */
+::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+}
+ 
+/* Monochromatic text for titles/accents */
+.gradient-text {
+    background: linear-gradient(45deg, #E5E7EB, #F3F4F6); 
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+ 
+/* Keyframes for the flow animation */
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+}
+ 
+.footer-is-visible .gradient-text {
+    background-size: 200%;
+    animation: gradientFlow 3s linear infinite;
+}
 
-<!-- PWA Manifest -->
-<link rel="manifest" href="manifest.json">
+.card {
+    /* Monochromatic/Dark Aesthetic */
+    background-color: #0c0d10; /* Almost black */
+    border-radius: 0.75rem; /* Sharper corners */
+    /* Subtle white outline/shadow */
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.05), inset 0 0 0 1px rgba(255, 255, 255, 0.1); 
+    padding: 1.5rem;
+    width: 100%;
+    max-width: 400px;
+    animation: fadeIn 0.8s ease-in-out;
+}
+ 
+#history-view.card {
+    padding: 1.5rem;
+}
 
-<!-- Google Fonts - Ubuntu, Karla (Keeping preloads for efficiency) -->
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&display=swap"></noscript>
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Karla:wght@400;700&display=swap"></noscript>
+.input-group {
+    background-color: #1a1c20;
+    border-radius: 0.5rem;
+    border: 2px solid #374151; /* Dark gray border */
+    transition: all 0.2s ease-in-out;
+    box-shadow: none;
+    position: relative;
+}
 
-<!-- Material Symbols Icons -->
-<link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&font-display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" /></noscript>
+.input-group:focus-within {
+    /* High-contrast White Focus Glow (Nothing Style) */
+    border-color: #F3F4F6;
+    box-shadow: 0 0 0 2px #1a1c20, 0 0 0 4px #F3F4F6;
+}
 
-<!-- Lucide Icons for dial pad -->
-<script src="https://unpkg.com/lucide@latest" async></script>
+/* --- START HISTORY ITEM STYLING FIXES (Refined Monochromatic) --- */
 
-<!-- FAVICON REVERTED: Using the old external link for the full QR icon -->
-<link rel="icon" href="https://od.lk/s/NDJfNDk0NzI1MzNf/stylized-qr-code-icon-with-vibrant-colors-modern-design_1299084-18665.avif" />
+.history-item-actions {
+    display: none;
+    position: absolute; 
+    right: 1rem; 
+    top: 50%;
+    transform: translateY(-50%);
+}
 
-<!-- Tailwind CSS CDN -->
-<script src="https://cdn.tailwindcss.com"></script>
+.history-item:hover .history-item-actions {
+    display: flex;
+}
+ 
+.history-item {
+    background-color: #1f2125; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.75rem;
+}
+ 
+.history-item-actions-wrapper {
+    background-color: rgba(12, 13, 16, 0.85); /* Dark pill wrapper */
+    padding: 0.25rem;
+    border-radius: 0.75rem;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+ 
+.history-action-btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem; /* Sharper pill shape */
+    background-color: transparent;
+    color: #ffffff;
+    transition: all 0.2s;
+}
 
-<!-- math.js CDN for secure calculation -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.6.0/math.min.js" async></script>
+.history-action-btn:hover {
+    background-color: #1a1c20;
+    color: #ef4444; /* Red accent on hover */
+}
+ 
+/* Animation for clearing history */
+@keyframes vanish {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(-100%) scale(0.9);
+        height: 0;
+        margin: 0;
+        padding: 0;
+    }
+}
 
-<!-- Tone.js CDN for thematic audio feedback -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.min.js"></script>
+.history-item-vanish {
+    animation: vanish 0.3s ease-in-out forwards;
+    overflow: hidden;
+}
 
-<!-- Canvas Confetti CDN for success animation -->
-<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+/* --- END HISTORY ITEM STYLING FIXES --- */
 
-<!-- QR Code Styling Library -->
-<script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.min.js" async></script>
+/* --- START OF DIAL PAD ENHANCEMENT (Monochromatic with Red Accents) --- */
+.dial-pad button {
+    background-color: #1a1c20 !important; /* Dark gray */
+    color: #ffffff !important;
+    border: 1px solid #374151 !important;
+    border-radius: 0.5rem !important; /* Sharper corners */
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1); 
+    transition: all 0.15s ease-out, box-shadow 0.2s;
+}
 
-<!-- External Stylesheet -->
-<link rel="stylesheet" href="style.css">
+/* Red Accent for Action Keys */
+.dial-pad button[data-value="clear"],
+.dial-pad button[data-value="equals"] {
+    background-color: #ef4444 !important; /* Red Accent */
+    color: #fff !important;
+    border-color: #b91c1c !important;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
+}
 
+.dial-pad button:hover {
+    background-color: #374151 !important;
+    transform: scale(1.0);
+}
+.dial-pad button:active {
+    background-color: #555 !important;
+    transform: scale(0.98);
+}
+.dial-pad button[data-value="clear"]:hover,
+.dial-pad button[data-value="equals"]:hover {
+    background-color: #dc2626 !important; /* Darker red on hover */
+    box-shadow: 0 0 15px #ef4444, 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+/* --- END OF DIAL PAD ENHANCEMENT --- */
+ 
+.upi-btn-base:active,
+.history-item:active {
+    /* Keep subtle press down effect for touch/mouse interaction */
+    transform: scale(0.98);
+}
 
-</head>
+/* --- START MINIMAL UPI COLOR HIGHLIGHTING --- */
+ 
+/* Base transition speed for all UPI buttons is now super fast */
+.upi-btn-base {
+    transition: all 0.08s ease-out; 
+}
 
-<body class="flex flex-col items-center min-h-screen p-4">
+/* UPI Button Active Glow (Main Screen) - Single UPI Color Accent */
+.upi-btn-base.upi-btn-active-glow {
+    /* Use UPI color for border and glow, removing all stacked color layers */
+    border: 2px solid var(--upi-color); /* Crisp border in UPI color */
+    box-shadow: 
+        0 0 0 3px #0c0d10, /* Dark separator ring */
+        0 0 15px rgba(var(--upi-rgb), 0.5); /* Single, soft, focused glow */
+    transform: scale(1.0); /* Ensure no scaling is applied */
+}
 
-<!-- Floating Header Elements -->
-<div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2 floating-header-animated">
-    <div id="header-left" class="flex items-center space-x-4">
-        <!-- Updated logo container style -->
-        <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg p-0 flex items-center justify-center flex-none">
-            <!-- SLEEK S4D COLORFUL LOGO (Base64 SVG) -->
-            <img id="logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjk3MzI2Ii8+PHN0b3Agb2Zmc2V0PSIyNSUiIHN0b3AtY29sb3I9IiNGRjYzNDciLz48c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzRkNDNmZSIvPjxzdG9wIG9mZnNldD0iNzUlIiBzdG9wLWNvbG9yPSIjMDE4YjNkIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMTU2NWIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHRleHQgeD0iMjUiIHk9IjM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBzdHlsZT0iZm9udC1mYW1pbHk6ICdVYnVudHUnLCBzYW5zLXNlcmlmOyBmb250LXdlaWdodDogNzAwOyBmb250LXNpemU6IDI0cHg7IiBmaWxsPSJ1cmwoI2cpIj5TNEQ8L3RleHQ+PC9zdmc+" alt="S4D QR Gen Logo" class="h-full w-full rounded-lg object-cover object-center transition-opacity duration-500" />
-        </button>
-        <!-- New UPI ID Display with dynamic label in Header -->
-        <div id="upi-display-container" class="flex flex-col text-left text-white">
-            <span id="upi-label-text" class="text-xs text-gray-400 font-semibold uppercase tracking-wider">Select a UPI ID:</span>
-            <p id="selected-upi-id" class="text-sm font-bold text-gray-200" style="font-family: 'Ubuntu', sans-serif;">---</p>
-        </div>
-    </div>
-    <div id="header-right" class="flex items-center space-x-2">
-        <!-- History Button -->
-        <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-lg border border-gray-700 shadow-lg hover:bg-gray-700 transition-colors duration-300 z-50">
-            <span id="history-icon" class="material-symbols-outlined text-gray-200">history</span>
-        </button>
-    </div>
-</div>
+/* UPI Button Active Glow (Modal) - Single UPI Color Accent */
+.popup-upi-btn.popup-upi-btn-active {
+    transition: all 0.08s ease-out; /* Faster transition */
+    border: 2px solid var(--upi-color); /* Crisp border in UPI color */
+    box-shadow: 
+        0 0 0 3px #0c0d10, /* Dark separator ring */
+        0 0 15px rgba(var(--upi-rgb), 0.5); /* Single, soft, focused glow */
+    transform: none; /* Ensure no scaling */
+}
+/* --- END MINIMAL UPI COLOR HIGHLIGHTING --- */
 
-<!-- Main QR Generator View - Increased mt-20 to mt-32 for more space -->
-<div id="main-view" class="flex flex-col items-center mx-auto mt-32 space-y-4 w-full max-w-sm">
-    <!-- Amount Input Card -->
-    <div class="card flex flex-col items-center border-2 border-gray-900 p-2">
-        <div id="input-container" class="input-group w-full flex items-center py-2 px-4 h-16">
-            <span class="material-symbols-outlined text-gray-400">currency_rupee</span>
-            <input id="amountInput" type="text" class="flex-1 min-w-0 bg-transparent text-gray-200 text-lg font-bold focus:outline-none placeholder-gray-500 ml-2" placeholder="" autocomplete="off" style="font-family: 'Ubuntu', sans-serif;">
-            <button id="clear-input-btn" class="ml-2 w-6 h-6 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-300 transition-colors duration-200 hidden">
-                <span class="material-symbols-outlined text-lg">cancel</span>
-            </button>
-        </div>
-        <!-- Error message element: This is present but permanently hidden by JavaScript logic -->
-        <span id="errorMessage" class="error-message text-red-500 mt-2"></span>
-    </div>
+ 
+/* Redefined Input Error State (Nothing Red Accent) */
+.input-error {
+    border: 2px solid #ff4d4d !important;
+    box-shadow: 
+        0 0 5px rgba(255, 77, 77, 0.8),    
+        0 0 15px rgba(255, 0, 0, 0.5),    
+        0 0 0 4px rgba(255, 77, 77, 0.2), 
+        inset 0 1px 3px rgba(255, 0, 0, 0.6); 
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+ 
+/* Header elements monochromatic styling */
+.logo-container {
+    background-color: #1a1c20;
+    border: 1px solid #374151;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+ 
+/* MODIFIED: Minimized, Cute Amount Pill for QR Modal (Nothing Style) */
+.cute-amount-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.8rem; /* Minimized padding */
+    border-radius: 9999px;
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: 700;
+    font-size: 1.1rem; /* Smaller font */
+    background-color: #1a1c20;
+    border: 1px solid #374151; /* Thinner border for minimalist look */
+    color: #F3F4F6;
+    /* Subtler shadow for cute/minimal look */
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4), inset 0 0 3px rgba(255, 255, 255, 0.05); 
+    transition: all 0.2s ease;
+}
+ 
+.cute-amount-pill .currency-symbol {
+    /* Use strong red for currency accent */
+    background: #ef4444; 
+    -webkit-background-clip: unset; 
+    -webkit-text-fill-color: #ef4444; 
+    font-size: 1.1rem; /* Matched font size */
+    margin-right: 0.2rem; /* Reduced margin */
+    font-weight: 700;
+}
 
-    <!-- UPI Button Container -->
-    <div id="upi-button-container" class="flex justify-between flex-wrap mx-auto w-full gap-4 px-2">
-        <!-- Buttons will be dynamically added here -->
-    </div>
+.cute-amount-pill .amount-value {
+    color: #E5E7EB;
+}
 
-    <!-- Dial Pad -->
-    <div id="dial-pad" class="w-full max-w-sm mt-8 mb-4">
-        <div class="grid grid-cols-4 gap-2 w-full dial-pad">
-            <!-- AC Button (Red Accent) -->
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="clear">AC</button>
-            
-            <!-- Operator/Parentheses (Monochromatic) -->
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="(">
-                <span class="font-extrabold text-3xl">(</span>
-            </button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=")">
-                <span class="font-extrabold text-3xl">)</span>
-            </button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="/">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-                    <line x1="5" x2="19" y1="12" y2="12" />
-                    <path d="M12 5v0" />
-                    <path d="M12 19v0" />
-                </svg>
-            </button>
+/* MODIFIED: Amount pill currency symbol uses RED accent now */
+.cute-amount-pill .currency-symbol {
+    background: #ef4444; /* Red accent */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+ 
+#clear-history-btn {
+    background-color: #ef4444; 
+    border-radius: 0.5rem; /* Sharper, modern pill */
+    padding: 0.5rem 1rem;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+    transition: all 0.2s;
+}
 
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="7">7</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="8">8</button>
-            <button class="flex-grow flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="9">9</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="*">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-                    <path d="m15 9-6 6" />
-                    <path d="m9 9 6 6" />
-                </svg>
-            </button>
-
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="4">4</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="5">5</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="6">6</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="-">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-                    <path d="M8 12h8" />
-                </svg>
-            </button>
-
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="1">1</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="2">2</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="3">3</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="+">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-                    <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-                    <path d="M8 12h8" />
-                    <path d="M12 8v8" />
-                </svg>
-            </button>
-
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="0">0</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=".">.</button>
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="backspace">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-                    <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
-                    <path d="m18 9-6 6" />
-                    <path d="m12 9 6 6" />
-                </svg>
-            </button>
-            <!-- Equals Button (Red Accent) -->
-            <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="equals">
-                <span class="material-symbols-outlined text-3xl">equal</span>
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- Payment History View - Increased mt-20 to mt-32 for more space -->
-<div id="history-view" class="hidden card mt-32 relative flex flex-col h-full max-h-[85vh]">
-    <div class="flex justify-between items-center mb-4">
-        <!-- Title is now white/gray gradient -->
-        <h3 id="history-header" class="text-xl font-bold gradient-text" style="font-family: 'Ubuntu', sans-serif;">Payment History</h3>
-        <!-- Clear button uses Red Accent -->
-        <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-lg font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-200 hidden">
-            <span class="material-symbols-outlined text-white mr-1 text-base">delete_forever</span> Clear
-        </button>
-    </div>
-    <div class="flex-grow overflow-y-auto pr-2">
-        <div id="history-list" class="space-y-4">
-            <!-- History items will be dynamically added here -->
-        </div>
-    </div>
+.made-with-text .heart-icon {
+    color: #ef4444; /* Red accent */
+}
+ 
+/* MODIFIED: Modal Overlay Blur and Opacity and Positioning Fix */
+.modal {
+    /* FIX: Removed old conflicting positioning from HTML, enforce it here */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     
-    <!-- Footer Section -->
-    <div id="history-footer" class="mt-4 pt-4 floating-header-animated">
-        <p class="font-bold text-sm tracking-wide text-gray-300 text-center">Live it UP</p>
-        <div class="history-footer-tag flex items-center justify-center text-center text-gray-400 text-sm">
-            <!-- Footer text now relies on monochromatic style -->
-            <p class="made-with-text">Made with <span class="heart-icon">❤️</span> in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-base text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
-        </div>
-    </div>
+    /* FIX: Centering logic moved from HTML to CSS */
+    display: none; /* Initial hidden state */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+    
+    /* FIX: Increased opacity and stronger blur */
+    background-color: rgba(0, 0, 0, 0.95);
+    backdrop-filter: blur(16px); 
+    -webkit-backdrop-filter: blur(16px);
+    
+    opacity: 0; 
+    pointer-events: none; 
+    transition: opacity 0.3s ease;
+}
+/* Crucial step to enable the transition */
+.modal.visible {
+    opacity: 1;
+    pointer-events: auto;
+    /* Must be display: flex for visibility before opacity is applied */
+    display: flex;
+}
 
-</div>
+/* Modal Close Button Monochromatic Look */
+#close-modal-btn {
+    background-color: #1a1c20;
+    border: 1px solid #374151;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.4);
+    color: #E5E7EB;
+}
+#close-modal-btn:hover {
+    background-color: #374151;
+    border-color: #F3F4F6;
+    color: #F3F4F6;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+ 
+.modal-content {
+    background-color: #0c0d10;
+}
+ 
+.qr-code-container {
+    border-radius: 0.5rem;
+}
+ 
+/* Logo Library Grid */
+.logo-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+}
+ 
+.logo-option {
+    background-color: #1a1c20;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s ease-out;
+    opacity: 0.7;
+    /* Ensure images scale correctly within the square area */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 1;
+}
+ 
+.logo-option:hover {
+    opacity: 1;
+    border-color: #374151;
+}
 
-<!-- QR Modal for Code Display (Modernized and Simplified) -->
-<div id="qr-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-[100]">
-    <div id="qr-modal" class="modal-content rounded-xl p-6 relative w-11/12 max-w-sm flex flex-col items-center">
-        <!-- Close Button Monochromatic Look -->
-        <button id="close-modal-btn" class="absolute top-3 right-3 w-12 h-12 rounded-xl flex items-center justify-center p-0 text-gray-300 transition-all duration-300 
-            bg-gray-900 border border-gray-700 shadow-2xl 
-            hover:bg-gray-700 hover:border-gray-500 hover:text-white hover:scale-[1.05] hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]">
-            <span class="material-symbols-outlined text-2xl font-semibold">close</span>
-        </button>
-        <div class="w-full text-center space-y-3 pt-8"> <!-- INCREASED pt-6 to pt-8 for more space below close button -->
-            
-            <!-- Amount Pill is now the primary visual element -->
-            <div id="amount-display" class="cute-amount-pill mx-auto hidden">
-                <span class="currency-symbol">₹</span>
-                <span id="amount-value" class="amount-value"></span>
-            </div>
-        </div>
-        
-        <!-- QR code container (Enhanced Visuals, spacing reduced to mt-4) -->
-        <div id="qr-code-container" class="relative p-3 bg-black rounded-xl border-4 border-white shadow-2xl shadow-red-600/20 mt-6"> <!-- INCREASED mt-4 to mt-6 for more space -->
-            <!-- QR code will be generated here -->
-        </div>
-        
-        <!-- UPI Switcher Label (REMOVED) -->
-
-        <div id="popup-upi-buttons" class="flex flex-wrap justify-center gap-3 mt-6">
-            <!-- UPI buttons will be dynamically added here -->
-        </div>
-    </div>
-</div>
-
-<!-- Edit Modal for UPI Button Details (Modernized) -->
-<div id="edit-modal-overlay" class="modal fixed inset-0 flex items-center justify-center hidden z-[110]">
-    <div id="edit-modal" class="modal-content rounded-xl p-6 relative w-11/12 max-w-sm flex flex-col items-center space-y-5">
-        <h2 class="text-xl font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Edit UPI Account</h2>
-        
-        <!-- Prominent Live Preview Card (Updates dynamically) -->
-        <div class="w-full p-4 bg-gray-900 border border-red-500/50 rounded-xl flex items-center space-x-4 shadow-xl shadow-gray-900/50">
-            <div class="w-14 h-14 flex-shrink-0 bg-white rounded-full border-2 border-red-600 flex items-center justify-center transition-all duration-300">
-                <img id="edit-current-logo" src="" alt="Current Logo" class="w-12 h-12 rounded-full object-cover">
-            </div>
-            <div class="flex flex-col min-w-0 flex-1">
-                <h3 id="edit-current-label" class="text-xl font-bold text-red-500 truncate">Account Label</h3>
-                <p id="edit-current-id-preview" class="text-xs text-gray-400 truncate">upi@id</p>
-            </div>
-        </div>
-
-        <div class="w-full space-y-4">
-            <!-- UPI ID Input -->
-            <div>
-                <label for="edit-upi-id" class="block text-sm font-medium text-gray-400 mb-1">UPI ID</label>
-                <input type="text" id="edit-upi-id" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., user@bankupi">
-            </div>
-
-            <!-- Account Label Input -->
-            <div>
-                <label for="edit-upi-label" class="block text-sm font-medium text-gray-400 mb-1">Account Name/Label</label>
-                <input type="text" id="edit-upi-label" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., My Personal Account">
-            </div>
-            
-            <!-- Logo Selector -->
-            <div>
-                <h4 class="text-sm font-medium text-gray-400 mb-2">Select Logo</h4>
-                <div id="logo-library" class="logo-grid max-h-40 overflow-y-auto p-2 bg-gray-900 rounded-lg border border-gray-800">
-                    <!-- Logos will be injected here -->
-                </div>
-            </div>
-
-            <div class="flex justify-end pt-2 w-full border-t border-gray-800 pt-4">
-                <div class="flex space-x-2">
-                    <button id="edit-cancel-btn" class="px-4 py-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
-                    <button id="edit-save-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-lg">Save Changes</button>
-                </div>
-            </div>
-        </div>
-        <!-- Hidden inputs store original/context data -->
-        <input type="hidden" id="editing-upi-id-original">
-        <input type="hidden" id="editing-upi-index">
-        <input type="hidden" id="editing-upi-color">
-    </div>
-</div>
-
-<script src="app.js" defer></script>
-
-
-</body>
-
-</html>
+.logo-option.selected-logo {
+    opacity: 1;
+    border-color: #ef4444; /* Red accent for selection */
+    box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
+}
+.logo-option img {
+    max-width: 80%;
+    max-height: 80%;
+    border-radius: 50%;
+}
