@@ -99,96 +99,87 @@
 </div>
 
 <!-- UPI Button Container -->
-
 <div id="upi-button-container" class="flex justify-between flex-wrap mx-auto w-full gap-4 px-2">
-<!-- Buttons will be dynamically added here -->
+    <!-- Buttons will be dynamically added here -->
 </div>
 
 <!-- Dial Pad -->
-
 <div id="dial-pad" class="dial-pad w-full max-w-sm mt-8 mb-4">
-<div class="grid grid-cols-4 gap-2 w-full">
-<!-- AC Button (Red Accent) -->
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="clear">AC</button>
+    <div class="grid grid-cols-4 gap-2 w-full">
+        <!-- AC Button (Red Accent) -->
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="clear">AC</button>
+        
+        <!-- Operator/Parentheses (Monochromatic) -->
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="(">
+            <span class="font-extrabold text-3xl">(</span>
+        </button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=")">
+            <span class="font-extrabold text-3xl">)</span>
+        </button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="/">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                <line x1="5" x2="19" y1="12" y2="12" />
+                <path d="M12 5v0" />
+                <path d="M12 19v0" />
+            </svg>
+        </button>
 
-<!-- Operator/Parentheses (Monochromatic) -->
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="7">7</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="8">8</button>
+        <button class="flex-grow flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="9">9</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="*">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                <path d="m15 9-6 6" />
+                <path d="m9 9 6 6" />
+            </svg>
+        </button>
 
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="(">
-<span class="font-extrabold text-3xl">(</span>
-</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=")">
-<span class="font-extrabold text-3xl">)</span>
-</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="/">
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-<line x1="5" x2="19" y1="12" y2="12" />
-<path d="M12 5v0" />
-<path d="M12 19v0" />
-</svg>
-</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="4">4</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="5">5</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="6">6</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="-">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                <path d="M8 12h8" />
+            </svg>
+        </button>
 
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="7">7</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="8">8</button>
-<button class="flex-grow flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="9">9</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="*">
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-<path d="m15 9-6 6" />
-<path d="m9 9 6 6" />
-</svg>
-</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="1">1</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="2">2</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="3">3</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="+">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
+                <path d="M8 12h8" />
+                <path d="M12 8v8" />
+            </svg>
+        </button>
 
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="4">4</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="5">5</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="6">6</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="-">
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-<path d="M8 12h8" />
-</svg>
-</button>
-
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="1">1</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="2">2</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="3">3</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="+">
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z" />
-<path d="M8 12h8" />
-<path d="M12 8v8" />
-</svg>
-</button>
-
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="0">0</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=".">.</button>
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="backspace">
-<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
-<path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
-<path d="m18 9-6 6" />
-<path d="m12 9 6 6" />
-</svg>
-</button>
-
-<!-- Equals Button (Red Accent) -->
-
-<button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="equals">
-<span class="material-symbols-outlined text-3xl">equal</span>
-</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="0">0</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-white bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value=".">.</button>
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-2xl font-bold text-gray-200 bg-gray-800 shadow-lg hover:bg-gray-700 transition-colors duration-200 border border-gray-700" data-value="backspace">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.0" stroke-linecap="round" stroke-linejoin="round" class="h-8 w-8">
+                <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z" />
+                <path d="m18 9-6 6" />
+                <path d="m12 9 6 6" />
+            </svg>
+        </button>
+        <!-- Equals Button (Red Accent) -->
+        <button class="flex items-center justify-center w-full h-16 rounded-xl text-3xl font-bold text-white bg-red-600 shadow-lg hover:bg-red-700 transition-colors duration-200 border border-red-700" data-value="equals">
+            <span class="material-symbols-outlined text-3xl">equal</span>
+        </button>
+    </div>
 </div>
 
-</div>
 
 </div>
 
 <!-- Payment History View - Increased mt-20 to mt-32 for more space -->
 
-<div id="history-view" class="hidden card mt-32 relative flex flex-col h-full max-h-
-
-$$85vh$$
-
-">
+<div id="history-view" class="hidden card mt-32 relative flex flex-col h-full max-h-[85vh]">
 <div class="flex justify-between items-center mb-4">
-<!-- REVERTED: Removed internal back button, relying on floating header button -->
+<!-- Title is now white/gray gradient -->
 <h3 id="history-header" class="text-xl font-bold gradient-text" style="font-family: 'Ubuntu', sans-serif;">Payment History</h3>
 <!-- Clear button uses Red Accent -->
 <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-lg font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-200 hidden">
@@ -202,122 +193,102 @@ $$85vh$$
 </div>
 
 <!-- Footer Section -->
-
 <div id="history-footer" class="mt-4 pt-4 floating-header-animated">
-<p class="font-bold text-sm tracking-wide text-gray-300 text-center">Live it UP</p>
-<div class="history-footer-tag flex items-center justify-center text-center text-gray-400 text-sm">
-<!-- Footer text now relies on monochromatic style -->
-<p class="made-with-text">Made with <span class="heart-icon">❤️</span> in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-base text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
+    <p class="font-bold text-sm tracking-wide text-gray-300 text-center">Live it UP</p>
+    <div class="history-footer-tag flex items-center justify-center text-center text-gray-400 text-sm">
+        <!-- Footer text now relies on monochromatic style -->
+        <p class="made-with-text">Made with <span class="heart-icon">❤️</span> in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-base text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
+    </div>
 </div>
-</div>
+
 
 </div>
 
 <!-- QR Modal for Code Display (Modernized and Simplified) -->
 
-<div id="qr-modal-overlay" class="modal fixed inset-0 z-
-
-$$100$$
-
- hidden">
+<div id="qr-modal-overlay" class="modal fixed inset-0 z-[100] hidden">
 <div id="qr-modal" class="modal-content rounded-xl p-6 relative w-11/12 max-w-sm flex flex-col items-center">
 <!-- Close Button Monochromatic Look -->
 <button id="close-modal-btn" class="absolute top-3 right-3 w-12 h-12 rounded-xl flex items-center justify-center p-0 text-gray-300 transition-all duration-300
 bg-gray-900 border border-gray-700 shadow-2xl
-hover:bg-gray-700 hover:border-gray-500 hover:text-white hover:scale-
-
-$$1.05$$
-
- hover:shadow-
-
-$$0\_0\_10px\_rgba(255,255,255,0.2)$$
-
-">
+hover:bg-gray-700 hover:border-gray-500 hover:text-white hover:scale-[1.05] hover:shadow-[0_0_10px_rgba(255,255,255,0.2)]">
 <span class="material-symbols-outlined text-2xl font-semibold">close</span>
 </button>
 <div class="w-full text-center space-y-3 pt-8"> <!-- INCREASED pt-6 to pt-8 for more space below close button -->
 
-<!-- Amount Pill is now the primary visual element -->
-<div id="amount-display" class="cute-amount-pill mx-auto hidden">
-    <span class="currency-symbol">₹</span>
-    <span id="amount-value" class="amount-value"></span>
+        <!-- Amount Pill is now the primary visual element -->
+        <div id="amount-display" class="cute-amount-pill mx-auto hidden">
+            <span class="currency-symbol">₹</span>
+            <span id="amount-value" class="amount-value"></span>
+        </div>
+    </div>
+    
+    <!-- QR code container (Enhanced Visuals, spacing reduced to mt-4) -->
+    <div id="qr-code-container" class="relative p-3 bg-black rounded-xl border-4 border-white shadow-2xl shadow-red-600/20 mt-6"> <!-- INCREASED mt-4 to mt-6 for more space -->
+        <!-- QR code will be generated here -->
+    </div>
+    
+    <!-- UPI Switcher Label (REMOVED) -->
+
+    <div id="popup-upi-buttons" class="flex flex-wrap justify-center gap-3 mt-6">
+        <!-- UPI buttons will be dynamically added here -->
+    </div>
 </div>
 
-
-</div>
-
-<!-- QR code container (Enhanced Visuals, spacing reduced to mt-4) -->
-
-<div id="qr-code-container" class="relative p-3 bg-black rounded-xl border-4 border-white shadow-2xl shadow-red-600/20 mt-6"> <!-- INCREASED mt-4 to mt-6 for more space -->
-<!-- QR code will be generated here -->
-</div>
-
-<!-- UPI Switcher Label (REMOVED) -->
-
-<div id="popup-upi-buttons" class="flex flex-wrap justify-center gap-3 mt-6">
-<!-- UPI buttons will be dynamically added here -->
-</div>
-
-</div>
 
 </div>
 
 <!-- Edit Modal for UPI Button Details (Modernized) -->
 
-<div id="edit-modal-overlay" class="modal fixed inset-0 z-
-
-$$110$$
-
- hidden">
+<div id="edit-modal-overlay" class="modal fixed inset-0 z-[110] hidden">
 <div id="edit-modal" class="modal-content rounded-xl p-6 relative w-11/12 max-w-sm flex flex-col items-center space-y-5">
 <h2 class="text-xl font-bold gradient-text text-center" style="font-family: 'Ubuntu', sans-serif;">Edit UPI Account</h2>
 
-<!-- Prominent Live Preview Card (Updates dynamically) -->
-<div class="w-full p-4 bg-gray-900 border border-red-500/50 rounded-xl flex items-center space-x-4 shadow-xl shadow-gray-900/50">
-    <div class="w-14 h-14 flex-shrink-0 bg-white rounded-full border-2 border-red-600 flex items-center justify-center transition-all duration-300">
-        <img id="edit-current-logo" src="" alt="Current Logo" class="w-12 h-12 rounded-full object-cover">
-    </div>
-    <div class="flex flex-col min-w-0 flex-1">
-        <h3 id="edit-current-label" class="text-xl font-bold text-red-500 truncate">Account Label</h3>
-        <p id="edit-current-id-preview" class="text-xs text-gray-400 truncate">upi@id</p>
-    </div>
-</div>
-
-<div class="w-full space-y-4">
-    <!-- UPI ID Input -->
-    <div>
-        <label for="edit-upi-id" class="block text-sm font-medium text-gray-400 mb-1">UPI ID</label>
-        <input type="text" id="edit-upi-id" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., user@bankupi">
-    </div>
-
-    <!-- Account Label Input -->
-    <div>
-        <label for="edit-upi-label" class="block text-sm font-medium text-gray-400 mb-1">Account Name/Label</label>
-        <input type="text" id="edit-upi-label" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., My Personal Account">
-    </div>
-    
-    <!-- Logo Selector -->
-    <div>
-        <h4 class="text-sm font-medium text-gray-400 mb-2">Select Logo</h4>
-        <div id="logo-library" class="logo-grid max-h-40 overflow-y-auto p-2 bg-gray-900 rounded-lg border border-gray-800">
-            <!-- Logos will be injected here -->
+    <!-- Prominent Live Preview Card (Updates dynamically) -->
+    <div class="w-full p-4 bg-gray-900 border border-red-500/50 rounded-xl flex items-center space-x-4 shadow-xl shadow-gray-900/50">
+        <div class="w-14 h-14 flex-shrink-0 bg-white rounded-full border-2 border-red-600 flex items-center justify-center transition-all duration-300">
+            <img id="edit-current-logo" src="" alt="Current Logo" class="w-12 h-12 rounded-full object-cover">
+        </div>
+        <div class="flex flex-col min-w-0 flex-1">
+            <h3 id="edit-current-label" class="text-xl font-bold text-red-500 truncate">Account Label</h3>
+            <p id="edit-current-id-preview" class="text-xs text-gray-400 truncate">upi@id</p>
         </div>
     </div>
 
-    <div class="flex justify-end pt-2 w-full border-t border-gray-800 pt-4">
-        <div class="flex space-x-2">
-            <button id="edit-cancel-btn" class="px-4 py-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
-            <button id="edit-save-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-lg">Save Changes</button>
+    <div class="w-full space-y-4">
+        <!-- UPI ID Input -->
+        <div>
+            <label for="edit-upi-id" class="block text-sm font-medium text-gray-400 mb-1">UPI ID</label>
+            <input type="text" id="edit-upi-id" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., user@bankupi">
+        </div>
+
+        <!-- Account Label Input -->
+        <div>
+            <label for="edit-upi-label" class="block text-sm font-medium text-gray-400 mb-1">Account Name/Label</label>
+            <input type="text" id="edit-upi-label" class="w-full px-3 py-2 bg-gray-800 text-white rounded-md border border-gray-700 focus:ring-1 focus:ring-red-500 focus:border-red-500" placeholder="e.g., My Personal Account">
+        </div>
+        
+        <!-- Logo Selector -->
+        <div>
+            <h4 class="text-sm font-medium text-gray-400 mb-2">Select Logo</h4>
+            <div id="logo-library" class="logo-grid max-h-40 overflow-y-auto p-2 bg-gray-900 rounded-lg border border-gray-800">
+                <!-- Logos will be injected here -->
+            </div>
+        </div>
+
+        <div class="flex justify-end pt-2 w-full border-t border-gray-800 pt-4">
+            <div class="flex space-x-2">
+                <button id="edit-cancel-btn" class="px-4 py-2 text-gray-400 rounded-md hover:text-white hover:bg-gray-800 transition-colors">Cancel</button>
+                <button id="edit-save-btn" class="px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 transition-colors shadow-lg">Save Changes</button>
+            </div>
         </div>
     </div>
+    <!-- Hidden inputs store original/context data -->
+    <input type="hidden" id="editing-upi-id-original">
+    <input type="hidden" id="editing-upi-index">
+    <input type="hidden" id="editing-upi-color">
 </div>
-<!-- Hidden inputs store original/context data -->
-<input type="hidden" id="editing-upi-id-original">
-<input type="hidden" id="editing-upi-index">
-<input type="hidden" id="editing-upi-color">
 
-
-</div>
 
 </div>
 
