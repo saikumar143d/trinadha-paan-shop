@@ -53,8 +53,29 @@ body {
     animation: fadeIn 0.8s ease-in-out;
 }
  
+/* FIX: History View Height and Header Hide */
 #history-view.card {
     padding: 1.5rem;
+    /* FIX: Ensure the card fills the available screen space below the header margin (mt-32) and body padding */
+    height: 100%; 
+    max-width: 400px; /* Keep max width */
+    max-height: calc(100vh - 12rem); /* 100vh minus ~3rem for header + mt-32(8rem) + body padding (1rem top/bottom) */
+    
+    /* Ensure internal scrolling works correctly if content overflows */
+    overflow-y: auto; 
+    
+    /* FIX (Desktop click issue): Prevent the history card from interfering with clicks when hidden */
+    pointer-events: none;
+}
+
+#history-view:not(.hidden) {
+    /* Re-enable pointer events only when visible */
+    pointer-events: auto; 
+}
+
+/* FIX (Mobile Header Issue): Force hide the floating header when hidden class is applied */
+#floating-header.hidden {
+    display: none !important;
 }
 
 .input-group {
