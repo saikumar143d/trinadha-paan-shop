@@ -309,10 +309,15 @@ const generateQrCode = (upiId, amount) => {
  
 const showQrModal = (upiId, amount) => {
     const qrModalOverlay = document.getElementById('qr-modal-overlay');
+    const historyBtn = document.getElementById('history-btn');
+    
     if (!upiId) {
         console.error("Cannot show QR modal: UPI ID not selected.");
         return;
     }
+
+    // HIDE HISTORY BUTTON
+    historyBtn.classList.add('hidden');
 
     // NEW: Highlight the selected button across both views BEFORE showing modal
     updateButtonHighlighting(upiId);
@@ -410,7 +415,12 @@ const populateEditFields = (upi) => {
 
 const showEditModal = (upiId) => {
     const upi = upiData.find(u => u.id === upiId);
+    const historyBtn = document.getElementById('history-btn');
+    
     if (!upi) return;
+
+    // HIDE HISTORY BUTTON
+    historyBtn.classList.add('hidden');
 
     const editModalOverlay = document.getElementById('edit-modal-overlay');
     
@@ -1090,6 +1100,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             qrModalOverlay.classList.add('hidden');
             document.getElementById('qr-code-container').innerHTML = '';
+            
+            // SHOW HISTORY BUTTON AFTER CLOSING MODAL
+            historyBtn.classList.remove('hidden');
         }, 300); 
     });
 
@@ -1098,6 +1111,9 @@ document.addEventListener('DOMContentLoaded', () => {
         editModalOverlay.classList.remove('visible');
         setTimeout(() => {
             editModalOverlay.classList.add('hidden');
+            
+            // SHOW HISTORY BUTTON AFTER CLOSING MODAL
+            historyBtn.classList.remove('hidden');
         }, 300); 
     };
     
