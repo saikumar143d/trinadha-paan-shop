@@ -1,12 +1,13 @@
 /* Lock scrolling on mobile */
 html, body {
     height: 100%;
-    overflow: hidden !important; 
+    overflow: hidden; 
 }
 
 body {
     /* Nothing OS Font Aesthetic - Geometric Sans */
     font-family: 'Ubuntu', sans-serif;
+    /* FIX: Added !important to enforce pure dark theme */
     background-color: #000000 !important;
     transition: background-color 0.5s;
     -webkit-user-select: none;
@@ -51,13 +52,8 @@ body {
     animation: fadeIn 0.8s ease-in-out;
 }
  
-/* Reverted History View Height */
 #history-view.card {
     padding: 1.5rem;
-    height: 100%; 
-    max-width: 400px;
-    max-height: 85vh;
-    overflow-y: auto; 
 }
 
 .input-group {
@@ -77,28 +73,8 @@ body {
 
 /* --- START HISTORY ITEM STYLING FIXES (Refined Monochromatic) --- */
 
-/* Base Item - Reverted to pre-swipe implementation */
-.history-item {
-    background-color: #1f2125; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
-    position: relative;
-    align-items: center; 
-    padding: 1rem; /* Restored original padding */
-    border-radius: 0.75rem;
-    /* Reverting from swipe-specific styles */
-    overflow: hidden; 
-    width: 100%;
-    transition: all 0.2s; /* Re-added hover transition */
-}
-
-/* Reverted: Swipe-specific wrappers and transitions removed */
-.history-swipe-wrapper {
-    /* Not used in reverted HTML/JS */
-}
-
-
 .history-item-actions {
-    display: none; 
+    display: none;
     position: absolute; 
     right: 1rem; 
     top: 50%;
@@ -107,6 +83,15 @@ body {
 
 .history-item:hover .history-item-actions {
     display: flex;
+}
+ 
+.history-item {
+    background-color: #1f2125; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    position: relative;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 0.75rem;
 }
  
 .history-item-actions-wrapper {
@@ -155,48 +140,6 @@ body {
 
 /* --- END HISTORY ITEM STYLING FIXES --- */
 
-/* --- START HEADER SHRINK STYLES (Retained as it was an accepted feature) --- */
-#floating-header {
-    /* Use padding-top to create vertical space and facilitate shrink */
-    padding-top: 0.5rem; 
-    padding-bottom: 0.5rem; 
-    transition: all 0.3s ease-in-out;
-}
-
-#floating-header #header-left {
-    transition: all 0.3s ease-in-out;
-}
-
-/* Shrunk state */
-.header-shrunk {
-    padding-top: 0.25rem !important;
-    padding-bottom: 0.25rem !important;
-    /* Reduce header background for a more compact look */
-    background-color: rgba(12, 13, 16, 0.95);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
-}
-
-.header-shrunk .logo-container,
-.header-shrunk #history-btn {
-    height: 40px; 
-    width: 40px; 
-    transition: all 0.3s ease-in-out;
-}
-
-.header-shrunk #upi-display-container {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateX(-10px);
-    transition: opacity 0.2s, visibility 0.2s, transform 0.3s;
-    width: 0;
-    margin-left: 0 !important;
-    max-width: 0; 
-}
-/* --- END HEADER SHRINK STYLES --- */
-
-
 /* --- START OF DIAL PAD ENHANCEMENT (Monochromatic with Red Accents) --- */
 .dial-pad button {
     background-color: #1a1c20 !important; /* Dark gray */
@@ -231,7 +174,8 @@ body {
 }
 /* --- END OF DIAL PAD ENHANCEMENT --- */
  
-.upi-btn-base:active {
+.upi-btn-base:active,
+.history-item:active {
     /* Keep subtle press down effect for touch/mouse interaction */
     transform: scale(0.98);
 }
