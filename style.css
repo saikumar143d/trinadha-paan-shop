@@ -1,7 +1,8 @@
 /* Lock scrolling on mobile */
 html, body {
     height: 100%;
-    overflow: auto !important; /* FIX: Allow scrolling for header shrink to work */
+    /* REVERTED: Changed to hidden to prevent main screen scrolling */
+    overflow: hidden !important; 
 }
 
 body {
@@ -141,6 +142,9 @@ body {
 /* --- END HISTORY ITEM STYLING FIXES --- */
 
 /* --- START HEADER SHRINK STYLES --- */
+/* NOTE: The Header Shrink feature will only be visible/functional if the content forces the body to scroll. 
+        Since we reverted overflow: auto, this feature will now be dormant on standard screens, 
+        but the styles are kept in case the main view content expands beyond the viewport height. */
 #floating-header {
     /* Use padding-top to create vertical space and facilitate shrink */
     padding-top: 0.5rem; /* py-2 -> padding-top: 0.5rem; padding-bottom: 0.5rem; */
