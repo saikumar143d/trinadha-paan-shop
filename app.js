@@ -72,6 +72,7 @@ const INITIAL_UPI_DATA = [{
 let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || JSON.parse(JSON.stringify(INITIAL_UPI_DATA));
  
 // A global variable to track the currently selected UPI ID
+// CHANGE: Initialize with null so the header displays the default "---" text.
 let selectedUpiId = null; 
  
 // A new global variable to hold the amount for the QR code
@@ -308,8 +309,6 @@ const generateQrCode = (upiId, amount) => {
  
 const showQrModal = (upiId, amount) => {
     const qrModalOverlay = document.getElementById('qr-modal-overlay');
-    // Note: No header hiding logic in this reverted state
-    
     if (!upiId) {
         console.error("Cannot show QR modal: UPI ID not selected.");
         return;
@@ -411,8 +410,6 @@ const populateEditFields = (upi) => {
 
 const showEditModal = (upiId) => {
     const upi = upiData.find(u => u.id === upiId);
-    // Note: No header hiding logic in this reverted state
-    
     if (!upi) return;
 
     const editModalOverlay = document.getElementById('edit-modal-overlay');
@@ -490,7 +487,7 @@ const createUpiButton = (upi) => {
     let pressStartTimestamp = 0;
     const upiId = upi.id; // Store ID locally for closures
 
-    // --- Long Press / Right Click Logic (Retained from previous steps) ---
+    // --- Long Press / Right Click Logic ---
     
     // Universal handler for triggering the Edit Modal
     const handleEditTrigger = (e) => {
@@ -616,13 +613,11 @@ const createPopupUpiButton = (upi) => {
     return button;
 };
  
-// REVERTED: Simple renderHistory (pre-swipe logic)
 const renderHistory = () => {
     const historyList = document.getElementById('history-list');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
     const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
     historyList.innerHTML = '';
-    
     if (history.length === 0) {
         historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
         clearHistoryBtn.classList.add('hidden');
@@ -632,12 +627,14 @@ const renderHistory = () => {
             
             // Use a single container div with all necessary classes
             const historyItem = document.createElement('div');
-            // Reverting to the old structure
+            // Removed duration-200 from class list
             historyItem.classList.add(
-                'history-item', 'flex', 'items-center', 'space-x-4', 'cursor-pointer', 'hover:bg-gray-800', 'relative', 'group', 'p-4', 'rounded-xl', 'w-full'
+                'history-item', 'flex', 'items-center', 'space-x-4', 'cursor-pointer', 
+                'hover:bg-gray-800', 'relative', 
+                'group', 'history-item-animated', 'p-4', 'rounded-xl', 'w-full'
             );
             historyItem.style.borderLeft = `5px solid ${upiInfo.color}`; 
-            historyItem.style.backgroundColor = '#1f2125'; 
+            historyItem.style.backgroundColor = '#1f2125'; // Ensure specific dark background
 
             const itemIconUrl = upiInfo.icon || 'https://placehold.co/40x40/4B5563?text=Icon';
             const timePart = item.timestamp.split(', ')[1] || item.timestamp;
@@ -695,7 +692,7 @@ const renderHistory = () => {
 
             historyItem.querySelector('.delete-btn').addEventListener('click', () => {
                 let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                const indexToDelete = index; // Use loop index directly since we re-render immediately
+                const indexToDelete = parseInt(historyItem.querySelector('.delete-btn').dataset.index, 10);
                 currentHistory.splice(indexToDelete, 1);
                 localStorage.setItem(historyKey, JSON.stringify(currentHistory));
                 renderHistory();
@@ -707,14 +704,17 @@ const renderHistory = () => {
     }
 };
 
-// --- Tone.js Audio Engine (Retained) ---
+// --- End of Promoted functions for DOM manipulation ---
+
+
+// UPDATED: Tone.js Audio Engine for thematic feedback (Kept here as a constant object)
 const AudioEngine = {
-    synth: null, 
-    operatorSynth: null, 
-    clearSynth: null, 
-    backspaceSynth: null, 
-    magicalSynth: null, 
-    isInitialized: false, 
+    synth: null, // For numbers and musical tones
+    operatorSynth: null, // For operators (now using a separate synth configuration)
+    clearSynth: null, // For clear/AC button
+    backspaceSynth: null, // For backspace
+    magicalSynth: null, // NEW: For UPI button click
+    isInitialized: false, // Flag to ensure synths are created only once
 
     initSynths: function() {
         if (!window.Tone || this.isInitialized) return;
@@ -780,7 +780,7 @@ const AudioEngine = {
             modulationIndex: 10,  
         }).toDestination();
         
-        // 5. Magical Synth for UPI buttons (Shimmery, resonant sound)
+        // 5. NEW: Magical Synth for UPI buttons (Shimmery, resonant sound)
         // Use a Synth passed through Chorus and Reverb for the magical/blowing effect
         this.magicalSynth = new Tone.Synth({
             volume: -1, // Set to -1dB for loud, stable, equal volume
@@ -901,7 +901,7 @@ const triggerConfetti = (upiColor) => {
         disableForReducedMotion: true
     });
 }
-    
+ 
 // NEW: Confetti logic for Clear History button
 const triggerClearConfetti = (element) => {
     if (!window.confetti) return;
@@ -934,7 +934,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const editModalOverlay = document.getElementById('edit-modal-overlay'); // NEW
     const historyFooter = document.getElementById('history-footer'); 
     
-    // REVERTED: Simple view switching logic based only on the floating button
+    // Edit Modal Element References
+    const editSaveBtn = document.getElementById('edit-save-btn');
+    const editCancelBtn = document.getElementById('edit-cancel-btn');
+    const editUpiIdInput = document.getElementById('edit-upi-id');
+    const editUpiLabelInput = document.getElementById('edit-upi-label');
+
+
+    // Refactored view switching logic for a smoother animation
     const showMainView = () => {
         historyView.classList.remove('history-visible');
         historyIcon.innerText = 'history';
@@ -963,7 +970,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // The logic for the floating historyBtn toggles both views
     historyBtn.addEventListener('click', () => {
         if (historyView.classList.contains('hidden')) {
             showHistoryView();
@@ -1061,7 +1067,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             qrModalOverlay.classList.add('hidden');
             document.getElementById('qr-code-container').innerHTML = '';
-            // Note: No header showing logic in this reverted state
         }, 300); 
     });
 
@@ -1070,7 +1075,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editModalOverlay.classList.remove('visible');
         setTimeout(() => {
             editModalOverlay.classList.add('hidden');
-             // Note: No header showing logic in this reverted state
         }, 300); 
     };
     
@@ -1104,6 +1108,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!newId || !newLabel || !newIcon) {
             // Simple validation check
+            // Cannot use alert(), using console.error and simple visual feedback instead
             console.error("UPI ID, Label, and Icon cannot be empty.");
             document.getElementById('edit-upi-id').classList.add('input-error');
             setTimeout(() => document.getElementById('edit-upi-id').classList.remove('input-error'), 1000);
