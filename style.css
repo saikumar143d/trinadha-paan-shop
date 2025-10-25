@@ -65,12 +65,12 @@ body {
     overflow-y: auto; 
     
     /* FIX (Desktop click issue): Prevent the history card from interfering with clicks when hidden */
-    pointer-events: none;
+    pointer-events: none !important;
 }
 
 #history-view:not(.hidden) {
     /* Re-enable pointer events only when visible */
-    pointer-events: auto; 
+    pointer-events: auto !important; 
 }
 
 /* FIX (Mobile Header Issue): Force hide the floating header when hidden class is applied */
