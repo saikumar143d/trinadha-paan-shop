@@ -72,7 +72,6 @@ const INITIAL_UPI_DATA = [{
 let upiData = JSON.parse(localStorage.getItem(upiDataKey)) || JSON.parse(JSON.stringify(INITIAL_UPI_DATA));
  
 // A global variable to track the currently selected UPI ID
-// CHANGE: Initialize with null so the header displays the default "---" text.
 let selectedUpiId = null; 
  
 // A new global variable to hold the amount for the QR code
@@ -309,17 +308,12 @@ const generateQrCode = (upiId, amount) => {
  
 const showQrModal = (upiId, amount) => {
     const qrModalOverlay = document.getElementById('qr-modal-overlay');
-    const historyBtn = document.getElementById('history-btn');
-    const floatingHeader = document.getElementById('floating-header'); // Get header ref
+    // Note: No header hiding logic in this reverted state
     
     if (!upiId) {
         console.error("Cannot show QR modal: UPI ID not selected.");
         return;
     }
-
-    // HIDE HISTORY BUTTON AND FLOATING HEADER
-    historyBtn.classList.add('hidden');
-    floatingHeader.classList.add('hidden');
 
     // NEW: Highlight the selected button across both views BEFORE showing modal
     updateButtonHighlighting(upiId);
@@ -417,14 +411,9 @@ const populateEditFields = (upi) => {
 
 const showEditModal = (upiId) => {
     const upi = upiData.find(u => u.id === upiId);
-    const historyBtn = document.getElementById('history-btn');
-    const floatingHeader = document.getElementById('floating-header'); // Get header ref
+    // Note: No header hiding logic in this reverted state
     
     if (!upi) return;
-
-    // HIDE HISTORY BUTTON AND FLOATING HEADER
-    historyBtn.classList.add('hidden');
-    floatingHeader.classList.add('hidden');
 
     const editModalOverlay = document.getElementById('edit-modal-overlay');
     
@@ -501,7 +490,7 @@ const createUpiButton = (upi) => {
     let pressStartTimestamp = 0;
     const upiId = upi.id; // Store ID locally for closures
 
-    // --- Long Press / Right Click Logic ---
+    // --- Long Press / Right Click Logic (Retained from previous steps) ---
     
     // Universal handler for triggering the Edit Modal
     const handleEditTrigger = (e) => {
@@ -627,16 +616,13 @@ const createPopupUpiButton = (upi) => {
     return button;
 };
  
-// START RENDER HISTORY (Modified for Swipe-to-Delete)
+// REVERTED: Simple renderHistory (pre-swipe logic)
 const renderHistory = () => {
     const historyList = document.getElementById('history-list');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
     const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
     historyList.innerHTML = '';
     
-    // Swipe sensitivity (in pixels)
-    const swipeThreshold = 60; 
-
     if (history.length === 0) {
         historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
         clearHistoryBtn.classList.add('hidden');
@@ -646,33 +632,17 @@ const renderHistory = () => {
             
             // Use a single container div with all necessary classes
             const historyItem = document.createElement('div');
+            // Reverting to the old structure
             historyItem.classList.add(
-                'history-item', 'relative', 'group', 'p-0', 'rounded-xl', 'w-full'
+                'history-item', 'flex', 'items-center', 'space-x-4', 'cursor-pointer', 'hover:bg-gray-800', 'relative', 'group', 'p-4', 'rounded-xl', 'w-full'
             );
             historyItem.style.borderLeft = `5px solid ${upiInfo.color}`; 
-            // Setting background on the inner wrapper for visual consistency on swipe
-            // historyItem.style.backgroundColor = '#1f2125'; 
+            historyItem.style.backgroundColor = '#1f2125'; 
 
             const itemIconUrl = upiInfo.icon || 'https://placehold.co/40x40/4B5563?text=Icon';
             const timePart = item.timestamp.split(', ')[1] || item.timestamp;
 
-            // --- 1. ACTIONS (Behind the swipe wrapper) ---
-            const actions = document.createElement('div');
-            actions.className = 'history-item-actions flex items-center space-x-2 history-item-actions-wrapper transition-opacity duration-300';
-            actions.innerHTML = `
-                <button class="regenerate-btn history-action-btn" title="Generate QR again">
-                    <span class="material-symbols-outlined text-base">sync</span>
-                </button>
-                <button class="delete-btn history-action-btn" title="Delete entry" data-index="${index}">
-                    <span class="material-symbols-outlined text-base">delete</span>
-                </button>
-            `;
-            
-            // --- 2. SWIPE WRAPPER (The visible, moveable content) ---
-            const swipeWrapper = document.createElement('div');
-            // 'w-full flex items-center space-x-4 pr-16' replaces the classes on the original outer item
-            swipeWrapper.className = 'history-swipe-wrapper w-full flex items-center space-x-4 pr-16';
-            swipeWrapper.innerHTML = `
+            historyItem.innerHTML = `
                 <!-- Icon -->
                 <img src="${itemIconUrl}" alt="${upiInfo.label} Icon" 
                     class="w-10 h-10 rounded-full border-2 border-gray-700 object-cover flex-shrink-0" 
@@ -683,117 +653,276 @@ const renderHistory = () => {
                     <p class="text-gray-200 font-semibold truncate" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
                     <p class="text-gray-400 text-sm truncate" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${timePart}</p>
                 </div>
+                
+                <!-- Action buttons with wrapper for pill-look -->
+                <div class="history-item-actions flex items-center space-x-2 history-item-actions-wrapper">
+                    <button class="regenerate-btn history-action-btn" title="Generate QR again">
+                        <span class="material-symbols-outlined text-base">sync</span>
+                    </button>
+                    <button class="delete-btn history-action-btn" title="Delete entry" data-index="${index}">
+                        <span class="material-symbols-outlined text-base">delete</span>
+                    </button>
+                </div>
             `;
-
-            // APPEND CONTENT AND ACTIONS
-            historyItem.appendChild(actions);
-            historyItem.appendChild(swipeWrapper);
-
-            // --- SWIPE LOGIC ---
-            let startX = 0;
-            let isSwiping = false;
             
-            historyItem.addEventListener('touchstart', (e) => {
-                startX = e.touches[0].clientX;
-                isSwiping = false;
-                swipeWrapper.style.transition = 'none'; // Disable transition during swipe
-            });
-            
-            historyItem.addEventListener('touchmove', (e) => {
-                const currentX = e.touches[0].clientX;
-                const diffX = currentX - startX;
-            
-                // Only track left-swipe (diffX < 0) and limit the maximum reveal distance
-                if (diffX < -10) { 
-                    isSwiping = true;
-                    // Limit swipe distance to -swipeThreshold (e.g., -60px)
-                    const translateX = Math.max(-swipeThreshold, diffX); 
-                    swipeWrapper.style.transform = `translateX(${translateX}px)`;
-                    actions.style.opacity = 1;
-                } else if (swipeWrapper.style.transform !== 'translateX(0px)' && diffX > 0) {
-                    // Allow reset move to the right, limiting back to 0
-                    swipeWrapper.style.transform = `translateX(${Math.min(0, currentX - startX)}px)`;
-                    // Calculate opacity fade based on distance
-                    actions.style.opacity = Math.max(0, 1 - (Math.abs(currentX - startX) / swipeThreshold));
-                }
-            });
-
-            historyItem.addEventListener('touchend', () => {
-                swipeWrapper.style.transition = 'transform 0.3s ease-out';
-                // Get the current transform position
-                const currentTransformMatch = swipeWrapper.style.transform.match(/translateX\(([-+]?\d*\.?\d+)px\)/);
-                const currentDiff = currentTransformMatch ? parseFloat(currentTransformMatch[1]) : 0;
-
-                if (currentDiff < -swipeThreshold / 2) {
-                    // Snap open
-                    swipeWrapper.style.transform = `translateX(-${swipeThreshold}px)`;
-                    actions.style.opacity = 1;
-                } else {
-                    // Snap shut
-                    swipeWrapper.style.transform = 'translateX(0px)';
-                    actions.style.opacity = 0;
-                }
-                isSwiping = false;
-            });
-            
-            // Click listener on the content wrapper to run the main action (QR generation)
-            swipeWrapper.addEventListener('click', (e) => {
-                // Determine if item is in the 'open' state. Check if transform is non-zero
-                const currentTransformMatch = swipeWrapper.style.transform.match(/translateX\(([-+]?\d*\.?\d+)px\)/);
-                const isSwiped = currentTransformMatch && Math.abs(parseFloat(currentTransformMatch[1])) > 5;
-
-                if (isSwiped) {
-                    // If swiped, click action should snap it shut, not trigger QR.
-                    e.preventDefault(); // Prevent propagation if swiped
-                    swipeWrapper.style.transform = 'translateX(0px)';
-                    actions.style.opacity = 0;
+            // Attach listeners
+            historyItem.addEventListener('click', (e) => {
+                // Check if the click was directly on an action button or its child icon
+                if (e.target.closest('.regenerate-btn') || e.target.closest('.delete-btn')) {
                     return;
                 }
-                
-                // If not swiped, proceed with QR generation logic
                 currentQrAmount = item.amount;
+                // NEW: Update highlighting and header display upon selecting from history
                 updateButtonHighlighting(item.id);
                 updateHeaderUpiDisplay(item.id);
+                // NEW: Save the newly selected ID to localStorage
                 localStorage.setItem(lastSelectedUpiKey, item.id);
+                
                 showQrModal(item.id, item.amount);
             });
 
-            // Regenerate button listener
-            actions.querySelector('.regenerate-btn').addEventListener('click', () => {
-                // Snap shut after action
-                swipeWrapper.style.transform = 'translateX(0px)';
-                actions.style.opacity = 0;
-                
+            historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
                 currentQrAmount = item.amount;
                 saveHistory(item.id, item.amount);
+                // NEW: Update highlighting and header display upon regenerating
                 updateButtonHighlighting(item.id);
                 updateHeaderUpiDisplay(item.id);
+                // NEW: Save the newly selected ID to localStorage
                 localStorage.setItem(lastSelectedUpiKey, item.id);
+                
                 showQrModal(item.id, item.amount);
             });
 
-            // Delete button listener
-            actions.querySelector('.delete-btn').addEventListener('click', () => {
-                // Delete logic
+            historyItem.querySelector('.delete-btn').addEventListener('click', () => {
                 let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                const indexToDelete = parseInt(actions.querySelector('.delete-btn').dataset.index, 10);
+                const indexToDelete = index; // Use loop index directly since we re-render immediately
                 currentHistory.splice(indexToDelete, 1);
                 localStorage.setItem(historyKey, JSON.stringify(currentHistory));
-                
-                // Trigger the vanish animation visually, then re-render
-                historyItem.classList.add('history-item-vanish');
-                setTimeout(renderHistory, 300); // 300ms matches the vanish animation duration
+                renderHistory();
             });
-
 
             historyList.appendChild(historyItem);
         });
         clearHistoryBtn.classList.remove('hidden');
     }
 };
-// END RENDER HISTORY (Modified for Swipe-to-Delete)
- 
-// ... (rest of document.addEventListener('DOMContentLoaded', ...) remains the same)
+
+// --- Tone.js Audio Engine (Retained) ---
+const AudioEngine = {
+    synth: null, 
+    operatorSynth: null, 
+    clearSynth: null, 
+    backspaceSynth: null, 
+    magicalSynth: null, 
+    isInitialized: false, 
+
+    initSynths: function() {
+        if (!window.Tone || this.isInitialized) return;
+        
+        // 1. Synth for Notes (Numbers, Equals) - Volume set to -1dB for uniform loudness
+        this.synth = new Tone.PolySynth(Tone.Synth, {
+            volume: -1, // Set to -1dB for loud, stable, equal volume
+            envelope: {
+                attack: 0.005,
+                decay: 0.1,
+                sustain: 0.1,
+                release: 0.1
+            },
+            oscillator: {
+                type: 'triangle' // Softer, flute-like tone
+            },
+        }).toDestination();
+
+        // 2. Synth for Operators (Sharper, square wave tone for distinction)
+        this.operatorSynth = new Tone.PolySynth(Tone.Synth, {
+            volume: -1, // Set to -1dB for loud, stable, equal volume
+            envelope: {
+                attack: 0.01,
+                decay: 0.1,
+                sustain: 0.05,
+                release: 0.1
+            },
+            oscillator: {
+                type: 'square' // Sharper, digital tone
+            }
+        }).toDestination();
+
+        // 3. Elegant Clear Synth (DuoSynth for rich, resolved tone)
+        this.clearSynth = new Tone.DuoSynth({
+            volume: -1, // Set to -1dB for loud, stable, equal volume
+            voice0: {
+                oscillator: { type: 'sine' },
+                envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.5 }
+            },
+            voice1: {
+                oscillator: { type: 'sawtooth' },
+                envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.5 }
+            },
+            vibratoAmount: 0.5,
+            vibratoRate: 5
+        }).toDestination();
+
+        // 4. Backspace Synth (AMSynth for a clean, quick-fading "Vanish" tone)
+        this.backspaceSynth = new Tone.AMSynth({
+            volume: -1, // Set to -1dB for loud, stable, equal volume
+            envelope: {
+                attack: 0.005,
+                decay: 0.2, // Noticeable, fast decay for "vanishing" effect
+                sustain: 0,
+                release: 0.05
+            },
+            oscillator: {
+                type: 'sine'
+            },
+            modulation: {
+                type: 'square'
+            },
+            modulationIndex: 10,  
+        }).toDestination();
+        
+        // 5. Magical Synth for UPI buttons (Shimmery, resonant sound)
+        // Use a Synth passed through Chorus and Reverb for the magical/blowing effect
+        this.magicalSynth = new Tone.Synth({
+            volume: -1, // Set to -1dB for loud, stable, equal volume
+            oscillator: {
+                type: 'sine'
+            },
+            envelope: {
+                attack: 0.01,
+                decay: 1.5, // Long decay for 'blow' effect
+                sustain: 0.1,
+                release: 2
+            }
+        }).chain(new Tone.Chorus(5, 0.5, 0.9), new Tone.Reverb({ decay: 2, wet: 0.4 }), Tone.Destination);
+
+
+        this.isInitialized = true;
+    },
+    
+    // Function to start the audio context on user gesture
+    startContext: async function() {
+        if (window.Tone && Tone.context.state !== 'running') {
+            try {
+                // This resumes the AudioContext after a user gesture
+                await Tone.start();
+                console.log("Tone.js audio context started successfully.");
+            } catch (e) {
+                console.error("Failed to start Tone.js context:", e);
+            }
+        }
+    },
+
+    playTone: function(type, value) {  
+        if (!this.isInitialized) return;  
+
+        try {
+            const now = Tone.now();
+            switch (type) {
+                case 'number':
+                    // Map value to a specific note in the NoteMap
+                    const note = NoteMap[value] || 'C4';  
+                    this.synth.triggerAttackRelease(note, '16n');
+                    break;
+                case 'operator':
+                    // Play two higher, distinct notes for a sharp chime effect
+                    this.operatorSynth.triggerAttackRelease(['F5', 'A5'], '16n');
+                    break;
+                case 'equals':
+                    // Satisfying ascending flourish (C4 -> E4 -> G4 -> C5)
+                    this.synth.triggerAttackRelease('C4', '8n', now);
+                    this.synth.triggerAttackRelease('E4', '8n', now + 0.075);
+                    this.synth.triggerAttackRelease('G4', '8n', now + 0.15);
+                    this.synth.triggerAttackRelease('C5', '4n', now + 0.225);
+                    break;
+                case 'clear':
+                    // Elegant ascending arpeggio (C major chord)
+                    this.clearSynth.triggerAttackRelease('C5', '4n');
+                    this.clearSynth.triggerAttackRelease('E5', '4n', Tone.now() + 0.05);
+                    this.clearSynth.triggerAttackRelease('G5', '4n', Tone.now() + 0.1);
+                    break;
+                case 'backspace':
+                    // Plays a quick-fading AM tone to simulate vanishing
+                    this.backspaceSynth.triggerAttackRelease('A5', '8n');  
+                    break;
+                case 'magical':
+                    // NEW: Resonant, shimmery tone for UPI selection
+                    this.magicalSynth.triggerAttackRelease('A4', '2n');
+                    break;
+            }
+        } catch (e) {
+            console.error('Tone.js playback error:', e);
+        }
+    }
+};
+
+// Confetti logic for successful QR generation (REMOVED: Now only used for clear history)
+const triggerConfetti = (upiColor) => {
+    if (!window.confetti) return;
+    const colors = [upiColor, '#FFD700', '#FFAC33', '#ffffff'];
+    const duration = 1.5 * 1000;
+
+    // Confetti shot from the center of the screen
+    confetti({
+        particleCount: 100,
+        startVelocity: 30,
+        spread: 120,
+        ticks: 60,
+        origin: { y: 0.5, x: 0.5 },
+        colors: colors,
+        disableForReducedMotion: true
+    });
+
+    // Second, bigger burst from above
+    confetti({
+        particleCount: 80,
+        angle: 90,
+        spread: 70,
+        origin: { x: 0.5, y: 0.1 },
+        colors: colors,
+        disableForReducedMotion: true
+    });
+    
+    // Third shot from the sides
+    confetti({
+        particleCount: 60,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0, y: 0.8 },
+        colors: colors,
+        disableForReducedMotion: true
+    });
+
+    confetti({
+        particleCount: 60,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1, y: 0.8 },
+        colors: colors,
+        disableForReducedMotion: true
+    });
+}
+    
+// NEW: Confetti logic for Clear History button
+const triggerClearConfetti = (element) => {
+    if (!window.confetti) return;
+    const rect = element.getBoundingClientRect();
+    // Calculate normalized coordinates (0 to 1) for the button center
+    const x = (rect.left + rect.width / 2) / window.innerWidth;
+    const y = (rect.top + rect.height / 2) / window.innerHeight;
+
+    const colors = ['#f87171', '#ef4444', '#b91c1c', '#f97316']; // Red/Orange delete palette
+
+    confetti({
+        particleCount: 50,
+        startVelocity: 25,
+        spread: 45,
+        ticks: 60,
+        origin: { x: x, y: y },
+        colors: colors,
+        disableForReducedMotion: true
+    });
+}
+
 
 document.addEventListener('DOMContentLoaded', () => {
     // View Management
@@ -804,26 +933,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const qrModalOverlay = document.getElementById('qr-modal-overlay');
     const editModalOverlay = document.getElementById('edit-modal-overlay'); // NEW
     const historyFooter = document.getElementById('history-footer'); 
-    const floatingHeader = document.getElementById('floating-header');
     
-    // NEW: Get internal back button reference
-    const historyBackBtn = document.getElementById('history-back-btn');
-    
-    // Edit Modal Element References
-    const editSaveBtn = document.getElementById('edit-save-btn');
-    const editCancelBtn = document.getElementById('edit-cancel-btn');
-    const editUpiIdInput = document.getElementById('edit-upi-id');
-    const editUpiLabelInput = document.getElementById('edit-upi-label');
-
-
-    // Refactored view switching logic for a smoother animation
+    // REVERTED: Simple view switching logic based only on the floating button
     const showMainView = () => {
         historyView.classList.remove('history-visible');
+        historyIcon.innerText = 'history';
         historyView.classList.add('hidden');
         mainView.classList.remove('hidden');
-        
-        // SHOW FLOATING HEADER
-        floatingHeader.classList.remove('hidden'); 
         
         // NEW: Stop gradient scroll animation when leaving history view
         if (historyFooter) {
@@ -835,16 +951,8 @@ document.addEventListener('DOMContentLoaded', () => {
         historyView.classList.remove('hidden');
         mainView.classList.add('hidden');
         historyView.classList.add('history-visible');
-        
-        // HIDE FLOATING HEADER
-        floatingHeader.classList.add('hidden'); 
-        
+        historyIcon.innerText = 'arrow_back';
         renderHistory();
-        
-        // Setup internal back button listener
-        if (historyBackBtn) {
-            historyBackBtn.onclick = showMainView;
-        }
 
         // NEW: Start gradient scroll animation when entering history view
         if (historyFooter) {
@@ -855,21 +963,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // The logic for the SHARED historyBtn now needs to explicitly handle toggling views
+    // The logic for the floating historyBtn toggles both views
     historyBtn.addEventListener('click', () => {
         if (historyView.classList.contains('hidden')) {
             showHistoryView();
         } else {
-            // Fallback for fast clicks
-            showMainView(); 
+            showMainView();
         }
     });
-    
-    // --- Header Shrink Scroll Listener (REVERTED) ---
-    // Removed the scroll listener as the body/html overflow is now set to hidden.
-    
-    
-    // --- Existing Logic ---
+
+    // Existing Logic
     const upiButtonContainer = document.getElementById('upi-button-container');
     const amountInput = document.getElementById('amountInput');
     const closeModalBtn = document.getElementById('close-modal-btn');
@@ -958,10 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             qrModalOverlay.classList.add('hidden');
             document.getElementById('qr-code-container').innerHTML = '';
-            
-            // SHOW HISTORY BUTTON AND FLOATING HEADER AFTER CLOSING MODAL
-            historyBtn.classList.remove('hidden');
-            floatingHeader.classList.remove('hidden');
+            // Note: No header showing logic in this reverted state
         }, 300); 
     });
 
@@ -970,10 +1070,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editModalOverlay.classList.remove('visible');
         setTimeout(() => {
             editModalOverlay.classList.add('hidden');
-            
-            // SHOW HISTORY BUTTON AND FLOATING HEADER AFTER CLOSING MODAL
-            historyBtn.classList.remove('hidden');
-            floatingHeader.classList.remove('hidden');
+             // Note: No header showing logic in this reverted state
         }, 300); 
     };
     
@@ -1007,7 +1104,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (!newId || !newLabel || !newIcon) {
             // Simple validation check
-            // Cannot use alert(), using console.error and simple visual feedback instead
             console.error("UPI ID, Label, and Icon cannot be empty.");
             document.getElementById('edit-upi-id').classList.add('input-error');
             setTimeout(() => document.getElementById('edit-upi-id').classList.remove('input-error'), 1000);
