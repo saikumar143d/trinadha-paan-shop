@@ -1,7 +1,7 @@
 /* Lock scrolling on mobile */
 html, body {
     height: 100%;
-    overflow: hidden; 
+    overflow: auto !important; /* FIX: Allow scrolling for header shrink to work */
 }
 
 body {
@@ -139,6 +139,50 @@ body {
 }
 
 /* --- END HISTORY ITEM STYLING FIXES --- */
+
+/* --- START HEADER SHRINK STYLES --- */
+#floating-header {
+    /* Use padding-top to create vertical space and facilitate shrink */
+    padding-top: 0.5rem; /* py-2 -> padding-top: 0.5rem; padding-bottom: 0.5rem; */
+    padding-bottom: 0.5rem; 
+    /* Base height for button is 12, so total height around 64px */
+    transition: all 0.3s ease-in-out;
+}
+
+#floating-header #header-left {
+    transition: all 0.3s ease-in-out;
+}
+
+/* Shrunk state */
+.header-shrunk {
+    padding-top: 0.25rem !important;
+    padding-bottom: 0.25rem !important;
+    /* Reduce header background for a more compact look */
+    background-color: rgba(12, 13, 16, 0.95);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
+}
+
+.header-shrunk .logo-container,
+.header-shrunk #history-btn {
+    height: 40px; /* From 48px (h-12) to 40px */
+    width: 40px; /* From 48px (w-12) to 40px */
+    transition: all 0.3s ease-in-out;
+}
+
+.header-shrunk #upi-display-container {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: opacity 0.2s, visibility 0.2s, transform 0.3s;
+    width: 0; /* Shrink horizontally */
+    margin-left: 0 !important;
+    /* Ensure the label and ID don't break the shrink */
+    max-width: 0; 
+}
+/* --- END HEADER SHRINK STYLES --- */
+
 
 /* --- START OF DIAL PAD ENHANCEMENT (Monochromatic with Red Accents) --- */
 .dial-pad button {
