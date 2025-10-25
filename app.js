@@ -989,29 +989,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // --- Header Shrink Scroll Listener (New Feature Logic) ---
-    const scrollThreshold = 20; // Pixels scrolled before header shrinks
+    // --- Header Shrink Scroll Listener (REVERTED) ---
+    // Removed the scroll listener as the body/html overflow is now set to hidden.
     
-    const handleScroll = () => {
-        // Only apply shrink effect when main view is active and content overflows (scrollable)
-        if (!mainView.classList.contains('hidden') && document.body.scrollHeight > window.innerHeight) {
-            if (document.documentElement.scrollTop > scrollThreshold) {
-                floatingHeader.classList.add('header-shrunk');
-            } else {
-                floatingHeader.classList.remove('header-shrunk');
-            }
-        }
-    };
     
-    // Attach scroll listener to the window
-    window.addEventListener('scroll', handleScroll);
-    // Also run once on load to correct initial state if user refreshes mid-scroll
-    handleScroll();
-    
-    // --- End Header Shrink Scroll Listener ---
-
-
-    // Existing Logic
+    // --- Existing Logic ---
     const upiButtonContainer = document.getElementById('upi-button-container');
     const amountInput = document.getElementById('amountInput');
     const closeModalBtn = document.getElementById('close-modal-btn');
