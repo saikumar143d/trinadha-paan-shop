@@ -74,27 +74,57 @@ body {
 
 /* --- START HISTORY ITEM STYLING FIXES (Refined Monochromatic) --- */
 
-.history-item-actions {
-    display: none;
-    position: absolute; 
-    right: 1rem; 
-    top: 50%;
-    transform: translateY(-50%);
-}
-
-.history-item:hover .history-item-actions {
-    display: flex;
-}
- 
+/* Base Item - adjusted for swipe. Removed padding to move to inner wrapper. */
 .history-item {
     background-color: #1f2125; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
     position: relative;
-    align-items: center;
-    padding: 1rem;
+    align-items: stretch; /* Stretch content and actions vertically */
+    padding: 0; /* Padding moved to .history-swipe-wrapper */
     border-radius: 0.75rem;
+    overflow: hidden; /* Crucial for swipe reveal */
+    width: 100%;
+    /* Override hover color, as swipe wrapper now handles click detection */
+    transition: box-shadow 0.2s, transform 0.2s; 
 }
- 
+
+/* Wrapper for main content that slides left/right on swipe */
+.history-swipe-wrapper {
+    /* Main content wrapper */
+    padding: 1rem; /* Restore original padding here */
+    background-color: #1f2125; /* Match outer item background */
+    z-index: 10;
+    position: relative;
+    width: 100%;
+    display: flex; /* Inherit flex layout for content */
+    align-items: center;
+    space-x-4: 1rem; /* Simulate space-x-4 */
+    transition: transform 0.3s ease-out; /* Add transition for snap back */
+    cursor: pointer;
+}
+
+/* Actions positioned on the right edge, behind the swipe wrapper */
+.history-item-actions {
+    display: flex; 
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    align-items: center;
+    padding-right: 1rem;
+    z-index: 5;
+    background-color: #1a1c20; /* Dark background for visibility */
+    opacity: 0; /* Start hidden, revealed by swipe wrapper shift */
+    pointer-events: none; /* Disable interaction until revealed */
+}
+
+/* Enable pointer events on hover (desktop fallback) or when opacity is 1 (mobile swipe reveal) */
+.history-item:hover .history-item-actions,
+.history-item-actions[style*="opacity: 1"] {
+    pointer-events: auto !important;
+}
+
+/* Styling for the action buttons inside the wrapper */
 .history-item-actions-wrapper {
     background-color: rgba(12, 13, 16, 0.85); /* Dark pill wrapper */
     padding: 0.25rem;
@@ -142,9 +172,6 @@ body {
 /* --- END HISTORY ITEM STYLING FIXES --- */
 
 /* --- START HEADER SHRINK STYLES --- */
-/* NOTE: The Header Shrink feature will only be visible/functional if the content forces the body to scroll. 
-        Since we reverted overflow: auto, this feature will now be dormant on standard screens, 
-        but the styles are kept in case the main view content expands beyond the viewport height. */
 #floating-header {
     /* Use padding-top to create vertical space and facilitate shrink */
     padding-top: 0.5rem; /* py-2 -> padding-top: 0.5rem; padding-bottom: 0.5rem; */
@@ -222,8 +249,7 @@ body {
 }
 /* --- END OF DIAL PAD ENHANCEMENT --- */
  
-.upi-btn-base:active,
-.history-item:active {
+.upi-btn-base:active {
     /* Keep subtle press down effect for touch/mouse interaction */
     transform: scale(0.98);
 }
