@@ -1,10 +1,12 @@
 /* Lock scrolling on mobile */
-html, body {
+html {
     height: 100%;
-    overflow: hidden; 
+    overflow: hidden; /* Prevents global scroll bars */
 }
 
 body {
+    height: 100%;
+    overflow: auto; /* Allow body content (main view) to scroll if needed */
     /* Nothing OS Font Aesthetic - Geometric Sans */
     font-family: 'Ubuntu', sans-serif;
     /* FIX: Added !important to enforce pure dark theme */
@@ -16,10 +18,14 @@ body {
     user-select: none;
 }
 
-/* Custom scrollbar styling */
-::-webkit-scrollbar {
-    width: 0px;
+/* Custom scrollbar styling for history list */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
     background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #374151; /* Dark gray handle */
+    border-radius: 10px;
 }
  
 /* Monochromatic text for titles/accents */
@@ -40,6 +46,23 @@ body {
     animation: gradientFlow 3s linear infinite;
 }
 
+/* --- Hiding/Showing Fixed Headers --- */
+
+/* Main header is fixed, but hide it when history view is active */
+/* Note: The JS handles adding 'hidden' to the main header when history opens */
+#history-view.history-visible ~ #floating-header {
+    display: none;
+}
+/* History floating header is fixed, and shown only when history view is active */
+#history-floating-header.hidden {
+    display: none !important; 
+}
+/* This is necessary to override the 'hidden' class when history-view is active */
+#history-view.history-visible ~ #history-floating-header {
+    display: flex; 
+}
+
+
 .card {
     /* Monochromatic/Dark Aesthetic */
     background-color: #0c0d10; /* Almost black */
@@ -52,9 +75,37 @@ body {
     animation: fadeIn 0.8s ease-in-out;
 }
  
-#history-view.card {
-    padding: 1.5rem;
+/* --- CRITICAL FIX: Ensure History View is completely off-screen and non-interactive when hidden --- */
+#history-view {
+    /* Set height to take full viewport height */
+    height: 100vh;
+    /* Fix to top of viewport to cover main content */
+    position: fixed; 
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 30; /* Higher than main view (z-10) but lower than modals (z-100) */
+    padding: 0 !important;
+    
+    /* Initially hidden properties for safety */
+    opacity: 0;
+    pointer-events: none; /* Crucial: Prevents hidden element from blocking clicks */
+    transition: opacity 0.3s ease;
+    background-color: #000000; /* Ensure black background covers everything */
 }
+
+/* The JS will remove the 'hidden' class and add 'history-visible' */
+#history-view.history-visible {
+    opacity: 1;
+    pointer-events: auto; /* Enable interaction when visible */
+}
+
+/* Ensure history content is positioned correctly beneath its floating header */
+#history-fixed-controls {
+    margin-top: 64px; /* Space needed to clear the fixed #history-floating-header (h-12 + py-2*2 + top-2 margin = ~64px) */
+    position: relative; /* Allows it to participate in scrolling container layout */
+}
+
 
 .input-group {
     background-color: #1a1c20;
@@ -65,57 +116,90 @@ body {
     position: relative;
 }
 
+/* --- Search Bar Focus Ring (Oxygen OS White Ring) --- */
+#history-search-group:focus-within {
+    border-color: #F3F4F6;
+    box-shadow: 0 0 0 2px #1a1c20, 0 0 0 4px #F3F4F6; 
+}
+/* --- END Search Bar Focus Ring --- */
+
 .input-group:focus-within {
-    /* High-contrast White Focus Glow (Nothing Style) */
+    /* High-contrast White Focus Glow (Nothing Style) - Default Input */
     border-color: #F3F4F6;
     box-shadow: 0 0 0 2px #1a1c20, 0 0 0 4px #F3F4F6;
 }
 
-/* --- START HISTORY ITEM STYLING FIXES (Refined Monochromatic) --- */
+/* --- HISTORY ITEM STYLING (Card Look, Flexible Width) --- */
 
+/* REFACTORED: Action buttons are now visible by default on mobile */
 .history-item-actions {
-    display: none;
-    position: absolute; 
-    right: 1rem; 
-    top: 50%;
-    transform: translateY(-50%);
+    display: flex !important; /* Always visible for touch */
+    position: relative; 
+    gap: 0.5rem;
+    padding: 0.25rem 0; 
 }
 
+/* Hide hover actions wrapper for the new layout (keeping old for desktop fallback) */
 .history-item:hover .history-item-actions {
     display: flex;
 }
  
 .history-item {
-    background-color: #1f2125; 
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    /* Reverted to Card Look - Flexible Width */
+    background-color: #1a1c20; /* Card background */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); /* Smaller, sharper shadow */
     position: relative;
     align-items: center;
-    padding: 1rem;
-    border-radius: 0.75rem;
+    padding: 0.75rem; /* Standard padding */
+    border-radius: 0.5rem; /* Card rounding */
+    
+    border-bottom: none; 
+    border-left: 5px solid var(--upi-color, #374151); /* Keep color accent on side */
+    
+    transition: background-color 0.2s ease-in-out;
+    cursor: pointer;
+    
+    /* Ensure item takes full available width in the list */
+    width: 100%;
+}
+
+/* Hover/Tap Feedback: Subtle background change */
+.history-item:hover,
+.history-item:active {
+    background-color: #374151 !important; /* Darker grey on hover/active */
+    transform: none; 
+}
+
+/* Ensure the last item has no custom border */
+#history-list > .history-item:last-child {
+    border-bottom: none;
 }
  
 .history-item-actions-wrapper {
-    background-color: rgba(12, 13, 16, 0.85); /* Dark pill wrapper */
-    padding: 0.25rem;
-    border-radius: 0.75rem;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    background-color: transparent; 
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
  
 .history-action-btn {
-    width: 32px;
-    height: 32px;
+    /* Buttons in history list */
+    width: 36px; 
+    height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 0.5rem; /* Sharper pill shape */
-    background-color: transparent;
+    border-radius: 0.5rem; 
+    background-color: #0c0d10;
     color: #ffffff;
     transition: all 0.2s;
+    border: 1px solid #374151;
+    flex-shrink: 0;
 }
 
 .history-action-btn:hover {
-    background-color: #1a1c20;
-    color: #ef4444; /* Red accent on hover */
+    background-color: #374151;
+    color: #ef4444; 
 }
  
 /* Animation for clearing history */
@@ -137,8 +221,17 @@ body {
     animation: vanish 0.3s ease-in-out forwards;
     overflow: hidden;
 }
+ 
+/* Separator for Date Grouping */
+.history-date-separator {
+    color: #9CA3AF;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 1rem 0 0.5rem 0;
+    padding-left: 0.5rem;
+    border-bottom: 1px solid #1a1c20;
+}
 
-/* --- END HISTORY ITEM STYLING FIXES --- */
 
 /* --- START OF DIAL PAD ENHANCEMENT (Monochromatic with Red Accents) --- */
 .dial-pad button {
