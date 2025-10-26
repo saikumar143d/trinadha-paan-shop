@@ -27,9 +27,9 @@
 
 <script src="https://unpkg.com/lucide@latest" async></script>
 
-<!-- FAVICON REVERTED: Using the old external link for the full QR icon -->
+<!-- FAVICON UPDATE: Using the new app logo (PNG link) -->
 
-<link rel="icon" href="https://od.lk/s/NDJfNDk0NzI1MzNf/stylized-qr-code-icon-with-vibrant-colors-modern-design_1299084-18665.avif" />
+<link rel="icon" href="https://od.lk/s/NDJfNTAwMDk5ODhf/App_Logo.png" />
 
 <!-- Tailwind CSS CDN -->
 
@@ -59,13 +59,13 @@
 
 <body class="flex flex-col items-center min-h-screen p-4">
 
-<!-- Floating Header Elements -->
+<!-- Floating Header Elements (Main Screen) -->
 
 <div id="floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2 floating-header-animated">
 <div id="header-left" class="flex items-center space-x-4">
 <!-- Updated logo container style -->
 <button id="logo-btn" class="logo-container h-12 w-12 rounded-lg p-0 flex items-center justify-center flex-none">
-<!-- SLEEK S4D COLORFUL LOGO (Base64 SVG) -->
+<!-- RESTORED BASE64 SVG LOGO -->
 <img id="logo-img" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MCA1MCI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJnIiB4MT0iMCUiIHkxPSIwJSIgeDI9IjEwMCUiIHkyPSIxMDAlIj48c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjZjk3MzI2Ii8+PHN0b3Agb2Zmc2V0PSIyNSUiIHN0b3AtY29sb3I9IiNGRjYzNDciLz48c3RvcCBvZmZzZXQ9IjUwJSIgc3RvcC1jb2xvcj0iIzRkNDNmZSIvPjxzdG9wIG9mZnNldD0iNzUlIiBzdG9wLWNvbG9yPSIjMDE4YjNkIi8+PHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjMTU2NWIzIi8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHRleHQgeD0iMjUiIHk9IjM1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBzdHlsZT0iZm9udC1mYW1pbHk6ICdVYnVudHUnLCBzYW5zLXNlcmlmOyBmb250LXdlaWdodDogNzAwOyBmb250LXNpemU6IDI0cHg7IiBmaWxsPSJ1cmwoI2cpIj5TNEQ8L3RleHQ+PC9zdmc+" alt="S4D QR Gen Logo" class="h-full w-full rounded-lg object-cover object-center transition-opacity duration-500" />
 </button>
 <!-- New UPI ID Display with dynamic label in Header -->
@@ -75,21 +75,36 @@
 </div>
 </div>
 <div id="header-right" class="flex items-center space-x-2">
-<!-- History Button -->
+<!-- History Button (Remains in main view header for Toggling TO history) -->
 <button id="history-btn" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-lg border border-gray-700 shadow-lg hover:bg-gray-700 transition-colors duration-300 z-50">
 <span id="history-icon" class="material-symbols-outlined text-gray-200">history</span>
 </button>
 </div>
 </div>
 
-<!-- Main QR Generator View - Increased mt-20 to mt-32 for more space -->
+<!-- Floating Header Elements (History Screen) - NEW FIXED HEADER FOR HISTORY -->
+<!-- This container uses the same position and sizing classes as #floating-header -->
+<div id="history-floating-header" class="fixed top-2 left-0 w-full z-40 px-6 flex items-center justify-between py-2 floating-header-animated hidden">
+    <!-- History Title (Left side) -->
+    <!-- Text size reduced to match the compact nature of the floating header -->
+    <h3 id="history-header" class="text-xl font-extrabold gradient-text flex-1" style="font-family: 'Ubuntu', sans-serif;">History</h3>
+    
+    <!-- Back Button (Right side, matching size w-12 h-12) -->
+    <button id="history-back-btn" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-lg border border-gray-700 shadow-lg hover:bg-gray-700 transition-colors duration-300 z-50">
+        <span class="material-symbols-outlined text-2xl text-gray-200">arrow_back</span>
+    </button>
+</div>
 
-<div id="main-view" class="flex flex-col items-center mx-auto mt-32 space-y-4 w-full max-w-sm">
+
+<!-- Main QR Generator View -->
+
+<!-- ADDED z-10 for explicit stacking context -->
+<div id="main-view" class="flex flex-col items-center mx-auto mt-24 space-y-4 w-full max-w-sm z-10">
 <!-- Amount Input Card -->
 <div class="card flex flex-col items-center border-2 border-gray-900 p-2">
 <div id="input-container" class="input-group w-full flex items-center py-2 px-4 h-16">
 <span class="material-symbols-outlined text-gray-400">currency_rupee</span>
-<input id="amountInput" type="text" class="flex-1 min-w-0 bg-transparent text-gray-200 text-lg font-bold focus:outline-none placeholder-gray-500 ml-2" placeholder="" autocomplete="off" style="font-family: 'Ubuntu', sans-serif;">
+<input id="amountInput" type="text" inputmode="none" class="flex-1 min-w-0 bg-transparent text-gray-200 text-lg font-bold focus:outline-none placeholder-gray-500 ml-2" placeholder="" autocomplete="off" style="font-family: 'Ubuntu', sans-serif;">
 <button id="clear-input-btn" class="ml-2 w-6 h-6 rounded-full flex items-center justify-center text-gray-500 hover:text-gray-300 transition-colors duration-200 hidden">
 <span class="material-symbols-outlined text-lg">cancel</span>
 </button>
@@ -175,31 +190,45 @@
 
 </div>
 
-<!-- Payment History View - Increased mt-20 to mt-32 for more space -->
+<!-- Payment History View - FULL SCREEN, FIXED CONTROLS, SCROLLING LIST -->
 
-<div id="history-view" class="hidden card mt-32 relative flex flex-col h-full max-h-[85vh]">
-<div class="flex justify-between items-center mb-4">
-<!-- Title is now white/gray gradient -->
-<h3 id="history-header" class="text-xl font-bold gradient-text" style="font-family: 'Ubuntu', sans-serif;">Payment History</h3>
-<!-- Clear button uses Red Accent -->
-<button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-lg font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-200 hidden">
-<span class="material-symbols-outlined text-white mr-1 text-base">delete_forever</span> Clear
-</button>
-</div>
-<div class="flex-grow overflow-y-auto pr-2">
-<div id="history-list" class="space-y-4">
-<!-- History items will be dynamically added here -->
-</div>
-</div>
-
-<!-- Footer Section -->
-<div id="history-footer" class="mt-4 pt-4 floating-header-animated">
-    <p class="font-bold text-sm tracking-wide text-gray-300 text-center">Live it UP</p>
-    <div class="history-footer-tag flex items-center justify-center text-center text-gray-400 text-sm">
-        <!-- Footer text now relies on monochromatic style -->
-        <p class="made-with-text">Made with <span class="heart-icon">❤️</span> in <span class="gradient-text font-semibold">AI</span>, <span class="material-symbols-outlined align-middle text-base text-gray-400">location_on</span> <span class="gradient-text font-semibold">India</span></p>
+<!-- ADDED z-20 to ensure it stacks above the main view (z-10) -->
+<!-- IMPORTANT: Must apply z-index here since it is fixed/absolute (fixed) in CSS -->
+<div id="history-view" class="hidden relative flex flex-col h-full max-h-screen w-full z-20">
+    
+    <!-- Fixed Top Controls Container -->
+    <!-- This container holds all fixed elements below the floating header -->
+    <div id="history-fixed-controls" class="w-full px-4 pt-2 pb-4">
+        <!-- Search Bar -->
+        <div class="mb-4">
+            <div id="history-search-group" class="input-group flex items-center p-3 h-12 w-full focus-ring-white">
+                <span class="material-symbols-outlined text-gray-400 mr-2">search</span>
+                <input type="text" id="history-search-input" class="flex-1 bg-transparent text-gray-200 focus:outline-none placeholder-gray-500 text-sm" placeholder="Search by name or amount..." autocomplete="off">
+            </div>
+        </div>
+        
+        <!-- Transactions Header & Clear Button -->
+        <div class="flex justify-between items-center pt-2">
+            <!-- Sub-Title / Status -->
+            <h4 class="text-sm font-bold text-gray-500 uppercase tracking-wider">Transactions</h4>
+            <!-- Clear button uses Red Accent -->
+            <button id="clear-history-btn" class="flex items-center justify-center bg-red-600 text-white rounded-lg font-semibold px-4 py-2 text-sm hover:bg-red-700 transition-colors duration-200 hidden flex-shrink-0">
+                <span class="material-symbols-outlined text-white mr-1 text-base">delete_forever</span> Clear
+            </button>
+        </div>
     </div>
-</div>
+    
+    <!-- History List Container - SCROLLABLE AREA -->
+    <!-- flex-1 is critical for consuming remaining height -->
+    <div class="flex-1 overflow-y-auto custom-scrollbar px-4">
+        <div id="history-list" class="space-y-3 pb-16">
+            <!-- History items will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Footer Section - Kept hidden -->
+    <div id="history-footer" class="mt-4 pt-4 floating-header-animated absolute bottom-0 left-0 right-0 p-4 border-t border-gray-900/50 hidden">
+    </div>
 
 
 </div>
@@ -230,7 +259,7 @@ hover:bg-gray-700 hover:border-gray-500 hover:text-white hover:scale-[1.05] hove
     
     <!-- UPI Switcher Label (REMOVED) -->
 
-    <div id="popup-upi-buttons" class="flex flex-wrap justify-center gap-3 mt-6">
+    <div id="popup-upi-buttons" class="flex flex-nowrap overflow-x-auto justify-start gap-3 mt-6 w-full px-2 pb-2 custom-scrollbar">
         <!-- UPI buttons will be dynamically added here -->
     </div>
 </div>
