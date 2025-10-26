@@ -120,22 +120,32 @@ const hexToRgb = (hex) => {
 const saveUpiData = () => {
     localStorage.setItem(upiDataKey, JSON.stringify(upiData));
 };
- 
+
+/**
+ * Saves a payment entry to history.
+ * Adds the current date in ISO format for easy date comparison/grouping.
+ */ 
 const saveHistory = (id, amount) => {
     const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-    const timestamp = new Date().toLocaleString('en-IN', {
+    const now = new Date();
+    const timestamp = now.toLocaleString('en-IN', {
         hour: 'numeric',
         minute: 'numeric',
         hour12: true
     });
-    // Only save if a UPI ID is selected and amount is a non-empty string (including '0.00' if a math operation resulted in zero, though my new logic returns '' for zero)
+    // YYYY-MM-DD format for easy sorting and grouping
+    const date = now.toISOString().slice(0, 10); 
+    
+    // Only save if a UPI ID is selected and amount is a non-empty string
     if (id) {
         history.unshift({
             id,
-            amount: amount || '0.00', // Ensure amount is saved as '0.00' if it's explicitly empty for history visibility
-            timestamp
+            amount: amount || '0.00', 
+            timestamp,
+            date // NEW: Date for grouping
         });
-        localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 10)));
+        // Limit history to 50 items (was 10, increased for better functionality)
+        localStorage.setItem(historyKey, JSON.stringify(history.slice(0, 50)));
     }
 };
  
@@ -587,7 +597,7 @@ const createUpiButton = (upi) => {
 const createPopupUpiButton = (upi) => {
     const button = document.createElement('button');
     // Removed duration-300 from class list to use the faster CSS transition
-    button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center relative popup-upi-btn'; 
+    button.className = 'w-16 h-16 p-2 bg-gray-900 rounded-full flex flex-col items-center justify-center relative popup-upi-btn flex-shrink-0'; 
     button.setAttribute('data-upi-id', upi.id);
     button.style.setProperty('--upi-color', upi.color);
     button.style.setProperty('--upi-rgb', hexToRgb(upi.color));
@@ -612,56 +622,125 @@ const createPopupUpiButton = (upi) => {
     });
     return button;
 };
+
+/**
+ * Helper function to determine the display group for a date.
+ * @param {string} dateString - Date in 'YYYY-MM-DD' format.
+ * @returns {string} Group label (Today, Yesterday, YYYY-MM-DD).
+ */
+const getDateGroupLabel = (dateString) => {
+    const today = new Date().toISOString().slice(0, 10);
+    const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+
+    if (dateString === today) {
+        return 'Today';
+    } else if (dateString === yesterday) {
+        return 'Yesterday';
+    } else {
+        return dateString; // Return the full date for older entries
+    }
+};
  
+/**
+ * Renders the history list, now supporting filtering and date grouping.
+ */
 const renderHistory = () => {
     const historyList = document.getElementById('history-list');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
-    const history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+    const searchInput = document.getElementById('history-search-input');
+    
+    const allHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+    // 1. Filter History based on search term
+    const filteredHistory = allHistory.filter(item => {
+        if (!searchTerm) return true;
+        const upiInfo = getUpiData(item.id);
+        return upiInfo.label.toLowerCase().includes(searchTerm) || 
+               item.amount.includes(searchTerm) || 
+               item.id.toLowerCase().includes(searchTerm);
+    });
+    
+    // 2. Group filtered history by date
+    const historyGroups = filteredHistory.reduce((groups, item) => {
+        // Use the stored date property
+        const groupKey = getDateGroupLabel(item.date); 
+        if (!groups[groupKey]) {
+            groups[groupKey] = [];
+        }
+        groups[groupKey].push(item);
+        return groups;
+    }, {});
+
     historyList.innerHTML = '';
-    if (history.length === 0) {
-        historyList.innerHTML = '<p class="text-gray-400 text-center">No payment history found.</p>';
+    
+    if (allHistory.length === 0) {
+        historyList.innerHTML = '<p class="text-gray-400 text-center pt-8">No payment history found.</p>';
         clearHistoryBtn.classList.add('hidden');
-    } else {
-        history.forEach((item, index) => {
+        if (searchInput) searchInput.disabled = true;
+        return;
+    } 
+    
+    if (searchInput) searchInput.disabled = false;
+    
+    if (filteredHistory.length === 0) {
+        historyList.innerHTML = '<p class="text-gray-400 text-center pt-8">No matching history entries found.</p>';
+        clearHistoryBtn.classList.remove('hidden');
+        return;
+    }
+
+    // 3. Render grouped history
+    Object.keys(historyGroups).forEach(groupLabel => {
+        // Add date separator
+        const separator = document.createElement('h4');
+        separator.className = 'history-date-separator';
+        separator.textContent = groupLabel;
+        historyList.appendChild(separator);
+
+        historyGroups[groupLabel].forEach((item, index) => {
             const upiInfo = getUpiData(item.id);
             
             // Use a single container div with all necessary classes
             const historyItem = document.createElement('div');
-            // Removed duration-200 from class list
+            // Reverted to card look classes
             historyItem.classList.add(
                 'history-item', 'flex', 'items-center', 'space-x-4', 'cursor-pointer', 
-                'hover:bg-gray-800', 'relative', 
-                'group', 'history-item-animated', 'p-4', 'rounded-xl', 'w-full'
+                'group', 'history-item-animated', 'w-full'
             );
-            historyItem.style.borderLeft = `5px solid ${upiInfo.color}`; 
-            historyItem.style.backgroundColor = '#1f2125'; // Ensure specific dark background
+            // Set the color variable for the CSS accent/divider
+            historyItem.style.setProperty('--upi-color', upiInfo.color);
 
             const itemIconUrl = upiInfo.icon || 'https://placehold.co/40x40/4B5563?text=Icon';
             const timePart = item.timestamp.split(', ')[1] || item.timestamp;
-
+            
+            // MODIFIED: Reverted label color to white/gray for card look, kept original flex layout
             historyItem.innerHTML = `
                 <!-- Icon -->
                 <img src="${itemIconUrl}" alt="${upiInfo.label} Icon" 
-                    class="w-10 h-10 rounded-full border-2 border-gray-700 object-cover flex-shrink-0" 
+                    class="w-10 h-10 rounded-full object-cover flex-shrink-0" 
                     onerror="this.onerror=null;this.src='https://placehold.co/40x40/4B5563?text=Icon'">
                 
                 <!-- Text Content (Label and Time/Amount) -->
                 <div class="flex-1 min-w-0 ml-2">
-                    <p class="text-gray-200 font-semibold truncate" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
-                    <p class="text-gray-400 text-sm truncate" style="font-family: 'Karla', sans-serif;">₹${item.amount} - ${timePart}</p>
+                    <p class="text-gray-200 font-bold truncate" style="font-family: 'Karla', sans-serif;">${upiInfo.label}</p>
+                    <p class="text-gray-400 text-sm truncate" style="font-family: 'Karla', sans-serif;">₹${item.amount}</p>
+                    <p class="text-gray-500 text-xs">${timePart}</p>
                 </div>
                 
-                <!-- Action buttons with wrapper for pill-look -->
-                <div class="history-item-actions flex items-center space-x-2 history-item-actions-wrapper">
+                <!-- Action buttons (Now visible by default for touch) -->
+                <div class="history-item-actions flex items-center flex-shrink-0">
                     <button class="regenerate-btn history-action-btn" title="Generate QR again">
-                        <span class="material-symbols-outlined text-base">sync</span>
+                        <span class="material-symbols-outlined text-lg">sync</span>
                     </button>
                     <button class="delete-btn history-action-btn" title="Delete entry" data-index="${index}">
-                        <span class="material-symbols-outlined text-base">delete</span>
+                        <span class="material-symbols-outlined text-lg text-red-500">delete</span>
                     </button>
                 </div>
             `;
             
+            // Get the original index for deletion from the full history array
+            const originalIndex = allHistory.findIndex(h => h.id === item.id && h.amount === item.amount && h.timestamp === item.timestamp);
+
             // Attach listeners
             historyItem.addEventListener('click', (e) => {
                 // Check if the click was directly on an action button or its child icon
@@ -680,7 +759,9 @@ const renderHistory = () => {
 
             historyItem.querySelector('.regenerate-btn').addEventListener('click', () => {
                 currentQrAmount = item.amount;
-                saveHistory(item.id, item.amount);
+                // Saving history here essentially moves it to the top.
+                saveHistory(item.id, item.amount); 
+                
                 // NEW: Update highlighting and header display upon regenerating
                 updateButtonHighlighting(item.id);
                 updateHeaderUpiDisplay(item.id);
@@ -688,19 +769,30 @@ const renderHistory = () => {
                 localStorage.setItem(lastSelectedUpiKey, item.id);
                 
                 showQrModal(item.id, item.amount);
+                
+                // Re-render history to reflect the entry moved to the top of the list
+                renderHistory();
             });
 
             historyItem.querySelector('.delete-btn').addEventListener('click', () => {
                 let currentHistory = JSON.parse(localStorage.getItem(historyKey) || '[]');
-                const indexToDelete = parseInt(historyItem.querySelector('.delete-btn').dataset.index, 10);
-                currentHistory.splice(indexToDelete, 1);
-                localStorage.setItem(historyKey, JSON.stringify(currentHistory));
-                renderHistory();
+                
+                if (originalIndex !== -1) {
+                    currentHistory.splice(originalIndex, 1);
+                    localStorage.setItem(historyKey, JSON.stringify(currentHistory));
+                    renderHistory(); // Re-render after deletion
+                }
             });
 
             historyList.appendChild(historyItem);
         });
+    });
+
+    // Show clear button only if there is any history at all
+    if (allHistory.length > 0) {
         clearHistoryBtn.classList.remove('hidden');
+    } else {
+        clearHistoryBtn.classList.add('hidden');
     }
 };
 
@@ -932,7 +1024,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const historyIcon = document.getElementById('history-icon');
     const qrModalOverlay = document.getElementById('qr-modal-overlay');
     const editModalOverlay = document.getElementById('edit-modal-overlay'); // NEW
-    const historyFooter = document.getElementById('history-footer'); 
+    const floatingHeader = document.getElementById('floating-header'); // Get the main floating header
+    
+    // NEW: History specific elements
+    const historyFloatingHeader = document.getElementById('history-floating-header'); // NEW history header
+    const historySearchInput = document.getElementById('history-search-input');
+    const historyBackBtn = document.getElementById('history-back-btn'); // New back button
+
     
     // Edit Modal Element References
     const editSaveBtn = document.getElementById('edit-save-btn');
@@ -948,10 +1046,10 @@ document.addEventListener('DOMContentLoaded', () => {
         historyView.classList.add('hidden');
         mainView.classList.remove('hidden');
         
-        // NEW: Stop gradient scroll animation when leaving history view
-        if (historyFooter) {
-            historyFooter.classList.remove('footer-is-visible');
-        }
+        // Ensure main floating header is visible
+        floatingHeader.classList.remove('hidden'); 
+        // Hide history floating header
+        historyFloatingHeader.classList.add('hidden');
     };
 
     const showHistoryView = () => {
@@ -959,17 +1057,19 @@ document.addEventListener('DOMContentLoaded', () => {
         mainView.classList.add('hidden');
         historyView.classList.add('history-visible');
         historyIcon.innerText = 'arrow_back';
-        renderHistory();
+        
+        // Hide main floating header
+        floatingHeader.classList.add('hidden');
+        // Show history floating header
+        historyFloatingHeader.classList.remove('hidden');
 
-        // NEW: Start gradient scroll animation when entering history view
-        if (historyFooter) {
-            // Timeout ensures the animation starts after the element is painted/slid up
-            setTimeout(() => {
-                historyFooter.classList.add('footer-is-visible');
-            }, 500);  
-        }
+        // Reset search input when opening history
+        if(historySearchInput) historySearchInput.value = '';
+        
+        renderHistory();
     };
 
+    // Original button in main header toggles history view
     historyBtn.addEventListener('click', () => {
         if (historyView.classList.contains('hidden')) {
             showHistoryView();
@@ -977,6 +1077,11 @@ document.addEventListener('DOMContentLoaded', () => {
             showMainView();
         }
     });
+
+    // NEW: Integrated back button in history view goes back to main view
+    if (historyBackBtn) {
+        historyBackBtn.addEventListener('click', showMainView);
+    }
 
     // Existing Logic
     const upiButtonContainer = document.getElementById('upi-button-container');
@@ -1005,6 +1110,11 @@ document.addEventListener('DOMContentLoaded', () => {
             popupUpiButtons.appendChild(popupBtn);
         });
     };
+    
+    // NEW: History Search Listener
+    if (historySearchInput) {
+        historySearchInput.addEventListener('input', renderHistory);
+    }
 
     // --- START Initial State Selection Logic (Refactoring for Persistence) ---
     
